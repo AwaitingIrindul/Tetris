@@ -1,6 +1,6 @@
-package Model.Pieces;
+package ModelBoard.Pieces;
 
-import Model.Position.Position;
+import ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 09/02/2017.

@@ -1,7 +1,6 @@
-package Model;
+package ModelBoard;
 
-import Model.Position.Position;
-import javafx.geometry.Pos;
+import ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 09/02/2017.

@@ -1,4 +1,4 @@
-package Model.Position;
+package ModelBoard.Position;
 
 /**
  * Created by Irindul on 09/02/2017.

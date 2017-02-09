@@ -1,4 +1,4 @@
-package Model.Board;
+package ModelBoard.Board;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -44,6 +44,13 @@ public class Grid {
     public void placeOnTile(int i, int j){
         if(isInRange(i, j)){
             tiles[i][j].setEmpty(false);
+        } else
+            throwOutOfBound();
+    }
+
+    public void removeFromTile(int i, int j){
+        if(isInRange(i, j)){
+            tiles[i][j].setEmpty(true);
         } else
             throwOutOfBound();
     }

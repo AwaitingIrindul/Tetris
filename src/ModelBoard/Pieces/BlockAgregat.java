@@ -1,4 +1,4 @@
-package Model.Pieces;
+package ModelBoard.Pieces;
 
 import java.util.ArrayList;
 import java.util.List;
