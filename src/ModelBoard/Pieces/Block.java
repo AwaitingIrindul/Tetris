@@ -10,9 +10,19 @@ public class Block {
     private int height;
 
     private Position position;
-    public Block(int width, int height) {
+
+
+    private Position[][] pos;
+    public Block(int height, int width) {
         this.width = width;
         this.height = height;
+        pos = new Position[height][width];
+        position = new Position(0, 0);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                pos[i][j] = new Position(i, j);
+            }
+        }
     }
 
     public int getWidth() {
@@ -28,6 +38,27 @@ public class Block {
     }
 
     public void setPosition(Position position) {
+
+        int x = position.getX() - this.position.getX();
+        int y = position.getY() - this.position.getY();
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                pos[i][j].setX(pos[i][j].getX() + x);
+                pos[i][j].setY(pos[i][j].getY() + y);
+            }
+        }
+
         this.position = position;
     }
+
+    public Position[][] getPos() {
+        return pos;
+    }
+
+    public Position getPosition(int i, int j){
+        return pos[i][j];
+    }
+
+
 }
