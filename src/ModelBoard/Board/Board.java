@@ -2,7 +2,7 @@ package ModelBoard.Board;
 
 import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
-import ModelBoard.Pieces.BlockAgregat;
+import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
 
 import java.util.ArrayList;
@@ -15,17 +15,17 @@ import java.util.List;
 public class Board {
 
     private Grid grid;
-    private List<BlockAgregat> blockAgregats;
+    private List<BlockAggregate> blockAggregates;
 
 
 
     public Board(int height, int width) {
         grid = new Grid(height, width);
-        blockAgregats = new ArrayList<>();
+        blockAggregates = new ArrayList<>();
     }
 
-    public void addPiece(BlockAgregat piece){
-        blockAgregats.add(piece);
+    public void addPiece(BlockAggregate piece){
+        blockAggregates.add(piece);
         for(Block block : piece.getBlocks()){
             Position pos = block.getPosition();
             grid.placeOnTile(pos.getX(), pos.getY());
@@ -34,19 +34,24 @@ public class Board {
 
 
     public boolean checkMovement(Direction direction, int ind){
-        boolean possible = true;
+        boolean possible = false;
         Position pos;
-        for (Block block: blockAgregats.get(ind).getBlocks()) {
-            pos = direction.getNewPosition(block.getPosition());
-            int i = pos.getX();
-            int j = pos.getY();
-            if(grid.isInRange(i, j)){
-                if(grid.isEmpty(pos.getX(), pos.getY())){
-                    possible = true;
+        for (Block block: blockAggregates.get(ind).getBlocks()) {
+            for (int i = 0; i < block.getHeight(); i++) {
+                for (int j = 0; j < block.getWidth(); j++) {
+                    pos = direction.getNewPosition(block.getPosition(i , j));
+                    int x = pos.getX();
+                    int y = pos.getY();
+                    if(grid.isInRange(x, y)){
+                        if(grid.isEmpty(x, y)){
+                            possible = true;
+                        }
+                    } else {
+                        return false;
+                    }
                 }
-            } else {
-                possible = false;
             }
+
 
         }
 
@@ -56,7 +61,7 @@ public class Board {
     public void movePiece(Direction direction, int i){
 
         if(checkMovement(direction, i)){
-            BlockAgregat blocks = blockAgregats.get(i);
+            BlockAggregate blocks = blockAggregates.get(i);
             Position pos;
             for(Block block : blocks.getBlocks()){
                 grid.removeFromTile(block.getPosition().getX(), block.getPosition().getY());
@@ -72,7 +77,7 @@ public class Board {
         return grid;
     }
 
-    public List<BlockAgregat> getBlockAgregats() {
-        return blockAgregats;
+    public List<BlockAggregate> getBlockAggregates() {
+        return blockAggregates;
     }
 }
