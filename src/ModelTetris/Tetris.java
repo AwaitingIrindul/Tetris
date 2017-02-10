@@ -4,7 +4,7 @@ import ModelBoard.Board.Board;
 import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
-import ModelBoard.Pieces.BlockAgregat;
+import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
 
 /**
@@ -19,18 +19,21 @@ public class Tetris {
         board = new Board(height, width);
 
 
-        BlockAgregat blocks = new BlockAgregat();
-        Block block = new Block(1, 1);
+        BlockAggregate blocks = new BlockAggregate();
+        Block block = new Block(2, 1);
         block.setPosition(new Position(5, 5));
         Block block1 = new Block(1, 1);
-        block1.setPosition(new Position(5, 6));
         blocks.add(block);
-        blocks.add(block1);
+        blocks.add(block1, new Position(1, 0), Direction.RIGHT);
+
+
+        Block block2 = new Block(2, 1);
+        blocks.add(block2, new Position(0, 0), Direction.RIGHT);
         board.addPiece(blocks);
 
 
-        while (board.checkMovement(Direction.DOWN, 0))
-          board.movePiece(Direction.DOWN, 0);
+        while (board.checkMovement(Direction.RIGHT, 0))
+          board.movePiece(Direction.RIGHT, 0);
 
     }
 
@@ -40,11 +43,16 @@ public class Tetris {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 blocking = false;
-                for(BlockAgregat blocks : board.getBlockAgregats()){
+                for(BlockAggregate blocks : board.getBlockAggregates()){
                     for(Block block : blocks.getBlocks()){
-                        if(block.getPosition().equals(new Position(i, j))){
-                            blocking = true;
+                        for (int k = 0; k < block.getHeight(); k++) {
+                            for (int l = 0; l < block.getWidth(); l++) {
+                                if(block.getPosition(k, l).equals(new Position(i, j))){
+                                    blocking = true;
+                                }
+                            }
                         }
+
                     }
                 }
 
