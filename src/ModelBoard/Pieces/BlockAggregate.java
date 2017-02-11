@@ -23,8 +23,10 @@ public class BlockAggregate {
     }
 
     public void add(Block block){
-        if(blocks.isEmpty())
+        if(blocks.isEmpty()) {
             blocks.add(block);
+            position = block.getPosition();
+        }
     }
 
     public void add(Block block, Position pos1, Direction direction){

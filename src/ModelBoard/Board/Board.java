@@ -73,6 +73,47 @@ public class Board {
         }
     }
 
+    public void rotateClockWise(int i){
+        rotatePiece(-Math.PI/2, i);
+    }
+    private void rotatePiece(Double angle, int i){
+        Position current;
+        boolean possible = true;
+
+        for(Block block : blockAggregates.get(i).getBlocks()){
+            for (int j = 0; j < block.getHeight(); j++) {
+                for (int k = 0; k < block.getWidth(); k++) {
+                    current = block.getPosition(j, k);
+                    int newx = (int) (current.getX() * Math.cos(angle) - current.getY() * Math.sin(angle));
+                    int newy = (int) (current.getX() * Math.sin(angle) - current.getY() * Math.cos(angle));
+
+
+                    if(!grid.isEmpty(newx, newy)){
+                        possible = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        if(possible){
+            for(Block block : blockAggregates.get(i).getBlocks()){
+                for (int j = 0; j < block.getHeight(); j++) {
+                    for (int k = 0; k < block.getWidth(); k++) {
+                        current = block.getPosition(j, k);
+                        int newx = (int) (current.getX() * Math.cos(angle) - current.getY() * Math.sin(angle));
+                        int newy = (int) (current.getX() * Math.sin(angle) - current.getY() * Math.cos(angle));
+
+
+                        block.setPosition(new Position(newx, newy));
+                    }
+                }
+            }
+        }
+
+    }
+
     public Grid getGrid(){
         return grid;
     }

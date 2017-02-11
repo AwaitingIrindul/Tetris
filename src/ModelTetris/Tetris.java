@@ -19,21 +19,14 @@ public class Tetris {
         board = new Board(height, width);
 
 
-        BlockAggregate blocks = new BlockAggregate();
-        Block block = new Block(2, 1);
-        block.setPosition(new Position(5, 5));
-        Block block1 = new Block(1, 1);
-        blocks.add(block);
-        blocks.add(block1, new Position(1, 0), Direction.RIGHT);
+        board.addPiece(BlockFactory.get(TetrisBlocks.LeftL));
+        board.movePiece(Direction.DOWN, 0);
+        board.movePiece(Direction.DOWN, 0);
+        board.movePiece(Direction.DOWN, 0);
+        board.rotateClockWise(0);
 
-
-        Block block2 = new Block(2, 1);
-        blocks.add(block2, new Position(0, 0), Direction.RIGHT);
-        board.addPiece(blocks);
-
-
-        while (board.checkMovement(Direction.RIGHT, 0))
-          board.movePiece(Direction.RIGHT, 0);
+        /*while (board.checkMovement(Direction.DOWN, 0))
+          board.movePiece(Direction.DOWN, 0);*/
 
     }
 
