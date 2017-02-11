@@ -4,6 +4,7 @@ import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
+import com.sun.xml.internal.bind.v2.TODO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,11 @@ public class Board {
                     int newx = (int) (current.getX() * Math.cos(angle) - current.getY() * Math.sin(angle));
                     int newy = (int) (current.getX() * Math.sin(angle) - current.getY() * Math.cos(angle));
 
+                    // TODO: 11/02/2017 change newx/newy formula
+                    /*newX = centerX + (point2x-centerX)*Math.cos(x) - (point2y-centerY)*Math.sin(x);
+                    newY = centerY + (point2x-centerX)*Math.sin(x) + (point2y-centerY)*Math.cos(x);*/
 
+                    // TODO: 11/02/2017 add Rotation origin on each piece 
                     if(!grid.isEmpty(newx, newy)){
                         possible = false;
                         break;
