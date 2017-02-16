@@ -1,4 +1,5 @@
 import ModelTetris.Tetris;
+import View.TetrisGame;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -6,8 +7,6 @@ import ModelTetris.Tetris;
 public class Main {
 
     public static void main(String[] args) {
-        Tetris tetris = new Tetris();
-
-        tetris.display();
+        javafx.application.Application.launch(TetrisGame.class);
     }
 }

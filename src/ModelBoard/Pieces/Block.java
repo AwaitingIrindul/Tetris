@@ -60,5 +60,17 @@ public class Block {
         return pos[i][j];
     }
 
+    public boolean isInBlock(Position position){
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if(pos[i][j].equals(position)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 
 }

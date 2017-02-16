@@ -3,6 +3,7 @@ package ModelTetris;
 import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
+import ModelBoard.Pieces.Origin;
 import ModelBoard.Position.Position;
 
 /**
@@ -49,7 +50,7 @@ public class BlockFactory {
         block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-
+        blockAggregate.setOrigin(new Origin(block, new Position(0, 1)));
         return blockAggregate;
 
     }

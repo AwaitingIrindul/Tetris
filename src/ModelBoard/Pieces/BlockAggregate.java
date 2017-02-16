@@ -15,6 +15,7 @@ public class BlockAggregate {
     private Position position;
     private List<Block> blocks;
     private List<Link> links;
+    private Origin origin;
 
     public BlockAggregate() {
         blocks = new ArrayList<>();
@@ -62,8 +63,25 @@ public class BlockAggregate {
         }
     }
 
+
+    public boolean isInBlock(Position pos){
+        for(Block block : blocks){
+            if(block.isInBlock(pos)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void setOrigin(Origin origin){
+        this.origin = origin;
+    }
+
     public void setPosition(Position pos){
         setPosition(pos, 0);
         this.position = pos;
+    }
+
+    public Position getPosition(){
+        return position;
     }
 }

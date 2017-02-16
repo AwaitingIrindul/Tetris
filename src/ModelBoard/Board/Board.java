@@ -27,9 +27,15 @@ public class Board {
 
     public void addPiece(BlockAggregate piece){
         blockAggregates.add(piece);
+        Position pos;
         for(Block block : piece.getBlocks()){
-            Position pos = block.getPosition();
-            grid.placeOnTile(pos.getX(), pos.getY());
+            for (int i = 0; i < block.getHeight(); i++) {
+                for (int j = 0; j < block.getWidth(); j++) {
+                    pos = block.getPosition(i, j);
+                    grid.placeOnTile(pos.getX(), pos.getY());
+                }
+            }
+
         }
     }
 
@@ -37,19 +43,32 @@ public class Board {
     public boolean checkMovement(Direction direction, int ind){
         boolean possible = false;
         Position pos;
-        for (Block block: blockAggregates.get(ind).getBlocks()) {
+        BlockAggregate blocks = blockAggregates.get(ind);
+        for (Block block: blocks.getBlocks()) {
             for (int i = 0; i < block.getHeight(); i++) {
                 for (int j = 0; j < block.getWidth(); j++) {
                     pos = direction.getNewPosition(block.getPosition(i , j));
                     int x = pos.getX();
                     int y = pos.getY();
-                    if(grid.isInRange(x, y)){
-                        if(grid.isEmpty(x, y)){
-                            possible = true;
+
+                    if(!blocks.isInBlock(pos)){
+                        if(grid.isInRange(x, y)){
+                            if(grid.isEmpty(x, y)){
+                                possible = true;
+                                System.out.println("true");
+                            } else {
+                                System.out.println("false for " + x + " " + y + " on " + block.getPosition(i, j).getX() + " " + block.getPosition(i, j).getY());
+
+                                return false;
+                            }
+                        } else {
+                            return false;
                         }
                     } else {
-                        return false;
+                        System.out.println("Is in block");
+
                     }
+
                 }
             }
 
@@ -59,16 +78,34 @@ public class Board {
         return possible;
     }
 
+    public int getIndex(BlockAggregate b){
+        return blockAggregates.indexOf(b);
+    }
+
     public void movePiece(Direction direction, int i){
 
         if(checkMovement(direction, i)){
             BlockAggregate blocks = blockAggregates.get(i);
             Position pos;
             for(Block block : blocks.getBlocks()){
-                grid.removeFromTile(block.getPosition().getX(), block.getPosition().getY());
+                for (int j = 0; j < block.getHeight(); j++) {
+                    for (int k = 0; k < block.getWidth(); k++) {
+                        grid.removeFromTile(block.getPosition(j, k).getX(), block.getPosition(j, k).getY());
+                    }
+                }
+
                 pos = direction.getNewPosition(block.getPosition());
                 block.setPosition(pos);
-                grid.placeOnTile(pos.getX(), pos.getY());
+
+                for (int j = 0; j < block.getHeight(); j++) {
+                    for (int k = 0; k < block.getWidth(); k++) {
+                        Position tmp = new Position(0, 0);
+                        tmp.setXY(block.getPosition(j, k).getX(), block.getPosition(j, k).getY());
+
+                        grid.placeOnTile(tmp.getX(), tmp.getY());
+                    }
+                }
+
             }
 
         }
