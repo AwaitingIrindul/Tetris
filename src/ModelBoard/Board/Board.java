@@ -4,7 +4,6 @@ import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
-import com.sun.xml.internal.bind.v2.TODO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,23 +54,15 @@ public class Board {
                         if(grid.isInRange(x, y)){
                             if(grid.isEmpty(x, y)){
                                 possible = true;
-                                System.out.println("true");
                             } else {
-                                System.out.println("false for " + x + " " + y + " on " + block.getPosition(i, j).getX() + " " + block.getPosition(i, j).getY());
-
                                 return false;
                             }
                         } else {
                             return false;
                         }
-                    } else {
-                        System.out.println("Is in block");
-
                     }
-
                 }
             }
-
 
         }
 
@@ -87,27 +78,34 @@ public class Board {
         if(checkMovement(direction, i)){
             BlockAggregate blocks = blockAggregates.get(i);
             Position pos;
-            for(Block block : blocks.getBlocks()){
-                for (int j = 0; j < block.getHeight(); j++) {
-                    for (int k = 0; k < block.getWidth(); k++) {
-                        grid.removeFromTile(block.getPosition(j, k).getX(), block.getPosition(j, k).getY());
-                    }
+
+
+            cleanGrid(blocks);
+            blocks.move(direction);
+            replaceBlockOnGrid(blocks);
+
+        }
+    }
+
+    public void cleanGrid(BlockAggregate b){
+        for(Block block: b.getBlocks()){
+            for (int i = 0; i < block.getHeight(); i++) {
+                for (int j = 0; j < block.getWidth(); j++) {
+                    Position tmp = block.getPosition(i, j);
+                    grid.removeFromTile(tmp.getX(), tmp.getY());
                 }
-
-                pos = direction.getNewPosition(block.getPosition());
-                block.setPosition(pos);
-
-                for (int j = 0; j < block.getHeight(); j++) {
-                    for (int k = 0; k < block.getWidth(); k++) {
-                        Position tmp = new Position(0, 0);
-                        tmp.setXY(block.getPosition(j, k).getX(), block.getPosition(j, k).getY());
-
-                        grid.placeOnTile(tmp.getX(), tmp.getY());
-                    }
-                }
-
             }
+        }
+    }
 
+    public void replaceBlockOnGrid(BlockAggregate b){
+        for(Block block: b.getBlocks()){
+            for (int i = 0; i < block.getHeight(); i++) {
+                for (int j = 0; j < block.getWidth(); j++) {
+                    Position tmp = block.getPosition(i, j);
+                    grid.placeOnTile(tmp.getX(), tmp.getY());
+                }
+            }
         }
     }
 
@@ -117,41 +115,63 @@ public class Board {
     private void rotatePiece(Double angle, int i){
         Position current;
         boolean possible = true;
-
-        for(Block block : blockAggregates.get(i).getBlocks()){
+        BlockAggregate ba = blockAggregates.get(i);
+        Position origin = ba.getOrigin().getPositionOfBlock();
+        System.out.println("Origin : " +origin.getX() + " " + origin.getX());
+        for(Block block : ba.getBlocks()){
             for (int j = 0; j < block.getHeight(); j++) {
                 for (int k = 0; k < block.getWidth(); k++) {
                     current = block.getPosition(j, k);
-                    int newx = (int) (current.getX() * Math.cos(angle) - current.getY() * Math.sin(angle));
-                    int newy = (int) (current.getX() * Math.sin(angle) - current.getY() * Math.cos(angle));
 
-                    // TODO: 11/02/2017 change newx/newy formula
+                    System.out.println("Current : " + current.getX() + " " + current.getY());
+
+
+                    int newx = (int)( origin.getX() + (current.getX() - origin.getX())*Math.cos(angle) - (current.getY() - origin.getY())*Math.sin(angle) );
+                    int newy = (int)( origin.getY() + (current.getX() - origin.getX())*Math.sin(angle) + (current.getY() - origin.getY())*Math.cos(angle) );
                     /*newX = centerX + (point2x-centerX)*Math.cos(x) - (point2y-centerY)*Math.sin(x);
                     newY = centerY + (point2x-centerX)*Math.sin(x) + (point2y-centerY)*Math.cos(x);*/
+                    System.out.println("New : " + newx + " " + newy);
 
-                    // TODO: 11/02/2017 add Rotation origin on each piece 
-                    if(!grid.isEmpty(newx, newy)){
-                        possible = false;
+                    if(grid.isInRange(newx, newy)){
+                        if(!ba.isInBlock(new Position(newx, newy))) {
+                            if(!grid.isEmpty(newx, newy)){
+                                possible = false;
+                                break;
+                            }
+                        }
+
+                    } else {
+                        possible=false;
                         break;
                     }
+
+
+
                 }
             }
         }
 
 
         if(possible){
-            for(Block block : blockAggregates.get(i).getBlocks()){
+            System.out.println("Rotate");
+
+
+            // TODO: 16/02/2017 OPTIMIZE
+            cleanGrid(ba);
+            for(Block block: blockAggregates.get(i).getBlocks() ){
                 for (int j = 0; j < block.getHeight(); j++) {
                     for (int k = 0; k < block.getWidth(); k++) {
                         current = block.getPosition(j, k);
-                        int newx = (int) (current.getX() * Math.cos(angle) - current.getY() * Math.sin(angle));
-                        int newy = (int) (current.getX() * Math.sin(angle) - current.getY() * Math.cos(angle));
+                        int newx = (int)( origin.getX() + (current.getX() - origin.getX())*Math.cos(angle) - (current.getY() - origin.getY())*Math.sin(angle) );
+                        int newy = (int)( origin.getY() + (current.getX() - origin.getX())*Math.sin(angle) + (current.getY() - origin.getY())*Math.cos(angle) );
 
+                        block.setPosition(j, k, new Position(newx, newy));
 
-                        block.setPosition(new Position(newx, newy));
                     }
                 }
             }
+
+            replaceBlockOnGrid(ba);
         }
 
     }

@@ -1,5 +1,6 @@
 package ModelBoard.Pieces;
 
+import ModelBoard.Direction;
 import ModelBoard.Position.Position;
 
 /**
@@ -52,12 +53,26 @@ public class Block {
         this.position = position;
     }
 
+    public void setPosition(int i, int j, Position position){
+        pos[i][j].setXY(position.getX(), position.getY());
+    }
+
     public Position[][] getPos() {
         return pos;
     }
 
     public Position getPosition(int i, int j){
         return pos[i][j];
+    }
+
+    public void move(Direction d){
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int x = d.getNewPosition(pos[i][j]).getX();
+                int y = d.getNewPosition(pos[i][j]).getY();
+                pos[i][j].setXY(x, y);
+            }
+        }
     }
 
     public boolean isInBlock(Position position){

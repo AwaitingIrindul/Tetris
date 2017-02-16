@@ -51,6 +51,7 @@ public class BlockFactory {
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
         blockAggregate.setOrigin(new Origin(block, new Position(0, 1)));
+
         return blockAggregate;
 
     }
@@ -64,6 +65,7 @@ public class BlockFactory {
 
         Block block1 = new Block(1, 1);
         blockAggregate.add(block1, new Position(2, 0), Direction.LEFT);
+        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
 
         return blockAggregate;
     }
@@ -77,6 +79,7 @@ public class BlockFactory {
 
         Block block1 = new Block(1, 1);
         blockAggregate.add(block1, new Position(2, 0), Direction.RIGHT);
+        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
 
         return blockAggregate;
     }
@@ -87,6 +90,7 @@ public class BlockFactory {
 
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
+        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
 
         return blockAggregate;
     }
@@ -100,6 +104,7 @@ public class BlockFactory {
 
         Block block1 = new Block(2, 1);
         blockAggregate.add(block1, new Position(1, 0), Direction.RIGHT);
+        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
 
         return blockAggregate;
     }
@@ -113,6 +118,7 @@ public class BlockFactory {
 
         Block block1 = new Block(2, 1);
         blockAggregate.add(block1, new Position(1, 0), Direction.LEFT);
+        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
 
         return blockAggregate;
     }
@@ -126,6 +132,7 @@ public class BlockFactory {
 
         Block block1 = new Block(1, 1);
         blockAggregate.add(block1, new Position(0, 1), Direction.DOWN);
+        blockAggregate.setOrigin(new Origin(block1, new Position(0, 0)));
 
         return blockAggregate;
 

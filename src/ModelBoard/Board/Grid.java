@@ -54,4 +54,20 @@ public class Grid {
         } else
             throwOutOfBound();
     }
+
+    @Deprecated
+    public void display(){
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                if(this.isEmpty(i, j)){
+                    System.out.print("0 ");
+                } else {
+                    System.out.print("1 ");
+
+                }
+            }
+            System.out.println();
+
+        }
+    }
 }

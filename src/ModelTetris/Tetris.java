@@ -6,7 +6,6 @@ import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
-import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ public class Tetris {
     public Tetris() {
         board = new Board(height, width);
 
-        current = randomBlock();
+        current = //randomBlock();
+                BlockFactory.get(TetrisBlocks.LeftZ);
         board.addPiece(current);
 
     }
@@ -73,7 +73,7 @@ public class Tetris {
 
     public void applyGravity(){
         List<Position[][]> positions = new ArrayList<>();
-        for(Block b : current.getBlocks()){ // TODO: 16/02/2017 Clean this up 
+        for(Block b : current.getBlocks()){
             Position[][] tmp = new Position[b.getHeight()][b.getWidth()];
             
             //We store each position of the current object
@@ -123,6 +123,10 @@ public class Tetris {
         return BlockFactory.get(TetrisBlocks.values()[value]);
     }
 
+    public void rotate(){
+        board.rotateClockWise(board.getIndex(current));
+    }
+
     @Deprecated
     public Grid getGrid(){
         return board.getGrid();
@@ -130,4 +134,4 @@ public class Tetris {
 }
 
 
-//TODO Store current moving piece and next piece
+//TODO Store next piece

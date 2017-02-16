@@ -63,6 +63,9 @@ public class TetrisGame extends Application {
             if(e.getCode() == KeyCode.DOWN){
                 tetris.move(Direction.DOWN);
             }
+            if(e.getCode() == KeyCode.UP){
+                tetris.rotate();
+            }
 
             render();
 
@@ -89,8 +92,8 @@ public class TetrisGame extends Application {
 
         for(BlockAggregate b : tetris.getBlocks()){
             tetrominos.add(new Tetromino(getRandomColor(), b));
-            // TODO: 16/02/2017 Change color whith randomizer
         }
+        render();
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -113,16 +116,7 @@ public class TetrisGame extends Application {
 
         tetrominos.forEach(p -> p.draw(g));
 
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 0; j < WIDTH; j++) {
-                if(tetris.getGrid().isEmpty(i, j)){
-                    System.out.print("0 ");
-                } else
-                    System.out.print("1 ");
-            }
-            System.out.println();
-        }
-
+        tetris.getGrid().display();
         System.out.println();
         System.out.println();
         System.out.println();

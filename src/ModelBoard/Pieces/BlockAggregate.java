@@ -76,6 +76,16 @@ public class BlockAggregate {
         this.origin = origin;
     }
 
+    public Origin getOrigin() {
+        return origin;
+    }
+
+    public void move(Direction d){
+        for(Block b : blocks){
+            b.move(d);
+        }
+    }
+
     public void setPosition(Position pos){
         setPosition(pos, 0);
         this.position = pos;
