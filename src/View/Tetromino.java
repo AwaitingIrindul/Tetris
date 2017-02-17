@@ -39,4 +39,18 @@ public class Tetromino {
 
         }
     }
+
+    public void drawNext(GraphicsContext g){
+        g.setFill(color);
+        int x, y;
+        for(Block b : block.getBlocks()){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+
+                    g.fillRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                }
+            }
+
+        }
+    }
 }

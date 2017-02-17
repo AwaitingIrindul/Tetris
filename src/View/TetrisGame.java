@@ -27,14 +27,21 @@ import java.util.stream.Collectors;
 public class TetrisGame extends Application {
 
     public static final int TILE_SIZE = 40;
-    public static final int WIDTH = 10;
-    public static final int HEIGHT = 16;
+    public static final int WIDTH = 10 * TILE_SIZE;
+    public static final int HEIGHT = 16 * TILE_SIZE;
+    public static final int SCORE_HEIGHT = 16 * TILE_SIZE;
+    public static final int SCORE_WIDTH = 10 * TILE_SIZE;
+    public static final int NEXT_WIDTH = 4 * TILE_SIZE;
+    public static final int NEXT_HEIGHT = 4 * TILE_SIZE;
+
     
     private Tetris tetris;
 
-    
-    ArrayList<Tetromino> tetrominos;
+
+    private ArrayList<Tetromino> tetrominos;
+    private Tetromino next;
     private GraphicsContext g;
+    private  GraphicsContext gcNextPiece;
     private double time;
 
     @Override
@@ -74,26 +81,62 @@ public class TetrisGame extends Application {
             Platform.exit();
             System.exit(0);
         });
+
+        primaryStage.setTitle("Blocks puzzle game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+
     }
 
     private Parent createContent() {
 
         Pane root = new Pane();
-        root.setPrefSize(WIDTH*TILE_SIZE, HEIGHT*TILE_SIZE);
+        root.setPrefSize((WIDTH + SCORE_WIDTH), (HEIGHT));
 
-        Canvas canvas = new Canvas(WIDTH*TILE_SIZE, HEIGHT*TILE_SIZE);
-        g = canvas.getGraphicsContext2D();
+        Canvas backgroundGame = new Canvas(WIDTH, HEIGHT);
+        GraphicsContext gcBackgroundGame = backgroundGame.getGraphicsContext2D();
+        border(gcBackgroundGame);
 
-        root.getChildren().addAll(canvas);
+        Canvas movingGame = new Canvas(WIDTH, HEIGHT);
+        g = movingGame.getGraphicsContext2D();
+
+        Canvas scoreBackground = new Canvas(SCORE_WIDTH, SCORE_HEIGHT);
+        scoreBackground.setTranslateX(WIDTH);
+
+        GraphicsContext g1 = scoreBackground.getGraphicsContext2D();
+        border(g1);
+
+        Canvas nextPieceBg = new Canvas(NEXT_WIDTH, NEXT_HEIGHT);
+        nextPieceBg.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        nextPieceBg.setTranslateY(50);
+
+        GraphicsContext gcNextPieceBg = nextPieceBg.getGraphicsContext2D();
+        border(gcNextPieceBg);
+
+        Canvas nextPiece = new Canvas(NEXT_WIDTH, NEXT_HEIGHT);
+        nextPiece.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        nextPiece.setTranslateY(50);
+        gcNextPiece = nextPiece.getGraphicsContext2D();
+
+        root.getChildren().addAll(movingGame);
+        root.getChildren().addAll(backgroundGame);
+        root.getChildren().addAll(nextPiece);
+        root.getChildren().addAll(nextPieceBg);
+        root.getChildren().addAll(scoreBackground);
+
+
+
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
-
+        next = new Tetromino(getRandomColor(), tetris.getNext());
         for(BlockAggregate b : tetris.getBlocks()){
             tetrominos.add(new Tetromino(getRandomColor(), b));
         }
         render();
+
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -111,28 +154,34 @@ public class TetrisGame extends Application {
         return root;
     }
 
+    private void border(GraphicsContext g){
+        g.setFill(Color.TRANSPARENT);
+        g.setStroke(Color.BLACK);
+        g.setLineWidth(5);
+        g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
+    }
     private void render() {
-        g.clearRect(0, 0, WIDTH*TILE_SIZE, HEIGHT *TILE_SIZE);
+        g.clearRect(0, 0, WIDTH, HEIGHT);
 
         tetrominos.forEach(p -> p.draw(g));
 
-        tetris.getGrid().display();
-        System.out.println();
-        System.out.println();
-        System.out.println();
+        gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
+        next.drawNext(gcNextPiece);
 
-
-
-        
     }
 
     private void update() {
-        tetris.applyGravity();
-        if(tetrominos.size() != tetris.getBlocks().size()){
+
+
+        if(tetris.applyGravity()){
+            tetrominos.add(next);
+            next = new Tetromino(getRandomColor(), tetris.getNext());
+        }
+        /*if(tetrominos.size() != tetris.getBlocks().size()){
             for (int i = tetrominos.size(); i < tetris.getBlocks().size(); i++) {
                 tetrominos.add(new Tetromino(getRandomColor(), tetris.getBlocks().get(i)));
             }
-        }
+        }*/
     }
 
     private Color getRandomColor(){
