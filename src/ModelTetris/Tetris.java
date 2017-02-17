@@ -17,14 +17,15 @@ import java.util.Random;
 public class Tetris {
     private Board board;
     private BlockAggregate current;
+    private BlockAggregate next;
     public static int height = 16;
     public static int width = 10;
 
     public Tetris() {
         board = new Board(height, width);
 
-        current = //randomBlock();
-                BlockFactory.get(TetrisBlocks.LeftZ);
+        current = randomBlock();
+        next = randomBlock();
         board.addPiece(current);
 
     }
@@ -38,40 +39,7 @@ public class Tetris {
         return board.getBlockAggregates();
     }
 
-    public void display(){
-        Grid grid = board.getGrid();
-        boolean blocking = false;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                blocking = false;
-                for(BlockAggregate blocks : board.getBlockAggregates()){
-                    for(Block block : blocks.getBlocks()){
-                        for (int k = 0; k < block.getHeight(); k++) {
-                            for (int l = 0; l < block.getWidth(); l++) {
-                                if(block.getPosition(k, l).equals(new Position(i, j))){
-                                    blocking = true;
-                                }
-                            }
-                        }
-
-                    }
-                }
-
-
-                if(blocking){
-                    System.out.print("x");
-                } else {
-                    System.out.print("_");
-                }
-                System.out.print(" ");
-            }
-            System.out.println();
-
-        }
-    }
-
-
-    public void applyGravity(){
+    public boolean applyGravity(){
         List<Position[][]> positions = new ArrayList<>();
         for(Block b : current.getBlocks()){
             Position[][] tmp = new Position[b.getHeight()][b.getWidth()];
@@ -109,9 +77,17 @@ public class Tetris {
         if(!hasMoved){ //If our block hasn't moved, then it's blocked
 
             // TODO: 16/02/2017 refactor in method + refactor with next block
-            current = randomBlock(); //We change the new current
-            board.addPiece(current); //We add this new piece on the board. 
+
+            current = next; //We change the new current
+            next = randomBlock();
+            board.addPiece(current); //We add this new piece on the board.
+            return true;
         }
+        return  false;
+    }
+
+    public BlockAggregate getNext(){
+        return next;
     }
 
     public BlockAggregate randomBlock(){
