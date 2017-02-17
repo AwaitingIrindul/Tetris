@@ -16,11 +16,14 @@ public class Board {
 
     private Grid grid;
     private List<BlockAggregate> blockAggregates;
-
+    private int height;
+    private int width;
 
 
     public Board(int height, int width) {
         grid = new Grid(height, width);
+        this.height = height;
+        this.width = width;
         blockAggregates = new ArrayList<>();
     }
 
@@ -83,8 +86,11 @@ public class Board {
             cleanGrid(blocks);
             blocks.move(direction);
             replaceBlockOnGrid(blocks);
+            Position tmp = blocks.getOrigin().getBlock().getPosition(blocks.getOrigin().getPosition().getX(), blocks.getOrigin().getPosition().getY());
 
         }
+
+
     }
 
     public void cleanGrid(BlockAggregate b){
@@ -109,33 +115,53 @@ public class Board {
         }
     }
 
-    public void rotateClockWise(int i){
-        rotatePiece(-Math.PI/2, i);
+
+
+    public List<Integer> rowsToSweep(){
+        List<Integer> rows = new ArrayList<>();
+        int count;
+        for (int i = 0; i < height; i++) {
+            count = 0;
+            for (int j = 0; j < width; j++) {
+                if(!grid.isEmpty(i, j)){
+                    count++;
+                }
+            }
+
+            if(count == width - 1){
+                rows.add(i);
+            }
+        }
+
+        return rows;
     }
-    private void rotatePiece(Double angle, int i){
+
+    public void rotateClockWise(int i){
         Position current;
         boolean possible = true;
         BlockAggregate ba = blockAggregates.get(i);
         Position origin = ba.getOrigin().getPositionOfBlock();
-        System.out.println("Origin : " +origin.getX() + " " + origin.getX());
         for(Block block : ba.getBlocks()){
             for (int j = 0; j < block.getHeight(); j++) {
                 for (int k = 0; k < block.getWidth(); k++) {
                     current = block.getPosition(j, k);
 
-                    System.out.println("Current : " + current.getX() + " " + current.getY());
+                    /*
+                        We calculate the new points according to a rotation of (-PI/2)
+                        The new coordinates are computed with this formula :
+                        newX  = originX + (currentX - originX) * cos(-pi/2) - (currentY - originY) * sin(-pi/2)
+                        newY = originY + (currentX - originX) * sin(-pi/2) - (currentY - originY) * cos(-pi/2)
 
-
-                    int newx = (int)( origin.getX() + (current.getX() - origin.getX())*Math.cos(angle) - (current.getY() - origin.getY())*Math.sin(angle) );
-                    int newy = (int)( origin.getY() + (current.getX() - origin.getX())*Math.sin(angle) + (current.getY() - origin.getY())*Math.cos(angle) );
-                    /*newX = centerX + (point2x-centerX)*Math.cos(x) - (point2y-centerY)*Math.sin(x);
-                    newY = centerY + (point2x-centerX)*Math.sin(x) + (point2y-centerY)*Math.cos(x);*/
-                    System.out.println("New : " + newx + " " + newy);
+                        As we know sin(-pi/2) = 1 and cos(-pi/2)  = 0
+                        So we simplify  and get the formula below
+                     */
+                    int newx = origin.getX() + (current.getY() - origin.getY());
+                    int newy = origin.getY() - current.getX() + origin.getX();
 
                     if(grid.isInRange(newx, newy)){
-                        if(!ba.isInBlock(new Position(newx, newy))) {
+                        if(!ba.isInBlock(new Position(newx, newy))) { //If the new coordinates are not available
                             if(!grid.isEmpty(newx, newy)){
-                                possible = false;
+                                possible = false; //The rotation isn't possible
                                 break;
                             }
                         }
@@ -153,17 +179,14 @@ public class Board {
 
 
         if(possible){
-            System.out.println("Rotate");
-
-
-            // TODO: 16/02/2017 OPTIMIZE
+             //If the rotation is possible we recompute every rotation and set it
             cleanGrid(ba);
             for(Block block: blockAggregates.get(i).getBlocks() ){
                 for (int j = 0; j < block.getHeight(); j++) {
                     for (int k = 0; k < block.getWidth(); k++) {
                         current = block.getPosition(j, k);
-                        int newx = (int)( origin.getX() + (current.getX() - origin.getX())*Math.cos(angle) - (current.getY() - origin.getY())*Math.sin(angle) );
-                        int newy = (int)( origin.getY() + (current.getX() - origin.getX())*Math.sin(angle) + (current.getY() - origin.getY())*Math.cos(angle) );
+                        int newx = origin.getX() + (current.getY() - origin.getY());
+                        int newy = origin.getY() - current.getX() + origin.getX();
 
                         block.setPosition(j, k, new Position(newx, newy));
 

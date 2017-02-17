@@ -16,6 +16,14 @@ public class Origin {
         this.position = position;
     }
 
+    public Block getBlock() {
+        return block;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
     public Position getPositionOfBlock(){
         return block.getPosition(position.getX(), position.getY());
     }
