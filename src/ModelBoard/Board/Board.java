@@ -27,18 +27,36 @@ public class Board {
         blockAggregates = new ArrayList<>();
     }
 
-    public void addPiece(BlockAggregate piece){
+    public boolean addPiece(BlockAggregate piece){
         blockAggregates.add(piece);
         Position pos;
+        boolean possible = true;
         for(Block block : piece.getBlocks()){
             for (int i = 0; i < block.getHeight(); i++) {
                 for (int j = 0; j < block.getWidth(); j++) {
                     pos = block.getPosition(i, j);
-                    grid.placeOnTile(pos.getX(), pos.getY());
+                    if(!grid.isEmpty(pos.getX(), pos.getY())){
+                        possible = false;
+                    }
+
                 }
             }
-
         }
+
+        if(possible){
+            for(Block block : piece.getBlocks()){
+                for (int i = 0; i < block.getHeight(); i++) {
+                    for (int j = 0; j < block.getWidth(); j++) {
+                        pos = block.getPosition(i, j);
+                        grid.placeOnTile(pos.getX(), pos.getY());
+                    }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 

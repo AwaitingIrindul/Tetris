@@ -6,10 +6,13 @@ import ModelTetris.Tetris;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -31,6 +34,7 @@ public class TetrisGame extends Application {
     public static final int SCORE_WIDTH = 10 * TILE_SIZE;
     public static final int NEXT_WIDTH = 4 * TILE_SIZE;
     public static final int NEXT_HEIGHT = 4 * TILE_SIZE;
+    public boolean go;
 
     
     private Tetris tetris;
@@ -115,14 +119,23 @@ public class TetrisGame extends Application {
         nextPiece.setTranslateY(50);
         gcNextPiece = nextPiece.getGraphicsContext2D();
 
+
+        Button startAI = new Button("Start AI");
+        startAI.setMinHeight(100);
+        startAI.setMinWidth(NEXT_WIDTH);
+        startAI.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        startAI.setTranslateY(300);
+
+
         root.getChildren().addAll(movingGame);
         root.getChildren().addAll(backgroundGame);
         root.getChildren().addAll(nextPiece);
         root.getChildren().addAll(nextPieceBg);
         root.getChildren().addAll(scoreBackground);
+        root.getChildren().add(startAI);
 
 
-
+        go = true;
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
         next = new Tetromino(getRandomColor(), tetris.getNext());
@@ -137,7 +150,7 @@ public class TetrisGame extends Application {
             public void handle(long now) {
                 time += 0.017;
 
-                if(time >= 0.5){
+                if(time >= 0.5 && go){
                     update();
                     render();
                     time = 0;
@@ -171,6 +184,7 @@ public class TetrisGame extends Application {
             tetrominos.add(next);
             next = new Tetromino(getRandomColor(), tetris.getNext());
         }
+        go = ! tetris.isFinished();
     }
 
     private Color getRandomColor(){

@@ -20,14 +20,15 @@ public class Tetris {
     private BlockAggregate next;
     public static int height = 16;
     public static int width = 10;
+    public boolean finished;
 
     public Tetris() {
         board = new Board(height, width);
 
         current = randomBlock();
 
-        next = //randomBlock();
-                BlockFactory.get(TetrisBlocks.LeftZ);
+        next = randomBlock();
+                //BlockFactory.get(TetrisBlocks.LeftZ);
         board.addPiece(current);
 
     }
@@ -78,12 +79,12 @@ public class Tetris {
 
         if(!hasMoved){ //If our block hasn't moved, then it's blocked
             board.sweep();
-            // TODO: 16/02/2017 refactor in method + refactor with next block
 
             current = next; //We change the new current
             next = randomBlock();
 
-            board.addPiece(current); //We add this new piece on the board.
+            if(! board.addPiece(current)) //We add this new piece on the board.
+                finished = true;
             randomRotate(current);
             return true;
         }
@@ -98,7 +99,6 @@ public class Tetris {
         Random rd = new Random();
         int value;
         value  = rd.nextInt(TetrisBlocks.values().length);
-
 
         return BlockFactory.get(TetrisBlocks.values()[value]);
     }
@@ -115,11 +115,7 @@ public class Tetris {
         }
     }
 
-    @Deprecated
-    public Grid getGrid(){
-        return board.getGrid();
+    public boolean isFinished() {
+        return finished;
     }
 }
-
-
-//TODO Store next piece
