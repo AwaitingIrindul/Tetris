@@ -25,7 +25,8 @@ public class Tetris {
         board = new Board(height, width);
 
         current = randomBlock();
-        next = randomBlock();
+        next = //randomBlock();
+                BlockFactory.get(TetrisBlocks.Straight);
         board.addPiece(current);
 
     }
@@ -64,7 +65,7 @@ public class Tetris {
             for (int i = 0; i < b.getHeight(); i++) {
                 for (int j = 0; j < b.getWidth(); j++) {
                     if(b.getPosition(i, j).equals(positions.get(k)[i][j])){
-                        hasMoved = false; //If the position are the same, then the block didn't move
+                        hasMoved = false; //If the positions are the same, then the block didn't move
                     } else {
                         hasMoved = true; //Otherwise if one block moved, we stop the loop
                         break;
@@ -80,7 +81,9 @@ public class Tetris {
 
             current = next; //We change the new current
             next = randomBlock();
+
             board.addPiece(current); //We add this new piece on the board.
+            randomRotate(current);
             return true;
         }
         return  false;
@@ -101,6 +104,14 @@ public class Tetris {
 
     public void rotate(){
         board.rotateClockWise(board.getIndex(current));
+    }
+
+    public void randomRotate(BlockAggregate blockAggregate  ){
+        Random rd = new Random();
+        int numberOfRotation = rd.nextInt(4);
+        for (int i = 0; i < numberOfRotation; i++) {
+            board.rotateClockWise(board.getIndex(blockAggregate));
+        }
     }
 
     @Deprecated
