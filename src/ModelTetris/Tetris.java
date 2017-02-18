@@ -34,6 +34,16 @@ public class Tetris {
 
     }
 
+    public Tetris(Tetris t){
+        this.board = new Board(t.board);
+        this.current = new BlockAggregate(t.current);
+        this.next = new BlockAggregate(t.next);
+        this.finished = t.finished;
+        this.score = t.score;
+        this.board.addPiece(current);
+    }
+
+
     public void move(Direction d){
         board.movePiece(d, board.getIndex(current));
     }
@@ -143,5 +153,9 @@ public class Tetris {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public BlockAggregate getCurrent(){
+        return current;
     }
 }
