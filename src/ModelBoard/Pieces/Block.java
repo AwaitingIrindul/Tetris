@@ -26,6 +26,18 @@ public class Block {
         }
     }
 
+    public Block(Block b){
+        this.width = b.width;
+        this.height = b.height;
+        this.pos = new Position[height][width];
+        this.position = b.position;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                this.pos[i][j] = new Position(b.pos[i][j]);
+            }
+        }
+    }
+
     public int getWidth() {
         return width;
     }

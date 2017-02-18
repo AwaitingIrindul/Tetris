@@ -9,14 +9,25 @@ public class Grid {
 
     private Tile[][] tiles;
 
-    public Grid(int height, int weight) {
+    public Grid(int height, int width) {
         this.height = height;
-        this.width = weight;
+        this.width = width;
 
-        tiles = new Tile[height][weight];
+        tiles = new Tile[height][width];
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 tiles[i][j] = new Tile();
+            }
+        }
+    }
+
+    public Grid(Grid g){
+        this.height = g.height;
+        this.width = g.width;
+        this.tiles = new Tile[height][width];
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                tiles[i][j] = new Tile(g.tiles[i][j]);
             }
         }
     }

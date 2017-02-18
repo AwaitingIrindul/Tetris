@@ -27,6 +27,16 @@ public class Board {
         blockAggregates = new ArrayList<>();
     }
 
+    public Board(Board board) {
+        this.grid = new Grid(board.grid);
+        this.blockAggregates = new ArrayList<>();
+        for (int i = 0; i < board.blockAggregates.size(); i++) {
+            blockAggregates.add(new BlockAggregate(board.blockAggregates.get(i)));
+        }
+        this.height = board.height;
+        this.width = board.width;
+    }
+
     public boolean addPiece(BlockAggregate piece){
         blockAggregates.add(piece);
         Position pos;

@@ -12,6 +12,10 @@ public class Tile {
         isEmpty = true;
     }
 
+    public Tile(Tile tile){
+        this.isEmpty = tile.isEmpty;
+    }
+
     public boolean isEmpty() {
         return isEmpty;
     }

@@ -16,6 +16,10 @@ public class Origin {
         this.position = position;
     }
 
+    public Origin(Origin o){
+        this(new Block(o.block), new Position(o.position));
+    }
+
     public Block getBlock() {
         return block;
     }

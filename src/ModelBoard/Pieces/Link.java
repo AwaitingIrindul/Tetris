@@ -20,6 +20,13 @@ public class Link {
         computeNewPosition();
     }
 
+    public Link(Link link){
+        this.block1 = new Block(link.block1);
+        this.posOnBlock1 = new Position(link.posOnBlock1);
+        this.block2 = new Block(link.block2);
+        this.direction = link.direction;
+    }
+
     public void computeNewPosition(){
         Position tmp = block1.getPosition(posOnBlock1.getX(), posOnBlock1.getY());
         block2.setPosition(direction.getNewPosition(tmp));

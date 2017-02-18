@@ -13,6 +13,9 @@ public class Position {
         setY(y);
     }
 
+    public Position(Position pos){
+        this(pos.getX(), pos.getY());
+    }
     public int getX() {
         return x;
     }

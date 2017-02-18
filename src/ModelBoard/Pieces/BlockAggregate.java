@@ -23,6 +23,18 @@ public class BlockAggregate {
         position = new Position(0, 0);
     }
 
+    public BlockAggregate(BlockAggregate b){
+        blocks = new ArrayList<>();
+        for(Block block : b.blocks){
+            blocks.add(new Block(block));
+        }
+        links = new ArrayList<>();
+        for(Link link : b.links){
+            links.add(new Link(link));
+        }
+        this.origin = new Origin(b.origin);
+    }
+
     public void add(Block block){
         if(blocks.isEmpty()) {
             blocks.add(block);
@@ -128,6 +140,23 @@ public class BlockAggregate {
         }
 
         return min;
+    }
+
+    public int getMaximumY(){
+        int max = blocks.get(0).getPosition().getY();
+
+        for(Block b : blocks){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+                    int y = b.getPosition(i, j).getY();
+                    if( y > max){
+                        max = y;
+                    }
+                }
+            }
+        }
+
+        return max;
     }
     public Position getPosition(){
         return position;
