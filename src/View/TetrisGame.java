@@ -6,7 +6,6 @@ import ModelTetris.Tetris;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -19,7 +18,6 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 16/02/2017.
@@ -49,9 +47,6 @@ public class TetrisGame extends Application {
         Scene scene = new Scene(createContent());
 
         scene.setOnKeyPressed(e -> {
-            if(e.getCode() == KeyCode.SPACE){
-
-            }
             if(e.getCode() == KeyCode.ESCAPE){
                 primaryStage.fireEvent(
                         new WindowEvent(
@@ -172,16 +167,10 @@ public class TetrisGame extends Application {
 
     private void update() {
 
-
         if(tetris.applyGravity()){
             tetrominos.add(next);
             next = new Tetromino(getRandomColor(), tetris.getNext());
         }
-        /*if(tetrominos.size() != tetris.getBlocks().size()){
-            for (int i = tetrominos.size(); i < tetris.getBlocks().size(); i++) {
-                tetrominos.add(new Tetromino(getRandomColor(), tetris.getBlocks().get(i)));
-            }
-        }*/
     }
 
     private Color getRandomColor(){
