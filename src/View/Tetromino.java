@@ -27,12 +27,14 @@ public class Tetromino {
 
     public void draw(GraphicsContext g){
         g.setFill(color);
+        g.setStroke(Color.BLACK);
         int x, y;
         for(Block b : block.getBlocks()){
             for (int i = 0; i < b.getHeight(); i++) {
                 for (int j = 0; j < b.getWidth(); j++) {
                     x = b.getPosition(i, j).getY();
                     y = b.getPosition(i, j).getX();
+                    g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
             }
@@ -43,14 +45,20 @@ public class Tetromino {
     public void drawNext(GraphicsContext g){
         g.setFill(color);
         int x, y;
+        int minY = block.getMinimumY();
         for(Block b : block.getBlocks()){
             for (int i = 0; i < b.getHeight(); i++) {
                 for (int j = 0; j < b.getWidth(); j++) {
+                    x = b.getPosition(i, j).getY();
+                    y = b.getPosition(i, j).getX();
 
-                    g.fillRect(i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    x-=minY;
+                    y+=1;
+                    g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
             }
 
         }
     }
+
 }

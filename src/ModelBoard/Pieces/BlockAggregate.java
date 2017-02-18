@@ -91,6 +91,22 @@ public class BlockAggregate {
         this.position = pos;
     }
 
+    public int getMinimumY(){
+        int min = blocks.get(0).getPosition().getY();
+
+        for(Block b : blocks){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+                    int y = b.getPosition(i, j).getY();
+                    if( y < min){
+                        min = y;
+                    }
+                }
+            }
+        }
+
+        return min;
+    }
     public Position getPosition(){
         return position;
     }
