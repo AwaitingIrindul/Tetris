@@ -30,16 +30,38 @@ public class BlockAggregate {
         }
     }
 
-    public void add(Block block, Position pos1, Direction direction){
+    public void add(Block block, Block linker, Position pos1, Direction direction){
         if(blocks.isEmpty()){
             add(block);
         } else {
             blocks.add(block);
 
-            int i = blocks.indexOf(block);
 
-            links.add(new Link(blocks.get(i-1), pos1, block, direction));
+
+            links.add(new Link(linker, pos1, block, direction));
         }
+    }
+
+    public Block getBlock(Position p){
+        for(Block b: blocks){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+                    if(b.getPosition(i, j).equals(p)){
+                        return b;
+                    }
+                }
+            }
+        }
+
+        throw new NullPointerException();
+    }
+
+    public void remove(Block b){
+        blocks.remove(b);
+    }
+
+    public void remove(int i){
+        blocks.remove(i);
     }
 
     public List<Block> getBlocks() {

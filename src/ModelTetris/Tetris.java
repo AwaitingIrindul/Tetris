@@ -25,8 +25,9 @@ public class Tetris {
         board = new Board(height, width);
 
         current = randomBlock();
+
         next = //randomBlock();
-                BlockFactory.get(TetrisBlocks.Straight);
+                BlockFactory.get(TetrisBlocks.LeftZ);
         board.addPiece(current);
 
     }
@@ -76,7 +77,7 @@ public class Tetris {
         }
 
         if(!hasMoved){ //If our block hasn't moved, then it's blocked
-
+            board.sweep();
             // TODO: 16/02/2017 refactor in method + refactor with next block
 
             current = next; //We change the new current

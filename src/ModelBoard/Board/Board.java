@@ -116,6 +116,29 @@ public class Board {
     }
 
 
+    public void sweep(){
+        List<Integer> rows = rowsToSweep();
+        Position tmp = new Position(0, 0);
+        for(int i : rows){
+            for (int j = 0; j < width; j++) {
+                if(!grid.isEmpty(i, j)){
+                    tmp.setXY(i, j);
+                    getBlockAggregate(tmp).remove(getBlockAggregate(tmp).getBlock(tmp));
+                    grid.removeFromTile(i, j);
+                }
+            }
+        }
+    }
+
+    public BlockAggregate getBlockAggregate(Position p){
+        for(BlockAggregate b : blockAggregates){
+            if(b.isInBlock(p))
+                return b;
+        }
+
+       throw new NullPointerException();
+    }
+
 
     public List<Integer> rowsToSweep(){
         List<Integer> rows = new ArrayList<>();
@@ -128,7 +151,7 @@ public class Board {
                 }
             }
 
-            if(count == width - 1){
+            if(count == width){
                 rows.add(i);
             }
         }
