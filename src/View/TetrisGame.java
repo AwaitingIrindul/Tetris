@@ -2,6 +2,7 @@ package View;
 
 import ModelBoard.Direction;
 import ModelBoard.Pieces.BlockAggregate;
+import ModelTetris.Player.ArtificialIntelligence;
 import ModelTetris.Tetris;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -47,6 +48,10 @@ public class TetrisGame extends Application {
     private double time;
     private  AnimationTimer timer;
     private Label score;
+    private  boolean artificialPlayer;
+    private ArtificialIntelligence artificialIntelligence;
+    private AnimationTimer timerArtificial;
+    private double timeArtificial;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -126,25 +131,32 @@ public class TetrisGame extends Application {
         gcNextPiece = nextPiece.getGraphicsContext2D();
 
 
+        Button reset = new Button("Reset");
+
+        reset.setMinHeight(100);
+        reset.setMinWidth(NEXT_WIDTH);
+        reset.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        reset.setTranslateY(300);
+
+
         Button startAI = new Button("Start AI");
-
-
 
         startAI.setMinHeight(100);
         startAI.setMinWidth(NEXT_WIDTH);
         startAI.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
-        startAI.setTranslateY(300);
+        startAI.setTranslateY(400);
 
 
         score = new Label();
         score.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
-        score.setTranslateY(500);
+        score.setTranslateY(600);
 
         root.getChildren().addAll(movingGame);
         root.getChildren().addAll(backgroundGame);
         root.getChildren().addAll(nextPiece);
         root.getChildren().addAll(nextPieceBg);
         root.getChildren().addAll(scoreBackground);
+        root.getChildren().add(reset);
         root.getChildren().add(startAI);
         root.getChildren().add(score);
 
@@ -165,23 +177,63 @@ public class TetrisGame extends Application {
                 time += 0.017;
 
                 if(time >= 0.5 && go){
+                    if(artificialPlayer){
+                        artificialIntelligence.executeNextMove();
+                        render();
+                    }
                     update();
                     render();
                     time = 0;
+                    timeArtificial = 0;
                 }
             }
         };
 
+
+        timerArtificial = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                timeArtificial += 0.017;
+
+                if(timeArtificial >= 0.5 && go){
+                   // artificialIntelligence.executeNextMove();
+                    //render();
+                    timeArtificial = 0;
+
+                }
+            }
+        };
+
+        reset.setOnAction(event -> resetGame());
+
         startAI.setOnAction(event -> {
-            timer.stop();
-            primaryStage.setScene(new Scene(createContent()));
-            createHandlers(primaryStage.getScene());
-            time = 0;
+            resetGame();
+
+            primaryStage.getScene().setOnKeyPressed(e -> {
+                if(e.getCode() == KeyCode.ESCAPE){
+                    primaryStage.fireEvent(
+                            new WindowEvent(
+                                    primaryStage,
+                                    WindowEvent.WINDOW_CLOSE_REQUEST
+                            )
+                    );
+                }});
+            artificialPlayer = true;
+            artificialIntelligence = new ArtificialIntelligence(tetris);
+            timer.start();
+            timerArtificial.start();
 
         });
 
         timer.start();
         return root;
+    }
+
+    private void resetGame(){
+        timer.stop();
+        primaryStage.setScene(new Scene(createContent()));
+        createHandlers(primaryStage.getScene());
+        time = 0;
     }
 
     private void border(GraphicsContext g){
@@ -203,6 +255,9 @@ public class TetrisGame extends Application {
 
     private void update() {
 
+        /*if(artificialPlayer){
+            artificialIntelligence.executeNextMove();
+        }*/
         if(tetris.applyGravity()){
             tetrominos.add(next);
             next = new Tetromino(getRandomColor(), tetris.getNext());
@@ -215,7 +270,15 @@ public class TetrisGame extends Application {
 
     private void stopGame() {
         timer.stop();
-        primaryStage.getScene().setOnKeyPressed(e -> {});
+        primaryStage.getScene().setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ESCAPE){
+            primaryStage.fireEvent(
+                    new WindowEvent(
+                            primaryStage,
+                            WindowEvent.WINDOW_CLOSE_REQUEST
+                    )
+            );
+        }});
     }
 
 
