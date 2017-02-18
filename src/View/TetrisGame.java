@@ -6,13 +6,12 @@ import ModelTetris.Tetris;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -44,12 +43,30 @@ public class TetrisGame extends Application {
     private Tetromino next;
     private GraphicsContext g;
     private  GraphicsContext gcNextPiece;
+    private Stage primaryStage;
     private double time;
+    private  AnimationTimer timer;
+    private Label score;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Scene scene = new Scene(createContent());
 
+        createHandlers(scene);
+        primaryStage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        primaryStage.setTitle("Blocks puzzle game");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        this.primaryStage = primaryStage;
+
+
+    }
+
+    private void createHandlers(Scene scene){
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ESCAPE){
                 primaryStage.fireEvent(
@@ -76,17 +93,6 @@ public class TetrisGame extends Application {
             render();
 
         });
-        primaryStage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        primaryStage.setTitle("Blocks puzzle game");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-
-
     }
 
     private Parent createContent() {
@@ -121,11 +127,18 @@ public class TetrisGame extends Application {
 
 
         Button startAI = new Button("Start AI");
+
+
+
         startAI.setMinHeight(100);
         startAI.setMinWidth(NEXT_WIDTH);
         startAI.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
         startAI.setTranslateY(300);
 
+
+        score = new Label();
+        score.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        score.setTranslateY(500);
 
         root.getChildren().addAll(movingGame);
         root.getChildren().addAll(backgroundGame);
@@ -133,6 +146,7 @@ public class TetrisGame extends Application {
         root.getChildren().addAll(nextPieceBg);
         root.getChildren().addAll(scoreBackground);
         root.getChildren().add(startAI);
+        root.getChildren().add(score);
 
 
         go = true;
@@ -145,7 +159,7 @@ public class TetrisGame extends Application {
         render();
 
 
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 time += 0.017;
@@ -157,6 +171,14 @@ public class TetrisGame extends Application {
                 }
             }
         };
+
+        startAI.setOnAction(event -> {
+            timer.stop();
+            primaryStage.setScene(new Scene(createContent()));
+            createHandlers(primaryStage.getScene());
+            time = 0;
+
+        });
 
         timer.start();
         return root;
@@ -176,6 +198,7 @@ public class TetrisGame extends Application {
         gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
         next.drawNext(gcNextPiece);
 
+        score.setText(Integer.toString(tetris.getScore()));
     }
 
     private void update() {
@@ -185,7 +208,16 @@ public class TetrisGame extends Application {
             next = new Tetromino(getRandomColor(), tetris.getNext());
         }
         go = ! tetris.isFinished();
+        if(!go){
+            stopGame();
+        }
     }
+
+    private void stopGame() {
+        timer.stop();
+        primaryStage.getScene().setOnKeyPressed(e -> {});
+    }
+
 
     private Color getRandomColor(){
         Random rd = new Random();

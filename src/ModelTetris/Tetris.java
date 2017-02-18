@@ -1,7 +1,6 @@
 package ModelTetris;
 
 import ModelBoard.Board.Board;
-import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
@@ -21,14 +20,16 @@ public class Tetris {
     public static int height = 16;
     public static int width = 10;
     public boolean finished;
+    public int score;
 
     public Tetris() {
         board = new Board(height, width);
 
         current = randomBlock();
+                 //BlockFactory.get(TetrisBlocks.Straight);
 
         next = randomBlock();
-                //BlockFactory.get(TetrisBlocks.LeftZ);
+                //BlockFactory.get(TetrisBlocks.Straight);
         board.addPiece(current);
 
     }
@@ -43,6 +44,7 @@ public class Tetris {
     }
 
     public boolean applyGravity(){
+
         List<Position[][]> positions = new ArrayList<>();
         for(Block b : current.getBlocks()){
             Position[][] tmp = new Position[b.getHeight()][b.getWidth()];
@@ -78,9 +80,14 @@ public class Tetris {
         }
 
         if(!hasMoved){ //If our block hasn't moved, then it's blocked
-            board.sweep();
-
             current = next; //We change the new current
+            int i = board.sweep();
+            if(i > 0){
+                applyGravityExceptCurrent();
+                score(i);
+            }
+
+
             next = randomBlock();
 
             if(! board.addPiece(current)) //We add this new piece on the board.
@@ -89,6 +96,24 @@ public class Tetris {
             return true;
         }
         return  false;
+    }
+
+    private void score(int i) {
+        score += (Math.exp(i)*5);
+    }
+
+    public int getScore(){
+        return score;
+    }
+
+    private void applyGravityExceptCurrent() {
+        for (int i = 0; i < height; i++) {
+            for(BlockAggregate b : board.getBlockAggregates()){ //We make every block move down
+                if(!b.equals(current))
+                    board.movePiece(Direction.DOWN, board.getIndex(b));
+            }
+        }
+
     }
 
     public BlockAggregate getNext(){
@@ -101,6 +126,7 @@ public class Tetris {
         value  = rd.nextInt(TetrisBlocks.values().length);
 
         return BlockFactory.get(TetrisBlocks.values()[value]);
+        //return BlockFactory.get(TetrisBlocks.Straight);
     }
 
     public void rotate(){

@@ -134,7 +134,7 @@ public class Board {
     }
 
 
-    public void sweep(){
+    public int sweep(){
         List<Integer> rows = rowsToSweep();
         Position tmp = new Position(0, 0);
         for(int i : rows){
@@ -146,6 +146,8 @@ public class Board {
                 }
             }
         }
+
+       return rows.size();
     }
 
     public BlockAggregate getBlockAggregate(Position p){
