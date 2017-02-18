@@ -46,93 +46,130 @@ public class BlockFactory {
 
     private static BlockAggregate getStraight(){
 
-        Block block = new Block(1 ,4);
+        Block block = new Block(1 ,1);
         block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+
+        Block block2 = new Block(1, 1);
+        Block block3 = new Block(1, 1);
+        Block block4 = new Block(1, 1);
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-        blockAggregate.setOrigin(new Origin(block, new Position(0, 1)));
+
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.RIGHT);
+
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
 
     }
 
     private static BlockAggregate getLeftL(){
-        Block block = new Block(3, 1);
-        block.setPosition(startingPosition);
+        Block block = new Block(1, 1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+
+        Block block2 = new Block(1,1);
+        Block block3 = new Block(1 ,1);
 
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
 
-        Block block1 = new Block(1, 1);
-        blockAggregate.add(block1, new Position(2, 0), Direction.LEFT);
-        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
+        Block block4 = new Block(1, 1);
+
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.LEFT);
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
     }
 
     private static BlockAggregate getRightL(){
-        Block block = new Block(3, 1);
-        block.setPosition(startingPosition);
+        Block block = new Block(1, 1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+
+        Block block2 = new Block(1,1);
+        Block block3 = new Block(1 ,1);
 
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
 
-        Block block1 = new Block(1, 1);
-        blockAggregate.add(block1, new Position(2, 0), Direction.RIGHT);
-        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
+        Block block4 = new Block(1, 1);
+
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
     }
 
     private static BlockAggregate getTwoByTwo(){
-        Block block = new Block(2, 2);
-        block.setPosition(startingPosition);
+        Block block = new Block(1, 1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
 
+        Block block2 = new Block(1, 1);
+        Block block3 = new Block(1, 1);
+        Block block4 = new Block(1, 1);
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.LEFT);
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
     }
 
     private static BlockAggregate getRightZ(){
-        Block block = new Block(2 ,1);
-        block.setPosition(startingPosition);
+        Block block = new Block(1 ,1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
 
+        Block block2 = new Block(1, 1);
+        Block block3 = new Block(1, 1);
+        Block block4 = new Block(1, 1);
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-
-        Block block1 = new Block(2, 1);
-        blockAggregate.add(block1, new Position(1, 0), Direction.RIGHT);
-        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.DOWN);
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
     }
 
     private static BlockAggregate getLeftZ(){
-        Block block = new Block(2 ,1);
-        block.setPosition(startingPosition);
+        Block block = new Block(1 ,1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
 
+        Block block2 = new Block(1, 1);
+        Block block3 = new Block(1, 1);
+        Block block4 = new Block(1, 1);
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-
-        Block block1 = new Block(2, 1);
-        blockAggregate.add(block1, new Position(1, 0), Direction.LEFT);
-        blockAggregate.setOrigin(new Origin(block, new Position(1, 0)));
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.LEFT);
+        blockAggregate.add(block4, block3, new Position(0, 0), Direction.DOWN);
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
     }
 
     private static BlockAggregate getThreeOne(){
-        Block block = new Block(1,3);
-        block.setPosition(startingPosition);
+        Block block = new Block(1,1);
+        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+
+        Block block2 = new Block(1, 1);
+        Block block3 = new Block(1, 1);
+        Block block4 = new Block(1, 1);
 
         BlockAggregate blockAggregate = new BlockAggregate();
         blockAggregate.add(block);
-
-        Block block1 = new Block(1, 1);
-        blockAggregate.add(block1, new Position(0, 1), Direction.DOWN);
-        blockAggregate.setOrigin(new Origin(block1, new Position(0, 0)));
+        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
+        blockAggregate.add(block4, block2, new Position(0, 0), Direction.DOWN);
+        blockAggregate.setOrigin(new Origin(block4, new Position(0, 0)));
 
         return blockAggregate;
 
