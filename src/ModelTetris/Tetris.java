@@ -1,6 +1,7 @@
 package ModelTetris;
 
 import ModelBoard.Board.Board;
+import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
@@ -25,8 +26,8 @@ public class Tetris {
     public Tetris() {
         board = new Board(height, width);
 
-        current = randomBlock();
-                 //BlockFactory.get(TetrisBlocks.Straight);
+        current = //randomBlock();
+                 BlockFactory.get(TetrisBlocks.Straight);
 
         next = randomBlock();
                 //BlockFactory.get(TetrisBlocks.Straight);
@@ -157,5 +158,10 @@ public class Tetris {
 
     public BlockAggregate getCurrent(){
         return current;
+    }
+
+    @Deprecated
+    public Grid getGrid(){
+        return board.getGrid();
     }
 }

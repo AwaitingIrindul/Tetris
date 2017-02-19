@@ -143,7 +143,7 @@ public class BlockAggregate {
     }
 
     public int getMaximumY(){
-        int max = blocks.get(0).getPosition().getY();
+        int max = blocks.get(0).getPosition(0, 0).getY();
 
         for(Block b : blocks){
             for (int i = 0; i < b.getHeight(); i++) {
