@@ -21,6 +21,7 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 16/02/2017.
@@ -50,8 +51,9 @@ public class TetrisGame extends Application {
     private Label score;
     private  boolean artificialPlayer;
     private ArtificialIntelligence artificialIntelligence;
-    private AnimationTimer timerArtificial;
     private double timeArtificial;
+
+    private static double timerSpeed = 0.017;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -165,16 +167,23 @@ public class TetrisGame extends Application {
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
         next = new Tetromino(getRandomColor(), tetris.getNext());
-        for(BlockAggregate b : tetris.getBlocks()){
-            tetrominos.add(new Tetromino(getRandomColor(), b));
-        }
+
+        tetrominos.addAll(
+                tetris.getBlocks().stream() //List to stream
+                        //.Association to a new tetromino
+                        .map(blockAggregate -> new Tetromino(getRandomColor(), blockAggregate))
+                        //Returning a list
+                        .collect(Collectors.toList())
+        );
+
+
         render();
 
 
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                time += 0.017;
+                time += timerSpeed;
 
                 if(time >= 0.5 && go){
                     if(artificialPlayer){
@@ -189,20 +198,6 @@ public class TetrisGame extends Application {
             }
         };
 
-
-        timerArtificial = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                timeArtificial += 0.017;
-
-                if(timeArtificial >= 0.5 && go){
-                   // artificialIntelligence.executeNextMove();
-                    //render();
-                    timeArtificial = 0;
-
-                }
-            }
-        };
 
         reset.setOnAction(event -> resetGame());
 
@@ -221,7 +216,7 @@ public class TetrisGame extends Application {
             artificialPlayer = true;
             artificialIntelligence = new ArtificialIntelligence(tetris);
             timer.start();
-            timerArtificial.start();
+            timerSpeed = 0.1;
 
         });
 
@@ -233,6 +228,7 @@ public class TetrisGame extends Application {
         timer.stop();
         primaryStage.setScene(new Scene(createContent()));
         createHandlers(primaryStage.getScene());
+        timerSpeed = 0.017;
         time = 0;
     }
 
@@ -255,10 +251,10 @@ public class TetrisGame extends Application {
 
     private void update() {
 
-        /*if(artificialPlayer){
-            artificialIntelligence.executeNextMove();
-        }*/
+
         if(tetris.applyGravity()){
+            if(artificialPlayer)
+                artificialIntelligence.hasChanged();
             tetrominos.add(next);
             next = new Tetromino(getRandomColor(), tetris.getNext());
         }
