@@ -6,6 +6,7 @@ import ModelBoard.Direction;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class Tetris {
     public Tetris() {
         board = new Board(height, width);
 
-        current = //randomBlock();
-                 BlockFactory.get(TetrisBlocks.Straight);
+        current = randomBlock();
+                 //BlockFactory.get(TetrisBlocks.RightL);
 
         next = randomBlock();
                 //BlockFactory.get(TetrisBlocks.Straight);
@@ -164,4 +165,77 @@ public class Tetris {
     public Grid getGrid(){
         return board.getGrid();
     }
+
+    public int sumHeight() {
+        int max = 0;
+        for (int i = 0; i < width; i++) {
+            max += height(i);
+        }
+
+        return max;
+    }
+
+    public int rowsToSweep() {
+        return board.rowsToSweep().size();
+
+    }
+
+    public int holes() {
+        int holes = 0;
+        boolean up = false;
+        boolean atLeastOne =false;
+        for (int i = 0; i < width; i++) {
+            for (int j = height - 1; j >= 0; j--) {
+
+                if(atLeastOne){
+                    Position tmp = Direction.UP.getNewPosition(new Position(j, i));
+                    int upX = tmp.getX();
+                    int upY = tmp.getY();
+                    //We check if there is a block on top of the current pos
+                    if(board.getGrid().isInRange(upX, upY)){
+                        if(board.getGrid().isEmpty(j, i))
+                            up = ! board.getGrid().isEmpty(upX, upY);
+                        else up = false;
+                    }
+
+                    if(up){ //If there is something on top of this cell, there is a hole
+                        holes++;
+                    }
+                } else {
+                    if(!board.getGrid().isEmpty(j, i)){
+                        atLeastOne = true;
+                    }
+                }
+
+            }
+        }
+        // TODO: 20/02/2017 VERIFY
+        return holes;
+    }
+
+    private int height(int j){
+        int heightC = 0;
+        for (int i = height-1; i >= 0; i--) {
+            Position tmp = new Position(i, j);
+            //if(!current.isInBlock(tmp)){
+                if(!board.getGrid().isEmpty(i, j))
+                    heightC = height - i;
+            //}
+
+        }
+        // TODO: 20/02/2017 Refaire pour prendre en compte le bloc current que quand il est posé 
+        return heightC;
+    }
+
+    public int bumpiness() {
+        int bumpiness = 0;
+
+        for (int i = 0; i < width - 1; i++) {
+            bumpiness += Math.abs(height(i) - height(i+1));
+        }
+
+        return bumpiness;
+
+    }
+
 }
