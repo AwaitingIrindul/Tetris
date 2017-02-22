@@ -1,5 +1,6 @@
 package ModelBoard.Pieces;
 
+import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Position.Position;
 
@@ -98,6 +99,32 @@ public class BlockAggregate {
     }
 
 
+    public boolean checkMovement(Direction d, Grid g){
+        boolean possible = true;
+        for (Block block : blocks){
+            if(!block.checkMovement(d, g)){
+                possible = false;
+            }
+        }
+
+        return possible;
+    }
+
+    public boolean checkRotation(Grid g){
+        boolean possible = true;
+        for (Block block : blocks){
+            if(!block.checkRotation(g, origin.getPositionOfBlock())){
+                possible = false;
+            }
+        }
+
+        return possible;
+    }
+
+    public void rotateClockWise(Grid g){
+        blocks.forEach(block -> block.rotateClockWise(origin.getPositionOfBlock()));
+    }
+
     public boolean isInBlock(Position pos){
         for(Block block : blocks){
             if(block.isInBlock(pos)){
@@ -115,9 +142,8 @@ public class BlockAggregate {
     }
 
     public void move(Direction d){
-        for(Block b : blocks){
-            b.move(d);
-        }
+
+        blocks.forEach(block -> block.move(d));
     }
 
     public void setPosition(Position pos){

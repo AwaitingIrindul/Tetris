@@ -3,14 +3,17 @@ package ModelTetris;
 import ModelBoard.Board.Board;
 import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
+import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -23,16 +26,23 @@ public class Tetris {
     public static int width = 10;
     public boolean finished;
     public int score;
+    private List<Integer> pieces;
+
+
+    private List<GravityListener> movementListeners;
 
     public Tetris() {
         board = new Board(height, width);
-
+        pieces = new ArrayList<>(7);
+        movementListeners = new ArrayList<>();
         current = randomBlock();
                  //BlockFactory.get(TetrisBlocks.RightL);
 
         next = randomBlock();
                 //BlockFactory.get(TetrisBlocks.Straight);
-        board.addPiece(current);
+       // board.addPiece(current);
+
+
 
     }
 
@@ -42,12 +52,12 @@ public class Tetris {
         this.next = new BlockAggregate(t.next);
         this.finished = t.finished;
         this.score = t.score;
-        this.board.addPiece(current);
+        //this.board.addPiece(current);
     }
 
 
     public void move(Direction d){
-        board.movePiece(d, board.getIndex(current));
+        board.movePiece(d, current);
     }
 
 
@@ -55,63 +65,36 @@ public class Tetris {
         return board.getBlockAggregates();
     }
 
-    public boolean applyGravity(){
+    public void applyGravity(){
 
-        List<Position[][]> positions = new ArrayList<>();
-        for(Block b : current.getBlocks()){
-            Position[][] tmp = new Position[b.getHeight()][b.getWidth()];
-            
-            //We store each position of the current object
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    tmp[i][j] = new Position(0, 0);
-                    tmp[i][j].setXY(b.getPosition(i, j).getX(), b.getPosition(i, j).getY());
-                }
-            }
-            positions.add(tmp);
+        board.getGrid().display();
+        System.out.println();
+        
+        if(board.checkMovement(Direction.DOWN, current)){
+            //ADD OBSERVER MOVING NOTIFICATION
+            movementListeners.forEach(GravityListener::moving);
+            move(Direction.DOWN);
+            movementListeners.forEach(GravityListener::onMovement);
+            return;
+
         }
 
-        for(BlockAggregate b : board.getBlockAggregates()){ //We make every block move down
-            board.movePiece(Direction.DOWN, board.getIndex(b));
-        }
+        board.addPiece(current);
+        score(board.sweep());
 
-        boolean hasMoved = true;
-        int k = 0;
-        for(Block b: current.getBlocks()){ //We check if the position store match the new current position
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    if(b.getPosition(i, j).equals(positions.get(k)[i][j])){
-                        hasMoved = false; //If the positions are the same, then the block didn't move
-                    } else {
-                        hasMoved = true; //Otherwise if one block moved, we stop the loop
-                        break;
-                    }
-                }
-            }
-            k++;
-        }
+        if(!this.isFinished()){
 
-        if(!hasMoved){ //If our block hasn't moved, then it's blocked
-            current = next; //We change the new current
-            int i = board.sweep();
-            if(i > 0){
-                applyGravityExceptCurrent();
-                score(i);
-            }
-
-
+            current = next;
             next = randomBlock();
+            movementListeners.forEach(GravityListener::onChangedNext);
 
-            if(! board.addPiece(current)) //We add this new piece on the board.
-                finished = true;
-            randomRotate(current);
-            return true;
         }
-        return  false;
+
     }
 
     private void score(int i) {
-        score += (Math.exp(i)*5);
+        //score += (Math.exp(i)*5);
+        score += i;
     }
 
     public int getScore(){
@@ -122,7 +105,7 @@ public class Tetris {
         for (int i = 0; i < height; i++) {
             for(BlockAggregate b : board.getBlockAggregates()){ //We make every block move down
                 if(!b.equals(current))
-                    board.movePiece(Direction.DOWN, board.getIndex(b));
+                    board.movePiece(Direction.DOWN, b);
             }
         }
 
@@ -133,28 +116,37 @@ public class Tetris {
     }
 
     public BlockAggregate randomBlock(){
-        Random rd = new Random();
-        int value;
-        value  = rd.nextInt(TetrisBlocks.values().length);
 
+        if(pieces.size() == 0){
+            for (int i = 0; i < 7; i++) {
+                pieces.add(i);
+            }
+
+            Collections.shuffle(pieces);
+        }
+
+
+
+        int value = pieces.get(0);
+        pieces.remove(0);
         return BlockFactory.get(TetrisBlocks.values()[value]);
         //return BlockFactory.get(TetrisBlocks.Straight);
     }
 
     public void rotate(){
-        board.rotateClockWise(board.getIndex(current));
+        board.rotateClockWise(current);
     }
 
     public void randomRotate(BlockAggregate blockAggregate  ){
         Random rd = new Random();
         int numberOfRotation = rd.nextInt(4);
         for (int i = 0; i < numberOfRotation; i++) {
-            board.rotateClockWise(board.getIndex(blockAggregate));
+            board.rotateClockWise(blockAggregate);
         }
     }
 
     public boolean isFinished() {
-        return finished;
+       return !board.isEmptyRow(0);
     }
 
     public BlockAggregate getCurrent(){
@@ -215,15 +207,45 @@ public class Tetris {
 
     private int height(int j){
         int heightC = 0;
+        boolean currentOnTheGround = false;
+
+
+        //We check if the current block is on the ground
+        for (Block block : current.getBlocks()){
+            for (int k = 0; k < block.getHeight(); k++) {
+                for (int l = 0; l < block.getWidth(); l++) {
+                    Position down = Direction.DOWN.getNewPosition(block.getPosition(k, l));
+
+                    //If at least on of the block has a block below it or is not in the grid then the block is on the ground
+                    if(board.getGrid().isInRange(down.getX(), down.getY())){
+                        if(!board.getGrid().isEmpty(down.getX(), down.getY())){
+                            currentOnTheGround = true;
+                        }
+                    } else {
+                        currentOnTheGround = true;
+                    }
+
+                }
+            }
+        }
+
+
+
         for (int i = height-1; i >= 0; i--) {
             Position tmp = new Position(i, j);
-            //if(!current.isInBlock(tmp)){
+            if(!current.isInBlock(tmp)){
                 if(!board.getGrid().isEmpty(i, j))
+                    heightC = height - i; //We count the height only if this is not the current block
+                //Height - i is to calculate the height as 0 is on top and height is on the bottom
+
+            } else {
+                if(currentOnTheGround){
+                    if(!board.getGrid().isEmpty(i, j))
                     heightC = height - i;
-            //}
+                }
+            }
 
         }
-        // TODO: 20/02/2017 Refaire pour prendre en compte le bloc current que quand il est posé 
         return heightC;
     }
 
@@ -237,5 +259,12 @@ public class Tetris {
         return bumpiness;
 
     }
+
+
+    public void addGravityListener(GravityListener listener){
+        movementListeners.add(listener);
+    }
+
+    // TODO: 22/02/2017 Design pattern observer observable pour positions et score
 
 }

@@ -1,8 +1,10 @@
 package View;
 
 import ModelBoard.Direction;
+import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelTetris.Player.ArtificialIntelligence;
+import ModelTetris.Player.Evaluator;
 import ModelTetris.Tetris;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Irindul on 16/02/2017.
  */
-public class TetrisGame extends Application {
+public class TetrisGame extends Application implements GravityListener{
 
     public static final int TILE_SIZE = 40;
     public static final int WIDTH = 10 * TILE_SIZE;
@@ -51,7 +53,8 @@ public class TetrisGame extends Application {
     private Label score;
     private  boolean artificialPlayer;
     private ArtificialIntelligence artificialIntelligence;
-    private double timeArtificial;
+
+    private Tetromino current;
 
     private static double timerSpeed = 0.017;
 
@@ -167,6 +170,9 @@ public class TetrisGame extends Application {
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
         next = new Tetromino(getRandomColor(), tetris.getNext());
+        current = new Tetromino(getRandomColor(), tetris.getCurrent());
+        tetris.addGravityListener(this);
+
 
         tetrominos.addAll(
                 tetris.getBlocks().stream() //List to stream
@@ -193,7 +199,6 @@ public class TetrisGame extends Application {
                     update();
                     render();
                     time = 0;
-                    timeArtificial = 0;
                 }
             }
         };
@@ -214,7 +219,7 @@ public class TetrisGame extends Application {
                     );
                 }});
             artificialPlayer = true;
-            artificialIntelligence = new ArtificialIntelligence(tetris);
+            artificialIntelligence = new ArtificialIntelligence(tetris, new Evaluator(-0.510066, 0.76066, -0.35663, -0.884483));
             timer.start();
             timerSpeed = 0.1;
 
@@ -241,6 +246,7 @@ public class TetrisGame extends Application {
     private void render() {
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
+        current.draw(g);
         tetrominos.forEach(p -> p.draw(g));
 
         gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
@@ -251,13 +257,13 @@ public class TetrisGame extends Application {
 
     private void update() {
 
-
-        if(tetris.applyGravity()){
+        tetris.applyGravity();
+        /*if(tetris.applyGravity()){
             if(artificialPlayer)
                 artificialIntelligence.hasChanged();
             tetrominos.add(next);
             next = new Tetromino(getRandomColor(), tetris.getNext());
-        }
+        }*/
         go = ! tetris.isFinished();
         if(!go){
             stopGame();
@@ -307,4 +313,21 @@ public class TetrisGame extends Application {
     }
 
 
+    @Override
+    public void onMovement() {
+        current.draw(g);
+    }
+
+    @Override
+    public void moving() {
+        
+        current.undraw(g);
+    }
+
+    @Override
+    public void onChangedNext() {
+        tetrominos.add(current);
+        current = next;
+        next = new Tetromino(getRandomColor(), tetris.getNext());
+    }
 }

@@ -26,20 +26,7 @@ public class Tetromino {
     }
 
     public void draw(GraphicsContext g){
-        g.setFill(color);
-        g.setStroke(Color.BLACK);
-        int x, y;
-        for(Block b : block.getBlocks()){
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    x = b.getPosition(i, j).getY();
-                    y = b.getPosition(i, j).getX();
-                    g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                    g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                }
-            }
-
-        }
+        draw(color, Color.BLACK, g);
     }
 
     public void drawNext(GraphicsContext g){
@@ -61,4 +48,24 @@ public class Tetromino {
         }
     }
 
+    public void draw(Color c, Color s, GraphicsContext g){
+        g.setFill(c);
+        g.setStroke(s);
+        int x, y;
+        for(Block b : block.getBlocks()){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+                    x = b.getPosition(i, j).getY();
+                    y = b.getPosition(i, j).getX();
+                    g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                }
+            }
+
+        }
+    }
+
+    public void undraw(GraphicsContext g) {
+       draw(Color.TRANSPARENT, Color.TRANSPARENT, g);
+    }
 }

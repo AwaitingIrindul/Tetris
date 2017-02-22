@@ -41,7 +41,6 @@ public class Grid {
             return tiles[i][j].isEmpty();
         else
             throwOutOfBound();
-
         return false;
     }
 
