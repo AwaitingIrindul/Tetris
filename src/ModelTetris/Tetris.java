@@ -26,7 +26,6 @@ public class Tetris {
     private int score;
     private List<Integer> pieces;
 
-
     private List<GravityListener> movementListeners;
 
     public Tetris() {
@@ -48,10 +47,16 @@ public class Tetris {
 
     public Tetris(Tetris t){
         this.board = new Board(t.board);
+        this.pieces = new ArrayList<>(7);
+        for (int i = 0; i < t.pieces.size(); i++) {
+            pieces.add(t.pieces.get(i));
+        }
         this.current = new BlockAggregate(t.current);
         this.next = new BlockAggregate(t.next);
         this.finished = t.finished;
         this.score = t.score;
+        movementListeners = new ArrayList<>();
+
         //this.board.addPiece(current);
     }
 
@@ -82,20 +87,11 @@ public class Tetris {
         board.addPiece(current);
 
         score(board.sweep());
-
-        board.getGrid().display();
-        System.out.println();
         movementListeners.forEach(GravityListener::onSweep);
 
         if(!this.isFinished()){
 
-            current = next;
-            move(Direction.DOWN);
-            move(Direction.DOWN);
-            next = randomBlock();
-            randomRotate(current);
-            movementListeners.forEach(GravityListener::onChangedNext);
-
+            swapCurrent();
         } else {
             movementListeners.forEach(GravityListener::onQuit);
         }
@@ -105,6 +101,10 @@ public class Tetris {
     private void score(int i) {
         //score += (Math.exp(i)*5);
         score += i;
+    }
+
+    public void addToBoard(){
+        board.addPiece(current);
     }
 
     public int getScore(){
@@ -274,6 +274,16 @@ public class Tetris {
         movementListeners.add(listener);
     }
 
+
+    public void swapCurrent(){
+        current = next;
+        next = randomBlock();
+        randomRotate(current);
+        movementListeners.forEach(GravityListener::onChangedNext);
+        move(Direction.DOWN);
+        move(Direction.DOWN);
+
+    }
     // TODO: 22/02/2017 Design pattern observer observable pour positions et score
 
 }

@@ -331,6 +331,9 @@ public class TetrisGame extends Application implements GravityListener{
         tetrominos.add(new Static(current));
         current = next;
         next = new Tetromino(getRandomColor(), tetris.getNext());
+        if (artificialPlayer){
+            artificialIntelligence.setHasChanged(true);
+        }
     }
 
     @Override

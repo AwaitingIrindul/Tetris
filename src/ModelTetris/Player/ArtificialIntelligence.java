@@ -12,67 +12,52 @@ import java.util.Map;
 /**
  * Created by Irindul on 18/02/2017.
  */
-public class ArtificialIntelligence {
-    Tetris tetris;
-    Evaluator evaluator;
-    LinkedList<Direction> directions;
+public class ArtificialIntelligence{
+    private Tetris tetris;
+    private Evaluator evaluator;
+    private LinkedList<Direction> directions;
+    private int score;
+    private static int count = 0;
     private boolean hasChanged;
 
-    public ArtificialIntelligence(Tetris tetris) {
+    public ArtificialIntelligence(Tetris tetris, Evaluator evaluator) {
         this.tetris = tetris;
-        evaluator = new Evaluator(-0.510066, 0.760666, -0.35663, -0.184483);
+        this.evaluator = evaluator;
         directions = new LinkedList<>();
+        score = 0;
         hasChanged = true;
     }
 
 
     public void executeNextMove(){
+
+
         if(hasChanged){
-            directions.clear();
-
             hasChanged = false;
-            Map<Tetris, Map.Entry<Integer, Integer>> moves = computeEveryMove();
-            Map<Tetris, Double> evaluations = new HashMap<>();
+            Pair<Pair<Integer, Integer>, Double> moves = computeEveryMove(0);
 
-            moves.forEach((tetris, movement) -> {
-                //tetris.applyGravity();
-                evaluations.put(tetris, evaluator.evaluate(tetris));
-            });
+            int rotation = moves.getFirst().getFirst();
 
-            Tetris t = evaluations.entrySet().stream() //Hashmap to stream
-                    ///We get the maximum with a custom comparator
-                    .max((o1, o2) -> o1.getValue() > o2.getValue() ? 1 : -1)
-                    //We get the Set that match the maximum value
-                    .get()
-                    //We return the key
-                    .getKey();
-
-
-            System.out.println("Best score : " + evaluations.get(t));
-
-            for (int i = 0; i < moves.get(t).getKey(); i++) {
+            for (int i = 0; i < rotation; i++) {
                 tetris.rotate();
             }
 
             for (int i = 0; i < Tetris.width; i++) {
                 tetris.move(Direction.LEFT);
             }
-            directionToGrid(moves.get(t).getValue());
 
+            int rights = moves.getFirst().getSecond();
+            for (int i = 0; i < rights; i++) {
+                tetris.move(Direction.RIGHT);
+            }
         }
 
-
-        if(!directions.isEmpty()){
-            tetris.move(directions.removeFirst());
-        } else {
-            tetris.move(Direction.DOWN);
-        }
-
+       // tetris.move(Direction.DOWN);
 
     }
 
-    public void hasChanged(){
-        hasChanged = true;
+    public void setHasChanged(boolean hasChanged) {
+        this.hasChanged = hasChanged;
     }
 
     private void directionToGrid(int numberOfRight){
@@ -83,22 +68,19 @@ public class ArtificialIntelligence {
     }
 
 
-    private Map<Tetris, Map.Entry<Integer, Integer>> computeEveryMove(){
-
-        //We place the piece on the left upper corner
-        /*for (int i = 0; i < Tetris.width; i++) {
-            tetris.move(Direction.LEFT);
-        }*/
-
-
+    private Pair<Pair<Integer, Integer>, Double> computeEveryMove(int depth){
+        
+        System.out.println("Depth : " + depth);
+        
         Tetris startingGrid = new Tetris(tetris); // We copy the grid so we don't affect it
         BlockAggregate current = startingGrid.getCurrent();
 
-        //HashMap of every tetris game once the block is at a final position
-        Map<Tetris, Map.Entry<Integer, Integer>> possibleMoves = new HashMap<>();
-        //THe integer will store the number of RIGHT movement needed to achieve the posssible grid position;
+        Pair<Pair<Integer, Integer>, Double> best = new Pair<>();
 
+        //THe first integer will sotre the number of rotation needed to be on the position.
+        //The second integer will store the number of RIGHT movement needed to achieve the posssible grid position;
 
+        double bestScore = 0;
         for (int k = 0; k < 4; k++) {
             Tetris rotation = new Tetris(startingGrid);
             for (int i = 0; i < k; i++) {
@@ -109,7 +91,7 @@ public class ArtificialIntelligence {
                 rotation.move(Direction.LEFT);
             }
 
-            int iterations = Tetris.width - current.getMaximumY();
+            int iterations = Tetris.width; //- current.getMaximumY();
             for (int i = 0; i < iterations; i++) {
 
                 Tetris possible = new Tetris(rotation);
@@ -123,13 +105,54 @@ public class ArtificialIntelligence {
                     possible.move(Direction.DOWN);
                 }
 
-                possibleMoves.put(possible, new AbstractMap.SimpleEntry<>(k, i));
+                possible.addToBoard();
+                double score;
+
+                score = evaluator.evaluate(possible);
+
+
+                if(score > bestScore || bestScore == 0){
+                    bestScore = score;
+                    best.setSecond(score);
+                    Pair<Integer, Integer> move = new Pair<>();
+                    move.setFirst(k);
+                    move.setSecond(i);
+                    best.setFirst(move);
+
+                }
+
             }
         }
 
 
-        //TODO add next
+        //TODO add next (recursivity should work)
 
-        return possibleMoves;
+        return best;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void run() {
+
+        while(!tetris.isFinished()){
+            executeNextMove();
+            tetris.applyGravity();
+        }
+
+        
+    }
+
+    public void reset(){
+        tetris = new Tetris();
+    }
+
+    public Evaluator getEvaluator() {
+        return evaluator;
+    }
+
+    public void setEvaluator(Evaluator evaluator) {
+        this.evaluator = evaluator;
     }
 }
