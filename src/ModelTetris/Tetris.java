@@ -71,9 +71,6 @@ public class Tetris {
     }
 
     public void applyGravity(){
-
-
-
         
         if(board.checkMovement(Direction.DOWN, current)){
             //ADD OBSERVER MOVING NOTIFICATION

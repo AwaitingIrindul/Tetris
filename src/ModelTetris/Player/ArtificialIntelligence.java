@@ -1,18 +1,16 @@
 package ModelTetris.Player;
 
 import ModelBoard.Direction;
+import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelTetris.Tetris;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Created by Irindul on 18/02/2017.
  */
-public class ArtificialIntelligence{
+public class ArtificialIntelligence implements GravityListener{
     private Tetris tetris;
     private Evaluator evaluator;
     private LinkedList<Direction> directions;
@@ -22,6 +20,7 @@ public class ArtificialIntelligence{
 
     public ArtificialIntelligence(Tetris tetris, Evaluator evaluator) {
         this.tetris = tetris;
+        tetris.addGravityListener(this);
         this.evaluator = evaluator;
         directions = new LinkedList<>();
         score = 0;
@@ -69,8 +68,6 @@ public class ArtificialIntelligence{
 
 
     private Pair<Pair<Integer, Integer>, Double> computeEveryMove(int depth){
-        
-        System.out.println("Depth : " + depth);
         
         Tetris startingGrid = new Tetris(tetris); // We copy the grid so we don't affect it
         BlockAggregate current = startingGrid.getCurrent();
@@ -135,17 +132,19 @@ public class ArtificialIntelligence{
     }
 
     public void run() {
-
-        while(!tetris.isFinished()){
+        int i = 0;
+        while(!tetris.isFinished() && i < 10000){
             executeNextMove();
             tetris.applyGravity();
+            i++;
+            
         }
-
-        
+        score = tetris.getScore();
     }
 
     public void reset(){
         tetris = new Tetris();
+        tetris.addGravityListener(this);
     }
 
     public Evaluator getEvaluator() {
@@ -154,5 +153,30 @@ public class ArtificialIntelligence{
 
     public void setEvaluator(Evaluator evaluator) {
         this.evaluator = evaluator;
+    }
+
+    @Override
+    public void onMovement() {
+
+    }
+
+    @Override
+    public void moving() {
+
+    }
+
+    @Override
+    public void onChangedNext() {
+        hasChanged = true;
+    }
+
+    @Override
+    public void onSweep() {
+
+    }
+
+    @Override
+    public void onQuit() {
+
     }
 }

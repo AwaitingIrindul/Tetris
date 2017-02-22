@@ -219,9 +219,12 @@ public class TetrisGame extends Application implements GravityListener{
                     );
                 }});
             artificialPlayer = true;
-            artificialIntelligence = new ArtificialIntelligence(tetris, new Evaluator(-0.510066, 0.76066, -0.35663, -0.184483));
+            artificialIntelligence = new ArtificialIntelligence(tetris,
+                    //Evaluator.getRandomEvaluator());
+                    new Evaluator(-0.6767716879129748, 0.7396697647843367, -0.989283918209245, -0.4752520690916586
+                    ));
             timer.start();
-            timerSpeed = 0.1;
+            timerSpeed = 0.25;
 
         });
 
@@ -261,12 +264,8 @@ public class TetrisGame extends Application implements GravityListener{
     private void update() {
 
         tetris.applyGravity();
-        /*if(tetris.applyGravity()){
-            if(artificialPlayer)
-                artificialIntelligence.hasChanged();
-            tetrominos.add(next);
-            next = new Tetromino(getRandomColor(), tetris.getNext());
-        }*/
+
+
         go = ! tetris.isFinished();
         if(!go){
             stopGame();

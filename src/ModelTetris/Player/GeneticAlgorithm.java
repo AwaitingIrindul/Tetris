@@ -3,10 +3,8 @@ package ModelTetris.Player;
 import ModelTetris.Tetris;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
 
 /**
  * Created by Irindul on 21/02/2017.
@@ -17,21 +15,20 @@ public class GeneticAlgorithm {
     private List<ArtificialIntelligence> specimens;
 
     public GeneticAlgorithm() {
-        specimens = new ArrayList<>(1000);
-        for (int i = 0; i < 1000; i++) {
+        specimens = new ArrayList<>(100);
+        for (int i = 0; i < 100; i++) {
             specimens.add(new ArtificialIntelligence(new Tetris(), Evaluator.getRandomEvaluator()));
         }
     }
 
-    public Evaluator train(int sucess){
+    public Evaluator train(int success){
 
         List<ArtificialIntelligence> offsprings;
         int nbGen = 0;
-        while(!overSuccess(sucess)){
+        while(!overSuccess(success)){
 
             specimens.forEach(ArtificialIntelligence::reset);
 
-            //specimens.get(400).run();
             System.out.println("Generation : " + nbGen++);
             specimens.forEach(ArtificialIntelligence::run);
 
@@ -99,13 +96,13 @@ public class GeneticAlgorithm {
 
     }
 
-    private boolean overSuccess(int sucess) {
+    private boolean overSuccess(int success) {
 
         int max = specimens.stream()
                 .max((o1, o2) -> o1.getScore() > o2.getScore() ? 1 : -1)
                .get()
                .getScore();
-        if(max >= sucess){
+        if(max >= success){
             return true;
         } else {
             return false;

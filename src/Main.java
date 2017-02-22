@@ -9,13 +9,12 @@ import View.TetrisGame;
 public class Main {
 
     public static void main(String[] args) {
-        javafx.application.Application.launch(TetrisGame.class);
+        //javafx.application.Application.launch(TetrisGame.class);
 
-        /*GeneticAlgorithm ga = new GeneticAlgorithm();
+        GeneticAlgorithm ga = new GeneticAlgorithm();
         
-        Evaluator e = ga.train(1);
-        e.display();*/
-
+        Evaluator e = ga.train(100);
+        e.display();
 
 
     }
