@@ -20,7 +20,7 @@ public class Tetris {
     private Board board;
     private BlockAggregate current;
     private BlockAggregate next;
-    public static int height = 16;
+    public static int height = 18;
     public static int width = 10;
     private boolean finished;
     private int score;
@@ -34,6 +34,8 @@ public class Tetris {
         pieces = new ArrayList<>(7);
         movementListeners = new ArrayList<>();
         current = randomBlock();
+        move(Direction.DOWN);
+        move(Direction.DOWN);
                  //BlockFactory.get(TetrisBlocks.RightL);
 
         next = randomBlock();
@@ -88,9 +90,14 @@ public class Tetris {
         if(!this.isFinished()){
 
             current = next;
+            move(Direction.DOWN);
+            move(Direction.DOWN);
             next = randomBlock();
+            randomRotate(current);
             movementListeners.forEach(GravityListener::onChangedNext);
 
+        } else {
+            movementListeners.forEach(GravityListener::onQuit);
         }
 
     }
@@ -149,7 +156,7 @@ public class Tetris {
     }
 
     public boolean isFinished() {
-       return !board.isEmptyRow(0);
+       return (!board.isEmptyRow(0) || !board.isEmptyRow(1));
     }
 
     public BlockAggregate getCurrent(){

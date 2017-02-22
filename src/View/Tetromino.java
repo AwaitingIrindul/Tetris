@@ -57,9 +57,11 @@ public class Tetromino implements  DisplayBlock{
                 for (int j = 0; j < b.getWidth(); j++) {
                     x = b.getPosition(i, j).getY();
                     y = b.getPosition(i, j).getX();
+                    y -=2;
                     g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
+
             }
 
         }

@@ -54,6 +54,7 @@ public class Static implements DisplayBlock{
                         g.setFill(c);
                         g.setStroke(s);
                     }
+                    y-=2;
                     g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                     g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }

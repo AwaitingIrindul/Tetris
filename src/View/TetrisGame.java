@@ -219,7 +219,7 @@ public class TetrisGame extends Application implements GravityListener{
                     );
                 }});
             artificialPlayer = true;
-            artificialIntelligence = new ArtificialIntelligence(tetris, new Evaluator(-0.510066, 0.76066, -0.35663, -0.884483));
+            artificialIntelligence = new ArtificialIntelligence(tetris, new Evaluator(-0.510066, 0.76066, -0.35663, -0.184483));
             timer.start();
             timerSpeed = 0.1;
 
@@ -244,7 +244,7 @@ public class TetrisGame extends Application implements GravityListener{
         g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
     }
     private void render() {
-        g.clearRect(0, 0, WIDTH, HEIGHT);
+        g.clearRect( 0 , 0, WIDTH, HEIGHT);
 
 
         tetrominos.forEach(p -> p.draw(g));
@@ -339,5 +339,10 @@ public class TetrisGame extends Application implements GravityListener{
             t.undraw(g);
             t.draw(g);
         }
+    }
+
+    @Override
+    public void onQuit() {
+        timer.stop();
     }
 }

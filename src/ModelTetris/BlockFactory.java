@@ -59,7 +59,7 @@ public class BlockFactory {
         blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
         blockAggregate.add(block4, block3, new Position(0, 0), Direction.RIGHT);
 
-        blockAggregate.setOrigin(new Origin(block, new Position(0, 0)));
+        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
 

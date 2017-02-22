@@ -1,10 +1,5 @@
 package ModelBoard.Board;
 
-import ModelBoard.Position.Position;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Irindul on 09/02/2017.
  */
