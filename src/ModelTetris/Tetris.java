@@ -7,13 +7,11 @@ import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
-import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -24,8 +22,8 @@ public class Tetris {
     private BlockAggregate next;
     public static int height = 16;
     public static int width = 10;
-    public boolean finished;
-    public int score;
+    private boolean finished;
+    private int score;
     private List<Integer> pieces;
 
 
@@ -67,8 +65,8 @@ public class Tetris {
 
     public void applyGravity(){
 
-        board.getGrid().display();
-        System.out.println();
+
+
         
         if(board.checkMovement(Direction.DOWN, current)){
             //ADD OBSERVER MOVING NOTIFICATION
@@ -80,7 +78,12 @@ public class Tetris {
         }
 
         board.addPiece(current);
+
         score(board.sweep());
+
+        board.getGrid().display();
+        System.out.println();
+        movementListeners.forEach(GravityListener::onSweep);
 
         if(!this.isFinished()){
 
@@ -153,7 +156,6 @@ public class Tetris {
         return current;
     }
 
-    @Deprecated
     public Grid getGrid(){
         return board.getGrid();
     }
@@ -167,10 +169,10 @@ public class Tetris {
         return max;
     }
 
-    public int rowsToSweep() {
-        return board.rowsToSweep().size();
-
+    public int rowsToSweep(){
+        return board.rowsToSweep();
     }
+
 
     public int holes() {
         int holes = 0;

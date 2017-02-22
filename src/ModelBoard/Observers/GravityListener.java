@@ -8,5 +8,6 @@ public interface GravityListener {
     void onMovement();
     void moving();
     void onChangedNext();
+    void onSweep();
 
 }

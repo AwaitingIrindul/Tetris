@@ -43,7 +43,7 @@ public class TetrisGame extends Application implements GravityListener{
     private Tetris tetris;
 
 
-    private ArrayList<Tetromino> tetrominos;
+    private ArrayList<DisplayBlock> tetrominos;
     private Tetromino next;
     private GraphicsContext g;
     private  GraphicsContext gcNextPiece;
@@ -172,7 +172,7 @@ public class TetrisGame extends Application implements GravityListener{
         next = new Tetromino(getRandomColor(), tetris.getNext());
         current = new Tetromino(getRandomColor(), tetris.getCurrent());
         tetris.addGravityListener(this);
-
+        Static.grid = tetris.getGrid();
 
         tetrominos.addAll(
                 tetris.getBlocks().stream() //List to stream
@@ -246,10 +246,13 @@ public class TetrisGame extends Application implements GravityListener{
     private void render() {
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
-        current.draw(g);
+
         tetrominos.forEach(p -> p.draw(g));
+        current.draw(g);
 
         gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
+
+
         next.drawNext(gcNextPiece);
 
         score.setText(Integer.toString(tetris.getScore()));
@@ -320,14 +323,21 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void moving() {
-        
         current.undraw(g);
     }
 
     @Override
     public void onChangedNext() {
-        tetrominos.add(current);
+        tetrominos.add(new Static(current));
         current = next;
         next = new Tetromino(getRandomColor(), tetris.getNext());
+    }
+
+    @Override
+    public void onSweep() {
+        for(DisplayBlock t: tetrominos){
+            t.undraw(g);
+            t.draw(g);
+        }
     }
 }

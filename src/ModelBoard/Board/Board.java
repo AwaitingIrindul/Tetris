@@ -85,40 +85,16 @@ public class Board {
 
 
     public boolean isEmptyRow(int i){
-        for (int j = 0; j < width; j++) {
-            if(!grid.isEmpty(i, j)){
-                return false;
-            }
-        }
-
-        return true;
+        return grid.isEmptyRow(i);
 
     }
 
     public boolean isFullRow(int i){
-        for (int j = 0; j < width; j++) {
-            if(grid.isEmpty(i, j)){
-                return false;
-            }
-        }
-
-        return true;
+        return grid.isFullRow(i);
     }
 
     public int sweep(){
-        List<Integer> rows = rowsToSweep();
-        Position tmp = new Position(0, 0);
-        for(int i : rows){
-            for (int j = 0; j < width; j++) {
-                if(!grid.isEmpty(i, j)){
-                    tmp.setXY(i, j);
-                    getBlockAggregate(tmp).remove(getBlockAggregate(tmp).getBlock(tmp));
-                    grid.removeFromTile(i, j);
-                }
-            }
-        }
-
-       return rows.size();
+        return grid.sweep();
     }
 
     public BlockAggregate getBlockAggregate(Position p){
@@ -131,17 +107,7 @@ public class Board {
     }
 
 
-    public List<Integer> rowsToSweep(){
-        List<Integer> rows = new ArrayList<>();
 
-        for (int i = 0; i < height; i++) {
-            if(isFullRow(i)){
-                rows.add(i);
-            }
-        }
-
-        return rows;
-    }
 
     public void rotateClockWise(BlockAggregate blocks){
         if(blocks.checkRotation(grid))
@@ -155,4 +121,10 @@ public class Board {
     public List<BlockAggregate> getBlockAggregates() {
         return blockAggregates;
     }
+
+    public int rowsToSweep() {
+        return grid.rowsToSweep();
+    }
 }
+
+

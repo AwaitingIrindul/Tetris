@@ -1,5 +1,10 @@
 package ModelBoard.Board;
 
+import ModelBoard.Position.Position;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Irindul on 09/02/2017.
  */
@@ -49,6 +54,66 @@ public class Grid {
             return false;
         else
             return true;
+    }
+
+    public boolean isEmptyRow(int i){
+        for (int j = 0; j < width; j++) {
+            if(!isEmpty(i, j)){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    public int sweep(){
+        int distance = 0;
+
+        for (int i = height-1; i >= 0; i--) {
+            if(isFullRow(i)){
+                distance++;
+                for (int j = 0; j < width; j++) {
+                    removeFromTile(i, j);
+                }
+            } else if(distance > 0){
+                for (int j = 0; j < width; j++) {
+                    if(isEmpty(i, j)){
+                        removeFromTile(i + distance, j);
+                    } else {
+                        placeOnTile(i + distance, j);
+                    }
+
+                    removeFromTile(i, j);
+                }
+            }
+        }
+
+        return distance;
+    }
+
+    public int rowsToSweep(){
+        int rows = 0;
+        for (int i = 0; i < height; i++) {
+            if(isFullRow(i)){
+                rows++;
+            }
+        }
+
+        return rows;
+    }
+
+
+
+
+    public boolean isFullRow(int i){
+        for (int j = 0; j < width; j++) {
+            if(this.isEmpty(i, j)){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void placeOnTile(int i, int j){

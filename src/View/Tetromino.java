@@ -11,7 +11,7 @@ import static View.TetrisGame.TILE_SIZE;
 /**
  * Created by Irindul on 16/02/2017.
  */
-public class Tetromino {
+public class Tetromino implements  DisplayBlock{
 
     Color color;
     BlockAggregate block;
