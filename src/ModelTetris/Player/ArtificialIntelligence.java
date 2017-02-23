@@ -133,7 +133,7 @@ public class ArtificialIntelligence implements GravityListener{
 
     public void run() {
         int i = 0;
-        while(!tetris.isFinished() && i < 10000){
+        while(!tetris.isFinished() && tetris.getScore() < 100 ){
             executeNextMove();
             tetris.applyGravity();
             i++;
