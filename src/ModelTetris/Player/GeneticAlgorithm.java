@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.function.ToDoubleFunction;
 
 /**
  * Created by Irindul on 21/02/2017.
@@ -45,7 +44,7 @@ public class GeneticAlgorithm {
 
             });
 
-            specimens.sort(Comparator.comparingDouble(value -> value.getScore()));
+            specimens.sort(Comparator.comparingDouble(ArtificialIntelligence::getScore));
 
 
            // specimens.sort((o1, o2) -> o1.getScore() > o2.getScore() ? 1 : -1);
