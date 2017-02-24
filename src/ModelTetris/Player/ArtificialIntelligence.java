@@ -10,7 +10,7 @@ import java.util.LinkedList;
 /**
  * Created by Irindul on 18/02/2017.
  */
-public class ArtificialIntelligence implements GravityListener{
+public class ArtificialIntelligence implements GravityListener, Runnable{
     private Tetris tetris;
     private Evaluator evaluator;
     private LinkedList<Direction> directions;
@@ -131,13 +131,12 @@ public class ArtificialIntelligence implements GravityListener{
         return score;
     }
 
+    @Override
     public void run() {
-        int i = 0;
-        while(!tetris.isFinished() && tetris.getScore() < 100 ){
+        while(!tetris.isFinished() && tetris.getScore() < 2001 && !Thread.currentThread().isInterrupted()){
+            
             executeNextMove();
             tetris.applyGravity();
-            i++;
-            
         }
         score = tetris.getScore();
     }

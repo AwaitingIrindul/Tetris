@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Irindul on 21/02/2017.
@@ -31,7 +33,19 @@ public class GeneticAlgorithm {
             specimens.forEach(ArtificialIntelligence::reset);
 
             System.out.println("Generation : " + nbGen++);
-            specimens.forEach(ArtificialIntelligence::run);
+
+            ExecutorService execute = Executors.newFixedThreadPool(100);
+
+
+            specimens.forEach(execute::execute);
+            execute.shutdown();
+
+            while(!execute.isTerminated()){
+                //Waiting for all threads to terminate
+            }
+            
+            System.out.println("Threads ternimated");
+            
 
             offsprings = selectionCrossover();
             offsprings.forEach(player -> {
