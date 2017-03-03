@@ -175,6 +175,11 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
     }
 
     @Override
+    public void sweeping() {
+
+    }
+
+    @Override
     public void onQuit() {
 
     }

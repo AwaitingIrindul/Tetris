@@ -33,7 +33,21 @@ public class Static implements DisplayBlock{
 
     @Override
     public void undraw(GraphicsContext g){
-        draw(Color.TRANSPARENT, Color.TRANSPARENT, g);
+        int x, y;
+        for(Block b : block.getBlocks()){
+            for (int i = 0; i < b.getHeight(); i++) {
+                for (int j = 0; j < b.getWidth(); j++) {
+                    x = b.getPosition(i, j).getY();
+                    y = b.getPosition(i, j).getX();
+                    y-=2;
+                    System.out.print("");
+
+                    g.clearRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                }
+
+            }
+
+        }
     }
 
     private void draw(Color c, Color s, GraphicsContext g){

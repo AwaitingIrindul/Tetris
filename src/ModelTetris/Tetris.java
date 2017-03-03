@@ -62,7 +62,9 @@ public class Tetris {
 
 
     public void move(Direction d){
+        movementListeners.forEach(GravityListener::moving);
         board.movePiece(d, current);
+        movementListeners.forEach(GravityListener::onMovement);
     }
 
 
@@ -73,16 +75,16 @@ public class Tetris {
     public void applyGravity(){
         
         if(board.checkMovement(Direction.DOWN, current)){
-            //ADD OBSERVER MOVING NOTIFICATION
-            movementListeners.forEach(GravityListener::moving);
+
             move(Direction.DOWN);
-            movementListeners.forEach(GravityListener::onMovement);
+
             return;
 
         }
 
         board.addPiece(current);
 
+        movementListeners.forEach(GravityListener::sweeping);
         score(board.sweep());
         movementListeners.forEach(GravityListener::onSweep);
 
@@ -108,16 +110,6 @@ public class Tetris {
         return score;
     }
 
-    private void applyGravityExceptCurrent() {
-        for (int i = 0; i < height; i++) {
-            for(BlockAggregate b : board.getBlockAggregates()){ //We make every block move down
-                if(!b.equals(current))
-                    board.movePiece(Direction.DOWN, b);
-            }
-        }
-
-    }
-
     public BlockAggregate getNext(){
         return next;
     }
@@ -141,7 +133,9 @@ public class Tetris {
     }
 
     public void rotate(){
+        movementListeners.forEach(GravityListener::moving);
         board.rotateClockWise(current);
+        movementListeners.forEach(GravityListener::onMovement);
     }
 
     public void randomRotate(BlockAggregate blockAggregate  ){

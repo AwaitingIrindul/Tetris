@@ -228,6 +228,8 @@ public class TetrisGame extends Application implements GravityListener{
 
         });
 
+
+
         timer.start();
         return root;
     }
@@ -247,24 +249,23 @@ public class TetrisGame extends Application implements GravityListener{
         g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
     }
     private void render() {
-        g.clearRect( 0 , 0, WIDTH, HEIGHT);
+        //g.clearRect( 0 , 0, WIDTH, HEIGHT);
 
 
-        tetrominos.forEach(p -> p.draw(g));
-        current.draw(g);
+        //tetrominos.forEach(p -> p.draw(g));
+        //current.draw(g);
 
-        gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
+        //gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
 
 
-        next.drawNext(gcNextPiece);
+        //next.drawNext(gcNextPiece);
 
-        score.setText(Integer.toString(tetris.getScore()));
+        //score.setText(Integer.toString(tetris.getScore()));
     }
 
     private void update() {
 
         tetris.applyGravity();
-
 
         go = ! tetris.isFinished();
         if(!go){
@@ -338,8 +339,14 @@ public class TetrisGame extends Application implements GravityListener{
     @Override
     public void onSweep() {
         for(DisplayBlock t: tetrominos){
-            t.undraw(g);
             t.draw(g);
+        }
+    }
+
+    @Override
+    public void sweeping() {
+        for(DisplayBlock t: tetrominos){
+            t.undraw(g);
         }
     }
 

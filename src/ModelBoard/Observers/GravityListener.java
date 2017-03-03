@@ -9,5 +9,6 @@ public interface GravityListener {
     void moving();
     void onChangedNext();
     void onSweep();
-     void onQuit();
+    void sweeping();
+    void onQuit();
 }
