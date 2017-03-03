@@ -35,7 +35,20 @@ public class Position {
         setX(x);
         setY(y);
     }
-    public boolean equals(Position pos) {
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        if(obj == this)
+            return true;
+        if( !(obj instanceof Position))
+            return false;
+
+        return this.equals((Position)obj);
+    }
+
+    private boolean equals(Position pos) {
         return (pos.x == this.x && pos.y == this.y);
     }
 }
