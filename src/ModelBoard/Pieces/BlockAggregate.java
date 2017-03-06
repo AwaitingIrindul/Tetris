@@ -5,8 +5,10 @@ import ModelBoard.Direction;
 import ModelBoard.Position.Position;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -14,123 +16,68 @@ import java.util.Map;
 public class BlockAggregate {
 
     private Position position;
-    private List<Block> blocks;
-    private List<Link> links;
     private Origin origin;
+    private int height, width;
+    private boolean positions[][];
 
-    public BlockAggregate() {
-        blocks = new ArrayList<>();
-        links = new ArrayList<>();
+
+    public BlockAggregate(int height, int width) {
         position = new Position(0, 0);
+        this.height = height; //TODO Pass by param
+        this.width = width;
+        positions = new boolean[width][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                positions[i][j] = false;
+            }
+        }
+    }
+
+    public BlockAggregate(String[][] scheme, Position startingPosition){
+        this(scheme.length, scheme[0].length);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if(scheme[i][j].equals("1")){
+                    positions[i][j] = true;
+                } else {
+                    positions[i][j] = false;
+                }
+            }
+        }
+        position = startingPosition;
+
     }
 
     public BlockAggregate(BlockAggregate b){
-        blocks = new ArrayList<>();
-        for(Block block : b.blocks){
-            blocks.add(new Block(block));
-        }
-        links = new ArrayList<>();
-        for(Link link : b.links){
-            links.add(new Link(link));
+        this.position = b.position;
+        height = b.height;
+        width = b.width;
+        positions = new boolean[width][height];
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                positions[i][j] = b.positions[i][j];
+            }
         }
         this.origin = new Origin(b.origin);
     }
 
-    public void add(Block block){
-        if(blocks.isEmpty()) {
-            blocks.add(block);
-            position = block.getPosition();
-        }
-    }
-
-    public void add(Block block, Block linker, Position pos1, Direction direction){
-        if(blocks.isEmpty()){
-            add(block);
-        } else {
-            blocks.add(block);
-
-
-
-            links.add(new Link(linker, pos1, block, direction));
-        }
-    }
-
-    public Block getBlock(Position p){
-        for(Block b: blocks){
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    if(b.getPosition(i, j).equals(p)){
-                        return b;
-                    }
-                }
-            }
-        }
-
-        throw new NullPointerException();
-    }
-
-    public void remove(Block b){
-        blocks.remove(b);
-    }
-
-    public void remove(int i){
-        blocks.remove(i);
-    }
-
-    public List<Block> getBlocks() {
-        return blocks;
-    }
-
-    private void setPosition(Position pos, int i){
-
-        if( i == blocks.size() - 1){
-            for(Link link : links){
-                if(link.on(blocks.get(i))){
-                    link.computeNewPosition();
-                }
-            }
-        } else {
-            if(i == 0){
-                blocks.get(i).setPosition(pos);
-            }
-
-            setPosition(pos, i++);
-        }
-    }
-
-
-    public boolean checkMovement(Direction d, Grid g){
-        boolean possible = true;
-        for (Block block : blocks){
-            if(!block.checkMovement(d, g)){
-                possible = false;
-            }
-        }
-
-        return possible;
-    }
-
     public boolean checkRotation(Grid g){
-        boolean possible = true;
-        for (Block block : blocks){
+        /*for (Block block : blocks){
             if(!block.checkRotation(g, origin.getPositionOfBlock())){
                 possible = false;
             }
-        }
+        }*/
 
-        return possible;
+        return true;
     }
 
-    public void rotateClockWise(Grid g){
-        blocks.forEach(block -> block.rotateClockWise(origin.getPositionOfBlock()));
+    public void rotateClockWise(){
+        //blocks.forEach(block -> block.rotateClockWise(origin.getPositionOfBlock()));
     }
 
     public boolean isInBlock(Position pos){
-        for(Block block : blocks){
-            if(block.isInBlock(pos)){
-                return true;
-            }
-        }
+
         return false;
     }
     public void setOrigin(Origin origin){
@@ -142,48 +89,30 @@ public class BlockAggregate {
     }
 
     public void move(Direction d){
-
-        blocks.forEach(block -> block.move(d));
+        position = d.getNewPosition(position);
     }
 
-    public void setPosition(Position pos){
-        setPosition(pos, 0);
-        this.position = pos;
+    public List<Position> getPositions(){
+        List<Position> positionsList = new ArrayList<>();
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if(positions[i][j])
+                    positionsList.add(new Position(position.getX()+i, position.getY()+j));
+            }
+        }
+
+        return positionsList;
     }
 
     public int getMinimumY(){
-        int min = blocks.get(0).getPosition().getY();
 
-        for(Block b : blocks){
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    int y = b.getPosition(i, j).getY();
-                    if( y < min){
-                        min = y;
-                    }
-                }
-            }
-        }
+        List<Position> positions = getPositions();
+        return positions.stream().max((o1, o2) -> Integer.compare(o1.getY(), o2.getY())).get().getY();
 
-        return min;
     }
 
-    public int getMaximumY(){
-        int max = blocks.get(0).getPosition(0, 0).getY();
 
-        for(Block b : blocks){
-            for (int i = 0; i < b.getHeight(); i++) {
-                for (int j = 0; j < b.getWidth(); j++) {
-                    int y = b.getPosition(i, j).getY();
-                    if( y > max){
-                        max = y;
-                    }
-                }
-            }
-        }
-
-        return max;
-    }
     public Position getPosition(){
         return position;
     }
