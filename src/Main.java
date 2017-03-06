@@ -1,6 +1,9 @@
+import ModelBoard.Pieces.BlockAggregate;
+import ModelTetris.BlockFactory;
 import ModelTetris.Player.Evaluator;
 import ModelTetris.Player.GeneticAlgorithm;
 import ModelTetris.Tetris;
+import ModelTetris.TetrisBlocks;
 import View.TetrisGame;
 
 /**
@@ -12,10 +15,7 @@ public class Main {
 
         javafx.application.Application.launch(TetrisGame.class);
 
-        /*GeneticAlgorithm ga = new GeneticAlgorithm();
-        
-        Evaluator e = ga.train(2000);
-        e.display();*/
+//        BlockAggregate b = BlockFactory.get(TetrisBlocks.Straight);
 
 
     }
