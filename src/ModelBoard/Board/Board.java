@@ -1,12 +1,13 @@
 package ModelBoard.Board;
 
 import ModelBoard.Direction;
-import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -15,7 +16,8 @@ import java.util.List;
 public class Board {
 
     private Grid grid;
-    private List<BlockAggregate> blockAggregates;
+    /* private List<BlockAggregate> blockAggregates; */
+    private Map<Position, BlockAggregate> collisions;
     private int height;
     private int width;
 
@@ -24,60 +26,64 @@ public class Board {
         grid = new Grid(height, width);
         this.height = height;
         this.width = width;
-        blockAggregates = new ArrayList<>();
+        //blockAggregates = new ArrayList<>();
+        collisions = new HashMap<>();
     }
 
     public Board(Board board) {
         this.grid = new Grid(board.grid);
-        this.blockAggregates = new ArrayList<>();
-        for (int i = 0; i < board.blockAggregates.size(); i++) {
-            blockAggregates.add(new BlockAggregate(board.blockAggregates.get(i)));
-        }
+        collisions = new HashMap<>();
+        collisions.putAll(board.collisions);
+
         this.height = board.height;
         this.width = board.width;
     }
 
-    public boolean addPiece(BlockAggregate piece){
-        blockAggregates.add(piece);
-        Position pos;
-        boolean possible = true;
-        for(Block block : piece.getBlocks()){
-            for (int i = 0; i < block.getHeight(); i++) {
-                for (int j = 0; j < block.getWidth(); j++) {
-                    pos = block.getPosition(i, j);
-                    if(!grid.isEmpty(pos.getX(), pos.getY())){
-                        possible = false;
-                    }
-
-                }
-            }
-        }
-
-        if(possible){
-            for(Block block : piece.getBlocks()){
-                for (int i = 0; i < block.getHeight(); i++) {
-                    for (int j = 0; j < block.getWidth(); j++) {
-                        pos = block.getPosition(i, j);
-                        grid.placeOnTile(pos.getX(), pos.getY());
-                    }
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
+    public void addPiece(BlockAggregate piece){
+        piece.getPositions().forEach(
+                position -> collisions.put(position, piece)
+        );
 
     }
 
 
     public boolean checkMovement(Direction direction, BlockAggregate blocks){
-        return blocks.checkMovement(direction, grid);
+        
+        
+        List<Position> toCheck = blocks.getPositions().stream()
+                .map(direction::getNewPosition).collect(Collectors.toList());
+
+        boolean ok = true;
+
+        for(Position pos : toCheck){
+            if(checkCollide(pos, blocks)) {
+                ok = false;
+                break;
+                
+            }
+        }
+
+        return ok;
+    }
+
+    private boolean checkCollide(Position pos, BlockAggregate blocks){
+        if (pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) {
+            return collisions.containsKey(pos) && !collisions.get(pos).equals(blocks);
+
+        } else {
+            return true;
+        }
+
+       // return false;
+
     }
 
     public void movePiece(Direction direction, BlockAggregate blocks){
 
         if(checkMovement(direction, blocks)){
+            blocks.getPositions().forEach( position -> collisions.remove(position));
             blocks.move(direction);
+            blocks.getPositions().forEach(position -> collisions.remove(position));
         }
 
 
@@ -98,12 +104,7 @@ public class Board {
     }
 
     public BlockAggregate getBlockAggregate(Position p){
-        for(BlockAggregate b : blockAggregates){
-            if(b.isInBlock(p))
-                return b;
-        }
-
-       throw new NullPointerException();
+        return collisions.get(p);
     }
 
 
@@ -111,7 +112,7 @@ public class Board {
 
     public void rotateClockWise(BlockAggregate blocks){
         if(blocks.checkRotation(grid))
-            blocks.rotateClockWise(grid);
+            blocks.rotateClockWise();
     }
 
     public Grid getGrid(){
@@ -119,7 +120,7 @@ public class Board {
     }
 
     public List<BlockAggregate> getBlockAggregates() {
-        return blockAggregates;
+        return null;
     }
 
     public int rowsToSweep() {
