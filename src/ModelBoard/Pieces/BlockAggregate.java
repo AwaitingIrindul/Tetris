@@ -23,9 +23,9 @@ public class BlockAggregate {
 
     public BlockAggregate(int height, int width) {
         position = new Position(0, 0);
-        this.height = height; //TODO Pass by param
+        this.height = height;
         this.width = width;
-        positions = new boolean[width][width];
+        positions = new boolean[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 positions[i][j] = false;
