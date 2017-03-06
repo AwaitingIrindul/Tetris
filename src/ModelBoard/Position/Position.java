@@ -1,5 +1,7 @@
 package ModelBoard.Position;
 
+import java.util.Objects;
+
 /**
  * Created by Irindul on 09/02/2017.
  */
@@ -37,15 +39,18 @@ public class Position {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(obj == null)
-            return false;
-        if(obj == this)
-            return true;
-        if( !(obj instanceof Position))
-            return false;
+    public int hashCode() {
+        return Objects.hashCode(x) + Objects.hashCode(y);
+    }
 
-        return this.equals((Position)obj);
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        return obj instanceof Position && this.equals((Position) obj);
+
     }
 
     private boolean equals(Position pos) {
