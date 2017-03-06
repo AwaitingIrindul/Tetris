@@ -43,7 +43,7 @@ public class TetrisGame extends Application implements GravityListener{
     private Tetris tetris;
 
 
-    private ArrayList<DisplayBlock> tetrominos;
+    private ArrayList<Tetromino> tetrominos;
     private Tetromino next;
     private GraphicsContext g;
     private  GraphicsContext gcNextPiece;
@@ -172,15 +172,15 @@ public class TetrisGame extends Application implements GravityListener{
         next = new Tetromino(getRandomColor(), tetris.getNext());
         current = new Tetromino(getRandomColor(), tetris.getCurrent());
         tetris.addGravityListener(this);
-        Static.grid = tetris.getGrid();
 
-        tetrominos.addAll(
+
+        /*tetrominos.addAll(
                 tetris.getBlocks().stream() //List to stream
                         //.Association to a new tetromino
                         .map(blockAggregate -> new Tetromino(getRandomColor(), blockAggregate))
                         //Returning a list
                         .collect(Collectors.toList())
-        );
+        );*/
 
 
         render();
@@ -328,7 +328,7 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onChangedNext() {
-        tetrominos.add(new Static(current));
+        tetrominos.add(current);
         current = next;
         next = new Tetromino(getRandomColor(), tetris.getNext());
         if (artificialPlayer){
@@ -338,14 +338,14 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onSweep() {
-        for(DisplayBlock t: tetrominos){
+        for(Tetromino t: tetrominos){
             t.draw(g);
         }
     }
 
     @Override
     public void sweeping() {
-        for(DisplayBlock t: tetrominos){
+        for(Tetromino t: tetrominos){
             t.undraw(g);
         }
     }
