@@ -46,9 +46,10 @@ public class BlockFactory {
     private static BlockAggregate getStraight(){
 
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
+                {"1"},
+                {"1"},
+                {"1"},
+                {"1"}
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -64,8 +65,8 @@ public class BlockFactory {
         String[][] scheme = {
                 {"0", "0", "1", "0"},
                 {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"0", "1", "1", "0"},
+                {"0", "0", "0", "0"}
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -79,10 +80,9 @@ public class BlockFactory {
 
     private static BlockAggregate getRightL(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"1", "0"},
+                {"1", "0"},
+                {"1", "1"},
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -96,10 +96,8 @@ public class BlockFactory {
 
     private static BlockAggregate getTwoByTwo(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"1", "1"},
+                {"1", "1"}
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -113,10 +111,9 @@ public class BlockFactory {
 
     private static BlockAggregate getRightZ(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"1", "0"},
+                {"1", "1"},
+                {"0", "1"}
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -130,10 +127,9 @@ public class BlockFactory {
 
     private static BlockAggregate getLeftZ(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"0", "1"},
+                {"1", "1"},
+                {"1", "0"}
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
@@ -147,10 +143,8 @@ public class BlockFactory {
 
     private static BlockAggregate getThreeOne(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"}
+                {"0", "1", "0"},
+                {"1", "1", "1"},
         };
 
         BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
