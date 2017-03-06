@@ -4,7 +4,6 @@ import ModelBoard.Board.Board;
 import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Position.Position;
 
@@ -33,8 +32,8 @@ public class Tetris {
         pieces = new ArrayList<>(7);
         movementListeners = new ArrayList<>();
         current = randomBlock();
-        move(Direction.DOWN);
-        move(Direction.DOWN);
+        board.addPiece(current);
+
                  //BlockFactory.get(TetrisBlocks.RightL);
 
         next = randomBlock();
@@ -57,7 +56,7 @@ public class Tetris {
         this.score = t.score;
         movementListeners = new ArrayList<>();
 
-        //this.board.addPiece(current);
+        this.board.addPiece(current);
     }
 
 
@@ -211,7 +210,7 @@ public class Tetris {
 
 
         //We check if the current block is on the ground
-        for (Block block : current.getBlocks()){
+        /*for (Block block : current.getBlocks()){
             for (int k = 0; k < block.getHeight(); k++) {
                 for (int l = 0; l < block.getWidth(); l++) {
                     Position down = Direction.DOWN.getNewPosition(block.getPosition(k, l));
@@ -227,13 +226,15 @@ public class Tetris {
 
                 }
             }
-        }
+        }*/
+
+        // TODO: 06/03/2017 Recompute height properly 
 
 
 
         for (int i = height-1; i >= 0; i--) {
             Position tmp = new Position(i, j);
-            if(!current.isInBlock(tmp)){
+            if(!current.isInBlock(tmp)){ // TODO: 06/03/2017 Refactor with board.isInBlock(bl, pos); 
                 if(!board.getGrid().isEmpty(i, j))
                     heightC = height - i; //We count the height only if this is not the current block
                 //Height - i is to calculate the height as 0 is on top and height is on the bottom
