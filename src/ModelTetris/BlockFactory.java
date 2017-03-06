@@ -1,7 +1,6 @@
 package ModelTetris;
 
 import ModelBoard.Direction;
-import ModelBoard.Pieces.Block;
 import ModelBoard.Pieces.BlockAggregate;
 import ModelBoard.Pieces.Origin;
 import ModelBoard.Position.Position;
@@ -46,131 +45,120 @@ public class BlockFactory {
 
     private static BlockAggregate getStraight(){
 
-        Block block = new Block(1 ,1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+        };
 
-        Block block2 = new Block(1, 1);
-        Block block3 = new Block(1, 1);
-        Block block4 = new Block(1, 1);
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.RIGHT);
 
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
         return blockAggregate;
 
     }
 
     private static BlockAggregate getLeftL(){
-        Block block = new Block(1, 1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1,1);
-        Block block3 = new Block(1 ,1);
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
 
-        Block block4 = new Block(1, 1);
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.LEFT);
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
-
+        //TODO change with real one
         return blockAggregate;
     }
 
     private static BlockAggregate getRightL(){
-        Block block = new Block(1, 1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1,1);
-        Block block3 = new Block(1 ,1);
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
 
-        Block block4 = new Block(1, 1);
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
-
+        //TODO change with real one
         return blockAggregate;
     }
 
     private static BlockAggregate getTwoByTwo(){
-        Block block = new Block(1, 1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1, 1);
-        Block block3 = new Block(1, 1);
-        Block block4 = new Block(1, 1);
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.LEFT);
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
+
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+
+        //TODO change with real one
         return blockAggregate;
     }
 
     private static BlockAggregate getRightZ(){
-        Block block = new Block(1 ,1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1, 1);
-        Block block3 = new Block(1, 1);
-        Block block4 = new Block(1, 1);
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.DOWN);
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
+
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+
+        //TODO change with real one
         return blockAggregate;
     }
 
     private static BlockAggregate getLeftZ(){
-        Block block = new Block(1 ,1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1, 1);
-        Block block3 = new Block(1, 1);
-        Block block4 = new Block(1, 1);
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.DOWN);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.LEFT);
-        blockAggregate.add(block4, block3, new Position(0, 0), Direction.DOWN);
-        blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
+
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+
+        //TODO change with real one
         return blockAggregate;
     }
 
     private static BlockAggregate getThreeOne(){
-        Block block = new Block(1,1);
-        block.setPosition(new Position(startingPosition.getX(), startingPosition.getY()));
+        String[][] scheme = {
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"},
+                {"0", "0", "1", "0"}
+        };
 
-        Block block2 = new Block(1, 1);
-        Block block3 = new Block(1, 1);
-        Block block4 = new Block(1, 1);
+        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
 
-        BlockAggregate blockAggregate = new BlockAggregate();
-        blockAggregate.add(block);
-        blockAggregate.add(block2, block, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block3, block2, new Position(0, 0), Direction.RIGHT);
-        blockAggregate.add(block4, block2, new Position(0, 0), Direction.DOWN);
-        blockAggregate.setOrigin(new Origin(block4, new Position(0, 0)));
 
+        //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
+
+        //TODO change with real one
         return blockAggregate;
 
     }
