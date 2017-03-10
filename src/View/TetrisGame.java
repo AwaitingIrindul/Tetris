@@ -2,7 +2,6 @@ package View;
 
 import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.BlockAggregate;
 import ModelTetris.Player.ArtificialIntelligence;
 import ModelTetris.Player.Evaluator;
 import ModelTetris.Tetris;
@@ -23,7 +22,6 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 16/02/2017.
@@ -267,10 +265,10 @@ public class TetrisGame extends Application implements GravityListener{
 
         tetris.applyGravity();
 
-        go = ! tetris.isFinished();
-        if(!go){
-            stopGame();
-        }
+        //go = ! tetris.isFinished();
+       // if(!go){
+         //   stopGame();
+        //}
     }
 
     private void stopGame() {
@@ -338,6 +336,7 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onSweep() {
+        current.draw(g);
         for(Tetromino t: tetrominos){
             t.draw(g);
         }
@@ -345,6 +344,7 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void sweeping() {
+        current.undraw(g);
         for(Tetromino t: tetrominos){
             t.undraw(g);
         }
@@ -352,6 +352,6 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onQuit() {
-        timer.stop();
+        stopGame();
     }
 }

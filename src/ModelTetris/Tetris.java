@@ -1,10 +1,9 @@
 package ModelTetris;
 
 import ModelBoard.Board.Board;
-import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.BlockAggregate;
+import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
 import java.util.ArrayList;
@@ -17,8 +16,8 @@ import java.util.Random;
  */
 public class Tetris {
     private Board board;
-    private BlockAggregate current;
-    private BlockAggregate next;
+    private Piece current;
+    private Piece next;
     public static int height = 18;
     public static int width = 10;
     private boolean finished;
@@ -33,9 +32,6 @@ public class Tetris {
         movementListeners = new ArrayList<>();
         current = randomBlock();
         board.addPiece(current);
-
-                 //BlockFactory.get(TetrisBlocks.RightL);
-
         next = randomBlock();
                 //BlockFactory.get(TetrisBlocks.Straight);
        // board.addPiece(current);
@@ -50,8 +46,8 @@ public class Tetris {
         for (int i = 0; i < t.pieces.size(); i++) {
             pieces.add(t.pieces.get(i));
         }
-        this.current = new BlockAggregate(t.current);
-        this.next = new BlockAggregate(t.next);
+        this.current = new Piece(t.current);
+        this.next = new Piece(t.next);
         this.finished = t.finished;
         this.score = t.score;
         movementListeners = new ArrayList<>();
@@ -67,7 +63,7 @@ public class Tetris {
     }
 
 
-    public List<BlockAggregate> getBlocks(){
+    public List<Piece> getBlocks(){
         return board.getBlockAggregates();
     }
 
@@ -81,14 +77,13 @@ public class Tetris {
 
         }
 
-        board.addPiece(current);
 
+        board.linkPiece(current);
         movementListeners.forEach(GravityListener::sweeping);
         score(board.sweep());
         movementListeners.forEach(GravityListener::onSweep);
 
         if(!this.isFinished()){
-
             swapCurrent();
         } else {
             movementListeners.forEach(GravityListener::onQuit);
@@ -109,11 +104,11 @@ public class Tetris {
         return score;
     }
 
-    public BlockAggregate getNext(){
+    public Piece getNext(){
         return next;
     }
 
-    public BlockAggregate randomBlock(){
+    public Piece randomBlock(){
 
         if(pieces.size() == 0){
             for (int i = 0; i < 7; i++) {
@@ -137,11 +132,11 @@ public class Tetris {
         movementListeners.forEach(GravityListener::onMovement);
     }
 
-    public void randomRotate(BlockAggregate blockAggregate  ){
+    public void randomRotate(Piece piece){
         Random rd = new Random();
         int numberOfRotation = rd.nextInt(4);
         for (int i = 0; i < numberOfRotation; i++) {
-            board.rotateClockWise(blockAggregate);
+            board.rotateClockWise(piece);
         }
     }
 
@@ -149,13 +144,10 @@ public class Tetris {
        return (!board.isEmptyRow(0) || !board.isEmptyRow(1));
     }
 
-    public BlockAggregate getCurrent(){
+    public Piece getCurrent(){
         return current;
     }
 
-    public Grid getGrid(){
-        return board.getGrid();
-    }
 
     public int sumHeight() {
         int max = 0;
@@ -183,19 +175,20 @@ public class Tetris {
                     int upX = tmp.getX();
                     int upY = tmp.getY();
                     //We check if there is a block on top of the current pos
-                    if(board.getGrid().isInRange(upX, upY)){
+                    /*if(board.getGrid().isInRange(upX, upY)){
                         if(board.getGrid().isEmpty(j, i))
                             up = ! board.getGrid().isEmpty(upX, upY);
                         else up = false;
-                    }
+                    }*/
+                    // TODO: 06/03/2017 REDO HOLES FUNCTION
 
                     if(up){ //If there is something on top of this cell, there is a hole
                         holes++;
                     }
                 } else {
-                    if(!board.getGrid().isEmpty(j, i)){
+                    /*if(!board.getGrid().isEmpty(j, i)){
                         atLeastOne = true;
-                    }
+                    }*/
                 }
 
             }
@@ -235,14 +228,14 @@ public class Tetris {
         for (int i = height-1; i >= 0; i--) {
             Position tmp = new Position(i, j);
             if(!current.isInBlock(tmp)){ // TODO: 06/03/2017 Refactor with board.isInBlock(bl, pos); 
-                if(!board.getGrid().isEmpty(i, j))
+               /* if(!board.getGrid().isEmpty(i, j))
                     heightC = height - i; //We count the height only if this is not the current block
                 //Height - i is to calculate the height as 0 is on top and height is on the bottom
-
+               */
             } else {
                 if(currentOnTheGround){
-                    if(!board.getGrid().isEmpty(i, j))
-                    heightC = height - i;
+                    /*if(!board.getGrid().isEmpty(i, j))
+                    heightC = height - i;*/
                 }
             }
 
@@ -276,6 +269,5 @@ public class Tetris {
         move(Direction.DOWN);
 
     }
-    // TODO: 22/02/2017 Design pattern observer observable pour positions et score
 
 }

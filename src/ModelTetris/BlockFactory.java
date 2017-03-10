@@ -1,8 +1,6 @@
 package ModelTetris;
 
-import ModelBoard.Direction;
-import ModelBoard.Pieces.BlockAggregate;
-import ModelBoard.Pieces.Origin;
+import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
 /**
@@ -12,7 +10,7 @@ public class BlockFactory {
 
     public static Position startingPosition = new Position(0, 4);
     
-    public static BlockAggregate get(TetrisBlocks t){
+    public static Piece get(TetrisBlocks t){
         switch (t){
 
             case Straight:
@@ -43,7 +41,7 @@ public class BlockFactory {
         
     }
 
-    private static BlockAggregate getStraight(){
+    private static Piece getStraight(){
 
         String[][] scheme = {
                 {"1"},
@@ -52,16 +50,16 @@ public class BlockFactory {
                 {"1"}
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return blockAggregate;
+        return piece;
 
     }
 
-    private static BlockAggregate getLeftL(){
+    private static Piece getLeftL(){
         String[][] scheme = {
                 {"0", "0", "1", "0"},
                 {"0", "0", "1", "0"},
@@ -69,91 +67,85 @@ public class BlockFactory {
                 {"0", "0", "0", "0"}
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
     }
 
-    private static BlockAggregate getRightL(){
+    private static Piece getRightL(){
         String[][] scheme = {
                 {"1", "0"},
                 {"1", "0"},
                 {"1", "1"},
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
     }
 
-    private static BlockAggregate getTwoByTwo(){
+    private static Piece getTwoByTwo(){
         String[][] scheme = {
                 {"1", "1"},
                 {"1", "1"}
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
     }
 
-    private static BlockAggregate getRightZ(){
+    private static Piece getRightZ(){
         String[][] scheme = {
                 {"1", "0"},
                 {"1", "1"},
                 {"0", "1"}
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
     }
 
-    private static BlockAggregate getLeftZ(){
+    private static Piece getLeftZ(){
         String[][] scheme = {
                 {"0", "1"},
                 {"1", "1"},
                 {"1", "0"}
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
     }
 
-    private static BlockAggregate getThreeOne(){
+    private static Piece getThreeOne(){
         String[][] scheme = {
                 {"0", "1", "0"},
                 {"1", "1", "1"},
         };
 
-        BlockAggregate blockAggregate = new BlockAggregate(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        //TODO change with real one
-        return blockAggregate;
+        return piece;
 
     }
 

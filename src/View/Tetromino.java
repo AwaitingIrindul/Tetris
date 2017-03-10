@@ -1,6 +1,6 @@
 package View;
 
-import ModelBoard.Pieces.BlockAggregate;
+import ModelBoard.Pieces.Piece;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -13,9 +13,9 @@ public class Tetromino{
 
     //TODO Refactor view library;
     Color color;
-    BlockAggregate block;
+    Piece block;
 
-    public Tetromino(Color color, BlockAggregate block) {
+    public Tetromino(Color color, Piece block) {
         this.color = color;
         this.block  = block;
     }
@@ -70,7 +70,8 @@ public class Tetromino{
            y = pos.getX();
 
            y-=2;
-           g.clearRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+           g.clearRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE+0.5, TILE_SIZE+0.5);
        });
     }
 }
