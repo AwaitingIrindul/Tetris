@@ -33,6 +33,10 @@ public class BlockAggregate {
         }
     }
 
+    public void removePosition(Position pos){
+        positions[pos.getX() - position.getX()][pos.getY() - position.getY()] = false;
+    }
+
     public BlockAggregate(String[][] scheme, Position startingPosition){
         this(scheme.length, scheme[0].length);
         for (int i = 0; i < height; i++) {
