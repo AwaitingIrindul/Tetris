@@ -43,28 +43,27 @@ public class Board {
     }
 
 
-    public synchronized boolean checkMovement(Direction direction, Piece blocks){
+    public synchronized boolean checkMovement(Direction direction, Piece piece){
         
         
-        List<Position> toCheck = blocks.getPositions().stream()
+        List<Position> toCheck = piece.getPositions().stream()
                 .map(direction::getNewPosition).collect(Collectors.toList());
         boolean ok = true;
 
         for(Position pos : toCheck){
-            if(checkCollide(pos, blocks)) {
+            if(checkCollide(pos, piece)) {
                 ok = false;
                 break;
-                
+
             }
         }
 
         return ok;
     }
 
-    private synchronized boolean checkCollide(Position pos, Piece blocks){
+    private synchronized boolean checkCollide(Position pos, Piece piece){
         if (pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) {
-
-            return collisions.containsKey(pos) && !collisions.get(pos).equals(blocks);
+            return collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
 
         } else {
             return true;
@@ -74,11 +73,11 @@ public class Board {
 
     }
 
-    public synchronized void movePiece(Direction direction, Piece blocks){
-            if(checkMovement(direction, blocks)){
-                blocks.getPositions().forEach( position -> collisions.remove(position));
-                blocks.move(direction);
-                blocks.getPositions().forEach(position -> collisions.put(position, blocks));
+    public synchronized void movePiece(Direction direction, Piece piece){
+            if(checkMovement(direction, piece)){
+                piece.getPositions().forEach( position -> collisions.remove(position));
+                piece.move(direction);
+                piece.getPositions().forEach(position -> collisions.put(position, piece));
             }
     }
 
@@ -139,13 +138,29 @@ public class Board {
     }
 
 
+    public boolean checkRotation(Piece piece){
 
+        List<Position> toCheck = piece.getRotations();
+        boolean ok = true;
 
-    public void rotateClockWise(Piece blocks){
+        for(Position pos : toCheck){
+            if(checkCollide(pos, piece)) {
+                ok = false;
+                break;
 
-        //// TODO: 06/03/2017 Rotation will change block shape
-        //if(blocks.checkRotation(grid))
-            blocks.rotateClockWise();
+            }
+        }
+        return ok;
+    }
+
+    public void rotateClockWise(Piece piece){
+
+        if(checkRotation(piece)){
+            piece.getPositions().forEach( position -> collisions.remove(position));
+            piece.rotateClockWise();
+            piece.getPositions().forEach( position -> collisions.put(position, piece));
+        }
+
     }
 
     public List<Piece> getBlockAggregates() {

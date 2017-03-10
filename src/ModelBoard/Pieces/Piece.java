@@ -69,15 +69,6 @@ public class Piece implements RemovalListener{
         listeners.forEach(RemovalListener::onDown);
     }
 
-    public boolean checkRotation(Grid g){
-        /*for (Block block : blocks){
-            if(!block.checkRotation(g, origin.getPositionOfBlock())){
-                possible = false;
-            }
-        }*/
-
-        return true;
-    }
 
     public List<Position> getLowers(){
         List<Position> positions = new ArrayList<>();
@@ -98,8 +89,23 @@ public class Piece implements RemovalListener{
 
     }
 
+    private boolean[][] rotate(){
+        int M = positions.length;
+        int N = positions[0].length;
+        boolean rotated[][] = new boolean[N][M];
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                rotated[j][M-1-i] = positions[i][j];
+            }
+        }
+        return rotated;
+    }
+
     public void rotateClockWise(){
-        //blocks.forEach(block -> block.rotateClockWise(origin.getPositionOfBlock()));
+
+        positions = rotate();
+        height = positions.length;
+        width = positions[0].length;
     }
 
     public boolean isInBlock(Position pos){
@@ -129,6 +135,19 @@ public class Piece implements RemovalListener{
         }
 
         return positionsList;
+    }
+
+    public List<Position> getRotations(){
+        List<Position> rotationList = new ArrayList<>();
+        boolean[][] rotated = rotate();
+        for (int i = 0; i < rotated.length; i++) {
+            for (int j = 0; j < rotated[0].length; j++) {
+                if(rotated[i][j])
+                    rotationList.add(new Position(position.getX()+i, position.getY()+j));
+            }
+        }
+
+        return rotationList;
     }
 
     public int getMinimumY(){
