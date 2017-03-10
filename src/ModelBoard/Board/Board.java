@@ -1,12 +1,11 @@
 package ModelBoard.Board;
 
 import ModelBoard.Direction;
-import ModelBoard.Pieces.BlockAggregate;
+import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
@@ -15,31 +14,28 @@ import java.util.stream.Collectors;
  */
 public class Board {
 
-    private Grid grid;
     /* private List<BlockAggregate> blockAggregates; */
-    private Map<Position, BlockAggregate> collisions;
+    private ConcurrentHashMap<Position, Piece> collisions;
     private int height;
     private int width;
 
 
     public Board(int height, int width) {
-        grid = new Grid(height, width);
         this.height = height;
         this.width = width;
         //blockAggregates = new ArrayList<>();
-        collisions = new HashMap<>();
+        collisions = new ConcurrentHashMap<>();
     }
 
     public Board(Board board) {
-        this.grid = new Grid(board.grid);
-        collisions = new HashMap<>();
+        collisions = new ConcurrentHashMap<>();
         collisions.putAll(board.collisions);
 
         this.height = board.height;
         this.width = board.width;
     }
 
-    public void addPiece(BlockAggregate piece){
+    public void addPiece(Piece piece){
         piece.getPositions().forEach(
                 position -> collisions.put(position, piece)
         );
@@ -47,12 +43,11 @@ public class Board {
     }
 
 
-    public boolean checkMovement(Direction direction, BlockAggregate blocks){
+    public synchronized boolean checkMovement(Direction direction, Piece blocks){
         
         
         List<Position> toCheck = blocks.getPositions().stream()
                 .map(direction::getNewPosition).collect(Collectors.toList());
-
         boolean ok = true;
 
         for(Position pos : toCheck){
@@ -66,8 +61,9 @@ public class Board {
         return ok;
     }
 
-    private boolean checkCollide(Position pos, BlockAggregate blocks){
+    private synchronized boolean checkCollide(Position pos, Piece blocks){
         if (pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) {
+
             return collisions.containsKey(pos) && !collisions.get(pos).equals(blocks);
 
         } else {
@@ -78,53 +74,93 @@ public class Board {
 
     }
 
-    public void movePiece(Direction direction, BlockAggregate blocks){
+    public synchronized void movePiece(Direction direction, Piece blocks){
+            if(checkMovement(direction, blocks)){
+                blocks.getPositions().forEach( position -> collisions.remove(position));
+                blocks.move(direction);
+                blocks.getPositions().forEach(position -> collisions.put(position, blocks));
+            }
+    }
 
-        if(checkMovement(direction, blocks)){
-            blocks.getPositions().forEach( position -> collisions.remove(position));
-            blocks.move(direction);
-            blocks.getPositions().forEach(position -> collisions.remove(position));
-        }
+    public void linkPiece(Piece piece){
+        piece.getLowers().forEach(pos -> {
+            Piece downer = collisions.get(pos);
+            if(downer != null){
+                downer.addListener(piece);
+            }
 
+        });
 
     }
 
 
     public boolean isEmptyRow(int i){
-        return grid.isEmptyRow(i);
+        for (int j = 0; j < width; j++) {
+            Position toCheck = new Position(i, j);
+            if(collisions.containsKey(toCheck)){
+                return false;
+            }
+        }
 
+        return true;
     }
 
     public boolean isFullRow(int i){
-        return grid.isFullRow(i);
+        for (int j = 0; j < width; j++) {
+            Position toCheck = new Position(i, j);
+            if(!collisions.containsKey(toCheck)){
+                
+                return false;
+            }
+        }
+        return true;
     }
 
     public int sweep(){
-        return grid.sweep();
+        int count = 0;
+        for (int i = height-1; i >= 0; i--) {
+            if(isFullRow(i)){
+                count++;
+                for (int j = 0; j < width; j++) {
+                    Position toRemove = new Position(i, j);
+                    collisions.get(toRemove).removePosition(toRemove);
+                    collisions.remove(toRemove);
+                }
+            }
+        }
+
+
+        
+        return count;
     }
 
-    public BlockAggregate getBlockAggregate(Position p){
+    public Piece getBlockAggregate(Position p){
         return collisions.get(p);
     }
 
 
 
 
-    public void rotateClockWise(BlockAggregate blocks){
-        if(blocks.checkRotation(grid))
+    public void rotateClockWise(Piece blocks){
+
+        //// TODO: 06/03/2017 Rotation will change block shape
+        //if(blocks.checkRotation(grid))
             blocks.rotateClockWise();
     }
 
-    public Grid getGrid(){
-        return grid;
-    }
-
-    public List<BlockAggregate> getBlockAggregates() {
+    public List<Piece> getBlockAggregates() {
         return null;
     }
 
     public int rowsToSweep() {
-        return grid.rowsToSweep();
+        int rows = 0;
+        for (int i = 0; i < height; i++) {
+            if(isFullRow(i)){
+                rows++;
+            }
+        }
+
+        return rows;
     }
 }
 
