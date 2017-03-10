@@ -2,7 +2,7 @@ package ModelTetris.Player;
 
 import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.BlockAggregate;
+import ModelBoard.Pieces.Piece;
 import ModelTetris.Tetris;
 
 import java.util.LinkedList;
@@ -70,7 +70,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
     private Pair<Pair<Integer, Integer>, Double> computeEveryMove(int depth){
         
         Tetris startingGrid = new Tetris(tetris); // We copy the grid so we don't affect it
-        BlockAggregate current = startingGrid.getCurrent();
+        Piece current = startingGrid.getCurrent();
 
         Pair<Pair<Integer, Integer>, Double> best = new Pair<>();
 
