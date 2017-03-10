@@ -1,9 +1,3 @@
-import ModelBoard.Pieces.BlockAggregate;
-import ModelTetris.BlockFactory;
-import ModelTetris.Player.Evaluator;
-import ModelTetris.Player.GeneticAlgorithm;
-import ModelTetris.Tetris;
-import ModelTetris.TetrisBlocks;
 import View.TetrisGame;
 
 /**
