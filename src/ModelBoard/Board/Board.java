@@ -44,8 +44,7 @@ public class Board {
 
 
     public synchronized boolean checkMovement(Direction direction, Piece piece){
-        
-        
+
         List<Position> toCheck = piece.getPositions().stream()
                 .map(direction::getNewPosition).collect(Collectors.toList());
         boolean ok = true;
@@ -129,8 +128,40 @@ public class Board {
                     collisions.get(toRemove).removePosition(toRemove);
                     collisions.remove(toRemove);
                 }
+            } else {
+                if (count > 0){
+                    boolean moved = false;
+                    Piece tmp = null;
+                    for (int j = 0; j < width; j++) {
+                        Position toMove = new Position(i + count, j);
+                        Piece piece = collisions.get(toMove);
+
+                        if (piece != null) {
+                            piece.getPositions().forEach(pos -> collisions.remove(pos));
+
+
+                            if (tmp == null) {
+                                tmp = piece;
+                                movePiece(Direction.DOWN, piece);
+                            } else if (piece != tmp) {
+                                tmp = piece;
+                                movePiece(Direction.DOWN, piece);
+                            }
+
+                            piece.resolveHoles();
+
+                            piece.getPositions().forEach(pos -> collisions.put(pos, piece));
+
+                        }
+
+
+                       // collisions.remove(toMove);
+                    }
+                }
             }
         }
+
+
 
 
         
