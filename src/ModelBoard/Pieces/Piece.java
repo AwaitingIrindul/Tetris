@@ -1,5 +1,6 @@
 package ModelBoard.Pieces;
 
+import ModelBoard.Board.Board;
 import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Position.Position;
@@ -64,7 +65,10 @@ public class Piece implements RemovalListener{
 
     public void removePosition(Position pos){
         positions[pos.getX() - position.getX()][pos.getY() - position.getY()] = false;
-        listeners.forEach(RemovalListener::onDown);
+    }
+
+    public void notifyDown(Board b){
+        listeners.forEach(listener -> listener.onDown(b));
     }
 
 
@@ -106,9 +110,12 @@ public class Piece implements RemovalListener{
         width = positions[0].length;
     }
 
-    public boolean isInBlock(Position pos){
+    public boolean isInBlock(Position absolutePos) {
 
-        return false;
+        int i = absolutePos.getX() - position.getX();
+        int j = absolutePos.getY() - position.getY();
+
+        return i >= 0 && i < height && j >= 0 && j < width && positions[i][j];
     }
 
     public void move(Direction d){
@@ -158,9 +165,78 @@ public class Piece implements RemovalListener{
     }
 
     @Override
-    public void onDown() {
-        this.move(Direction.DOWN);
+    public void onDown(Board b) {
+        boolean ok = true;
+        for(Position pos : getPositions()) {
+            Position down = Direction.DOWN.getNewPosition(pos);
+            if (!isInBlock(down)){
+                if (!b.isEmpty(down)) {
+                    ok = false;
+                    break;
+                }
+            }
+        }
+
+        if(ok)
+            this.move(Direction.DOWN);
         listeners.stream().filter(listener -> listener != this)
-                  .forEach(RemovalListener::onDown);
+                  .forEach( listener -> listener.onDown(b));
+    }
+
+    private boolean isEmpty(Position pos){
+        int i = pos.getX();
+        int j = pos.getY();
+        return i >= 0 && i < height && j >= 0 && j < width && !positions[i][j];
+    }
+
+    public boolean resolveHoles() {
+        boolean isAlone;
+        boolean changed = false;
+        for (int i = 0; i < width; i++) {
+            int coordinateAlone = 0;
+            for (int j = 0; j < height; j++) {
+                isAlone = true;
+                Position tmp = new Position(j, i);
+                for (int k = 0; k < 4; k++) {
+                    switch (k){
+                        case 0: tmp = Direction.DOWN.getNewPosition(tmp);
+                            break;
+                        case 1: tmp = Direction.UP.getNewPosition(tmp);
+                            break;
+                        case 2: tmp = Direction.LEFT.getNewPosition(tmp);
+                            break;
+                        case 3: tmp = Direction.RIGHT.getNewPosition(tmp);
+                            break;
+                    }
+
+                    int tmpI = tmp.getX();
+                    int tmpJ = tmp.getY();
+
+                    if(tmpI >= 0 && tmpI < height && tmpJ >= 0 && tmpJ < width && positions[tmpI][tmpJ])
+                        isAlone = false;
+
+                    /*if(positions[tmpI][tmpJ]){
+                        isAlone = false;
+                    }*/
+
+                }
+
+                if(isAlone){
+                    changed = true;
+                    tmp = new Position(i, j);
+                    while (isEmpty(Direction.DOWN.getNewPosition(tmp))){
+                        positions[i][j] = false;
+                        Position d = Direction.DOWN.getNewPosition(tmp);
+                        positions[d.getX()][d.getY()] = true;
+                        tmp = d;
+                    }
+                }
+
+            }
+
+
+        }
+
+        return changed;
     }
 }
