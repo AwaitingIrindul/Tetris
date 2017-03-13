@@ -97,6 +97,11 @@ public class TetrisGame extends Application implements GravityListener{
             if(e.getCode() == KeyCode.UP){
                 tetris.rotate();
             }
+            if(e.getCode() == KeyCode.R){
+                System.out.println();
+                
+                tetris.resolve();
+            }
 
             render();
 
@@ -233,6 +238,7 @@ public class TetrisGame extends Application implements GravityListener{
     }
 
     private void resetGame(){
+        tetris.quit();
         timer.stop();
         primaryStage.setScene(new Scene(createContent()));
         createHandlers(primaryStage.getScene());
@@ -247,18 +253,19 @@ public class TetrisGame extends Application implements GravityListener{
         g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
     }
     private void render() {
-        //g.clearRect( 0 , 0, WIDTH, HEIGHT);
+
+        g.clearRect( 0 , 0, WIDTH, HEIGHT);
 
 
-        //tetrominos.forEach(p -> p.draw(g));
-        //current.draw(g);
+        tetrominos.forEach(p -> p.draw(g));
+        current.draw(g);
 
-        //gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
+        gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
 
 
-        //next.drawNext(gcNextPiece);
+        next.drawNext(gcNextPiece);
 
-        //score.setText(Integer.toString(tetris.getScore()));
+        score.setText(Integer.toString(tetris.getScore()));
     }
 
     private void update() {
@@ -338,7 +345,7 @@ public class TetrisGame extends Application implements GravityListener{
     }
 
     @Override
-    public void onSweep() {
+    public synchronized void onSweep() {
         current.draw(g);
         for(Tetromino t: tetrominos){
             t.draw(g);
@@ -346,7 +353,7 @@ public class TetrisGame extends Application implements GravityListener{
     }
 
     @Override
-    public void sweeping() {
+    public synchronized void sweeping() {
         current.undraw(g);
         for(Tetromino t: tetrominos){
             t.undraw(g);
