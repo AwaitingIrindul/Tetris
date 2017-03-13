@@ -102,7 +102,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
                     possible.move(Direction.DOWN);
                 }
 
-                possible.addToBoard();
+               // possible.addToBoard();
                 double score;
 
                 score = evaluator.evaluate(possible);
