@@ -292,7 +292,7 @@ public class TetrisGame extends Application implements GravityListener{
 
         color = rd.nextInt(7);
 
-        switch (color){
+        /*switch (color){
             case 0:
                 return Color.AQUA;
             case 1:
@@ -309,8 +309,11 @@ public class TetrisGame extends Application implements GravityListener{
                 return Color.RED;
             default:
                 return Color.BLACK;
-        }
-
+        }*/
+        int r = rd.nextInt(255);
+        int g = rd.nextInt(255);
+        int b = rd.nextInt(255);
+        return  Color.rgb(r, g, b);
     }
 
 
