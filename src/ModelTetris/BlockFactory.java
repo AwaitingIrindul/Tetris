@@ -61,10 +61,9 @@ public class BlockFactory {
 
     private static Piece getLeftL(){
         String[][] scheme = {
-                {"0", "0", "1", "0"},
-                {"0", "0", "1", "0"},
-                {"0", "1", "1", "0"},
-                {"0", "0", "0", "0"}
+                {"0", "1"},
+                {"0", "1"},
+                {"1", "1"},
         };
 
         Piece piece = new Piece(scheme, startingPosition);
