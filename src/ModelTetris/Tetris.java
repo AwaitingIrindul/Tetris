@@ -31,6 +31,8 @@ public class Tetris {
         pieces = new ArrayList<>(7);
         movementListeners = new ArrayList<>();
         current = randomBlock();
+        move(Direction.DOWN);
+        move(Direction.DOWN);
         board.addPiece(current);
 
         next = randomBlock();
@@ -64,15 +66,11 @@ public class Tetris {
     }
 
     public void applyGravity(){
-        
         if(board.checkMovement(Direction.DOWN, current)){
-
             move(Direction.DOWN);
 
             return;
-
         }
-
 
         board.linkPiece(current);
         movementListeners.forEach(GravityListener::sweeping);
@@ -80,6 +78,7 @@ public class Tetris {
         movementListeners.forEach(GravityListener::onSweep);
 
         if(!this.isFinished()){
+
             swapCurrent();
         } else {
             movementListeners.forEach(GravityListener::onQuit);
@@ -119,7 +118,7 @@ public class Tetris {
         int value = pieces.get(0);
         pieces.remove(0);
         return BlockFactory.get(TetrisBlocks.values()[value]);
-        //return BlockFactory.get(TetrisBlocks.Straight);
+        //return BlockFactory.get(TetrisBlocks.ThreeOne);
     }
 
     public void rotate(){
