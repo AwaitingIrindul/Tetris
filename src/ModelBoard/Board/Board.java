@@ -1,11 +1,12 @@
 package ModelBoard.Board;
 
 import ModelBoard.Direction;
+import ModelBoard.Pieces.GravityDeomon;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
  * Created by Irindul on 09/02/2017.
  */
 public class Board {
-
-    /* private List<BlockAggregate> blockAggregates; */
+    
     private ConcurrentHashMap<Position, Piece> collisions;
+    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1000);
     private int height;
     private int width;
 
@@ -23,7 +24,6 @@ public class Board {
     public Board(int height, int width) {
         this.height = height;
         this.width = width;
-        //blockAggregates = new ArrayList<>();
         collisions = new ConcurrentHashMap<>();
     }
 
@@ -39,7 +39,13 @@ public class Board {
         piece.getPositions().forEach(
                 position -> collisions.put(position, piece)
         );
+    }
 
+    public void addDaeomon(Piece piece){
+
+        Thread t = new Thread(new GravityDeomon(this, piece));
+        t.setDaemon(true);
+        executor.scheduleAtFixedRate(t, 0, 10, TimeUnit.MILLISECONDS);
     }
 
 
@@ -100,7 +106,6 @@ public class Board {
         for (int j = 0; j < width; j++) {
             Position toCheck = new Position(i, j);
             if(!collisions.containsKey(toCheck)){
-                
                 return false;
             }
         }
@@ -119,7 +124,7 @@ public class Board {
                 }
             } else {
                 if (count > 0){
-                    boolean moved = false;
+                   /* boolean moved = false;
                     Piece tmp = null;
                     for (int j = 0; j < width; j++) {
                         Position toMove = new Position(i + count, j);
@@ -145,7 +150,7 @@ public class Board {
 
 
                        // collisions.remove(toMove);
-                    }
+                    }*/
                 }
             }
         }
@@ -159,6 +164,12 @@ public class Board {
 
     public Piece getBlockAggregate(Position p){
         return collisions.get(p);
+    }
+
+    public void resolveHoles(Piece p){
+        p.getPositions().forEach(pos -> collisions.remove(pos));
+        p.resolveHoles();
+        p.getPositions().forEach(pos -> collisions.put(pos, p));
     }
 
 
@@ -185,6 +196,11 @@ public class Board {
             piece.getPositions().forEach( position -> collisions.put(position, piece));
         }
 
+    }
+
+    public void onQuit(){
+        executor.shutdown();
+        //// TODO: 13/03/2017 Find a way to clean executor
     }
 
     public int rowsToSweep() {
