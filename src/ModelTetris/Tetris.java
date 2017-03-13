@@ -32,6 +32,7 @@ public class Tetris {
         movementListeners = new ArrayList<>();
         current = randomBlock();
         board.addPiece(current);
+
         next = randomBlock();
                 //BlockFactory.get(TetrisBlocks.Straight);
        // board.addPiece(current);
@@ -60,11 +61,6 @@ public class Tetris {
         movementListeners.forEach(GravityListener::moving);
         board.movePiece(d, current);
         movementListeners.forEach(GravityListener::onMovement);
-    }
-
-
-    public List<Piece> getBlocks(){
-        return board.getBlockAggregates();
     }
 
     public void applyGravity(){
@@ -165,83 +161,41 @@ public class Tetris {
 
     public int holes() {
         int holes = 0;
-        boolean up = false;
-        boolean atLeastOne =false;
-        for (int i = 0; i < width; i++) {
-            for (int j = height - 1; j >= 0; j--) {
-
-                if(atLeastOne){
-                    Position tmp = Direction.UP.getNewPosition(new Position(j, i));
-                    int upX = tmp.getX();
-                    int upY = tmp.getY();
-                    //We check if there is a block on top of the current pos
-                    /*if(board.getGrid().isInRange(upX, upY)){
-                        if(board.getGrid().isEmpty(j, i))
-                            up = ! board.getGrid().isEmpty(upX, upY);
-                        else up = false;
-                    }*/
-                    // TODO: 06/03/2017 REDO HOLES FUNCTION
-
-                    if(up){ //If there is something on top of this cell, there is a hole
-                        holes++;
-                    }
-                } else {
-                    /*if(!board.getGrid().isEmpty(j, i)){
-                        atLeastOne = true;
-                    }*/
+        boolean atLeastOne;
+        for (int i = 0; i < height; i++) {
+            atLeastOne = false;
+            for (int j = 0; j < width; j++) {
+                Position tmp = new Position(i, j);
+                if(!board.isEmpty(tmp)) {
+                    atLeastOne = true;
+                } else if (board.isEmpty(tmp) && atLeastOne){
+                    holes++;
                 }
-
             }
         }
-        // TODO: 20/02/2017 VERIFY
         return holes;
     }
 
     private int height(int j){
         int heightC = 0;
-        boolean currentOnTheGround = false;
-
-
-        //We check if the current block is on the ground
-        /*for (Block block : current.getBlocks()){
-            for (int k = 0; k < block.getHeight(); k++) {
-                for (int l = 0; l < block.getWidth(); l++) {
-                    Position down = Direction.DOWN.getNewPosition(block.getPosition(k, l));
-
-                    //If at least on of the block has a block below it or is not in the grid then the block is on the ground
-                    if(board.getGrid().isInRange(down.getX(), down.getY())){
-                        if(!board.getGrid().isEmpty(down.getX(), down.getY())){
-                            currentOnTheGround = true;
-                        }
-                    } else {
-                        currentOnTheGround = true;
-                    }
-
-                }
-            }
-        }*/
-
-        // TODO: 06/03/2017 Recompute height properly 
-
 
 
         for (int i = height-1; i >= 0; i--) {
             Position tmp = new Position(i, j);
-            if(!current.isInBlock(tmp)){ // TODO: 06/03/2017 Refactor with board.isInBlock(bl, pos); 
-               /* if(!board.getGrid().isEmpty(i, j))
+
+            if(board.isInPiece(current, tmp)){
+               if(!board.isEmpty(tmp))
                     heightC = height - i; //We count the height only if this is not the current block
                 //Height - i is to calculate the height as 0 is on top and height is on the bottom
-               */
-            } else {
-                if(currentOnTheGround){
-                    /*if(!board.getGrid().isEmpty(i, j))
-                    heightC = height - i;*/
-                }
             }
 
         }
         return heightC;
     }
+
+    /*public int height() {
+
+    }*/
 
     public int bumpiness() {
         int bumpiness = 0;
