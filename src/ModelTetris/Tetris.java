@@ -31,8 +31,6 @@ public class Tetris {
         pieces = new ArrayList<>(7);
         movementListeners = new ArrayList<>();
         current = randomBlock();
-        move(Direction.DOWN);
-        move(Direction.DOWN);
         board.addPiece(current);
 
         next = randomBlock();
@@ -72,7 +70,6 @@ public class Tetris {
             return;
         }
 
-        board.linkPiece(current);
         movementListeners.forEach(GravityListener::sweeping);
         score(board.sweep());
         movementListeners.forEach(GravityListener::onSweep);

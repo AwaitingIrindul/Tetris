@@ -11,13 +11,11 @@ import java.util.List;
 /**
  * Created by Irindul on 09/02/2017.
  */
-public class Piece implements RemovalListener{
+public class Piece{
 
     private Position position;
     private int height, width;
     private boolean positions[][];
-
-    private ArrayList<RemovalListener> listeners;
 
 
     public Piece(int height, int width) {
@@ -25,7 +23,6 @@ public class Piece implements RemovalListener{
         this.height = height;
         this.width = width;
         positions = new boolean[height][width];
-        listeners = new ArrayList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 positions[i][j] = false;
@@ -53,8 +50,6 @@ public class Piece implements RemovalListener{
         height = b.height;
         width = b.width;
         positions = new boolean[height][width];
-        listeners = new ArrayList<>();
-        listeners.addAll(b.listeners);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 positions[i][j] = b.positions[i][j];
@@ -65,10 +60,6 @@ public class Piece implements RemovalListener{
 
     public void removePosition(Position pos){
         positions[pos.getX() - position.getX()][pos.getY() - position.getY()] = false;
-    }
-
-    public void notifyDown(Board b){
-        listeners.forEach(listener -> listener.onDown(b));
     }
 
 
@@ -158,29 +149,6 @@ public class Piece implements RemovalListener{
 
     public Position getPosition(){
         return position;
-    }
-
-    public void addListener(RemovalListener l){
-        listeners.add(l);
-    }
-
-    @Override
-    public void onDown(Board b) {
-        boolean ok = true;
-        for(Position pos : getPositions()) {
-            Position down = Direction.DOWN.getNewPosition(pos);
-            if (!isInBlock(down)){
-                if (!b.isEmpty(down)) {
-                    ok = false;
-                    break;
-                }
-            }
-        }
-
-        if(ok)
-            this.move(Direction.DOWN);
-        listeners.stream().filter(listener -> listener != this)
-                  .forEach( listener -> listener.onDown(b));
     }
 
     private boolean isEmpty(Position pos){

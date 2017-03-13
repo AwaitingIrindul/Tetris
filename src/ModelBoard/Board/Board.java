@@ -84,17 +84,6 @@ public class Board {
             }
     }
 
-    public void linkPiece(Piece piece){
-        piece.getLowers().forEach(pos -> {
-            Piece downer = collisions.get(pos);
-            if(downer != null){
-                downer.addListener(piece);
-            }
-
-        });
-
-    }
-
 
     public boolean isEmptyRow(int i){
         for (int j = 0; j < width; j++) {
