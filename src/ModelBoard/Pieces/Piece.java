@@ -13,7 +13,6 @@ import java.util.List;
 public class Piece implements RemovalListener{
 
     private Position position;
-    private Origin origin;
     private int height, width;
     private boolean positions[][];
 
@@ -52,7 +51,7 @@ public class Piece implements RemovalListener{
         this.position = b.position;
         height = b.height;
         width = b.width;
-        positions = new boolean[width][height];
+        positions = new boolean[height][width];
         listeners = new ArrayList<>();
         listeners.addAll(b.listeners);
         for (int i = 0; i < height; i++) {
@@ -60,7 +59,6 @@ public class Piece implements RemovalListener{
                 positions[i][j] = b.positions[i][j];
             }
         }
-        this.origin = new Origin(b.origin);
     }
 
 
@@ -111,13 +109,6 @@ public class Piece implements RemovalListener{
     public boolean isInBlock(Position pos){
 
         return false;
-    }
-    public void setOrigin(Origin origin){
-        this.origin = origin;
-    }
-
-    public Origin getOrigin() {
-        return origin;
     }
 
     public void move(Direction d){
