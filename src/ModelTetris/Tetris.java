@@ -70,14 +70,19 @@ public class Tetris {
             return;
         }
 
+        movementListeners.forEach(GravityListener::moving);
+        board.resolveHoles(current);
+        movementListeners.forEach(GravityListener::onMovement);
+
+
         movementListeners.forEach(GravityListener::sweeping);
         score(board.sweep());
         movementListeners.forEach(GravityListener::onSweep);
 
         if(!this.isFinished()){
-
             swapCurrent();
         } else {
+            quit();
             movementListeners.forEach(GravityListener::onQuit);
         }
 
@@ -100,6 +105,10 @@ public class Tetris {
         return next;
     }
 
+    public void quit(){
+        board.onQuit();
+    }
+
     public Piece randomBlock(){
 
         if(pieces.size() == 0){
@@ -115,7 +124,7 @@ public class Tetris {
         int value = pieces.get(0);
         pieces.remove(0);
         return BlockFactory.get(TetrisBlocks.values()[value]);
-        //return BlockFactory.get(TetrisBlocks.ThreeOne);
+        //return BlockFactory.get(TetrisBlocks.LeftL);
     }
 
     public void rotate(){
@@ -211,6 +220,7 @@ public class Tetris {
 
 
     public void swapCurrent(){
+        board.addDaeomon(current);
         current = next;
         next = randomBlock();
         randomRotate(current);
@@ -220,4 +230,7 @@ public class Tetris {
 
     }
 
+    public void resolve() {
+        board.resolveHoles(current);
+    }
 }
