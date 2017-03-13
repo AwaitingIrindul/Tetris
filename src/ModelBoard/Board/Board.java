@@ -61,6 +61,10 @@ public class Board {
         return ok;
     }
 
+    public void isInRange(Position pos){
+
+    }
+
     private synchronized boolean checkCollide(Position pos, Piece piece){
         if (pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) {
             return collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
@@ -163,10 +167,6 @@ public class Board {
 
     }
 
-    public List<Piece> getBlockAggregates() {
-        return null;
-    }
-
     public int rowsToSweep() {
         int rows = 0;
         for (int i = 0; i < height; i++) {
@@ -176,6 +176,14 @@ public class Board {
         }
 
         return rows;
+    }
+
+    public boolean isInPiece(Piece p, Position pos){
+        return collisions.getOrDefault(pos, new Piece(0,0)).equals(p);
+    }
+
+    public boolean isEmpty(Position pos) {
+        return pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width && !collisions.containsKey(pos);
     }
 }
 
