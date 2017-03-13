@@ -157,54 +157,41 @@ public class Piece{
         return i >= 0 && i < height && j >= 0 && j < width && !positions[i][j];
     }
 
-    public boolean resolveHoles() {
+    public void resolveHoles() {
         boolean isAlone;
-        boolean changed = false;
         for (int i = 0; i < width; i++) {
-            int coordinateAlone = 0;
-            for (int j = 0; j < height; j++) {
-                isAlone = true;
-                Position tmp = new Position(j, i);
-                for (int k = 0; k < 4; k++) {
-                    switch (k){
-                        case 0: tmp = Direction.DOWN.getNewPosition(tmp);
-                            break;
-                        case 1: tmp = Direction.UP.getNewPosition(tmp);
-                            break;
-                        case 2: tmp = Direction.LEFT.getNewPosition(tmp);
-                            break;
-                        case 3: tmp = Direction.RIGHT.getNewPosition(tmp);
-                            break;
+            for (int j = height- 1; j >= 0 ; j--) {
+                if(positions[j][i]) {
+
+                    Position tmp = new Position(j, i);
+                    Position down = Direction.DOWN.getNewPosition(tmp);
+
+                    Position left = Direction.LEFT.getNewPosition(tmp);
+                    Position right = Direction.RIGHT.getNewPosition(tmp);
+
+                    boolean leftOk, rightOk, ok;
+
+                    leftOk = left.getX() < 0 || left.getX() >= height || left.getY() < 0 || left.getY() >= width || isEmpty(left);
+                    rightOk = right.getX() < 0 || right.getX() >= height || right.getY() < 0 || right.getY() >= width || isEmpty(right);
+
+                    ok = leftOk && rightOk;
+
+                    if (ok) {
+                        for (int k = 0; k < height; k++) {
+                            if (isEmpty(down)) {
+                                positions[tmp.getX()][tmp.getY()] = false;
+                                positions[down.getX()][down.getY()] = true;
+                                tmp = new Position(down);
+                                down = Direction.DOWN.getNewPosition(down);
+
+                            }
+                        }
                     }
 
-                    int tmpI = tmp.getX();
-                    int tmpJ = tmp.getY();
-
-                    if(tmpI >= 0 && tmpI < height && tmpJ >= 0 && tmpJ < width && positions[tmpI][tmpJ])
-                        isAlone = false;
-
-                    /*if(positions[tmpI][tmpJ]){
-                        isAlone = false;
-                    }*/
 
                 }
-
-                if(isAlone){
-                    changed = true;
-                    tmp = new Position(i, j);
-                    while (isEmpty(Direction.DOWN.getNewPosition(tmp))){
-                        positions[i][j] = false;
-                        Position d = Direction.DOWN.getNewPosition(tmp);
-                        positions[d.getX()][d.getY()] = true;
-                        tmp = d;
-                    }
-                }
-
             }
-
-
         }
 
-        return changed;
     }
 }
