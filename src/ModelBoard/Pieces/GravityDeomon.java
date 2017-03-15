@@ -2,7 +2,6 @@ package ModelBoard.Pieces;
 
 import ModelBoard.Board.Board;
 import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
 
 /**
  * Created by Irindul on 13/03/2017.
@@ -22,12 +21,9 @@ public class GravityDeomon implements Runnable {
 
     @Override
     public void run() {
-            if(board.checkMovement(Direction.DOWN, piece)){
-                board.movePiece(Direction.DOWN, piece);
-            }
-            System.out.println("Checking : " + i);
-            
-            board.resolveHoles(piece);
-
+        if(piece.onlyFalse())
+            return;
+        board.movePiece(Direction.DOWN, piece);
+        board.resolveHoles(piece);
     }
 }
