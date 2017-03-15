@@ -224,7 +224,8 @@ public class TetrisGame extends Application implements GravityListener{
             artificialPlayer = true;
             artificialIntelligence = new ArtificialIntelligence(tetris,
                     //Evaluator.getRandomEvaluator());
-                    new Evaluator(-0.7037403842532439, 0.2496640822533236, -0.007391819447286618, -0.05172343401406043
+                    //new Evaluator(-0.7037403842532439, 0.2496640822533236, -0.007391819447286618, -0.05172343401406043
+                    new Evaluator(-0.510066, 0.760666, -0.35663, -0.184483
                     ));
             timer.start();
             timerSpeed = 0.25;
