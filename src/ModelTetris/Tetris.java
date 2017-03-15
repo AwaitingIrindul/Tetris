@@ -198,10 +198,6 @@ public class Tetris {
         return heightC;
     }
 
-    /*public int height() {
-
-    }*/
-
     public int bumpiness() {
         int bumpiness = 0;
 
@@ -223,6 +219,7 @@ public class Tetris {
         board.addDaeomon(current);
         current = next;
         next = randomBlock();
+        addToBoard();
         randomRotate(current);
         movementListeners.forEach(GravityListener::onChangedNext);
         move(Direction.DOWN);
