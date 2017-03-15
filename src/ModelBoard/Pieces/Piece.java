@@ -156,42 +156,43 @@ public class Piece{
         int j = pos.getY();
         return i >= 0 && i < height && j >= 0 && j < width && !positions[i][j];
     }
+    
+    private boolean isEmptyRow(int r){
+        for (int c = 0; c < width; c++) {
+            if(positions[r][c])
+                return false;
+        }
+        return true;
+    }
 
+    
     public void resolveHoles() {
-        boolean isAlone;
-        for (int i = 0; i < width; i++) {
-            for (int j = height- 1; j >= 0 ; j--) {
-                if(positions[j][i]) {
+        for (int i = 1; i < height; i++) {
+            if(isEmptyRow(i)){
+                applyGravity(i-1);
+            }
+          
+        }
+    }
 
-                    Position tmp = new Position(j, i);
-                    Position down = Direction.DOWN.getNewPosition(tmp);
-
-                    Position left = Direction.LEFT.getNewPosition(tmp);
-                    Position right = Direction.RIGHT.getNewPosition(tmp);
-
-                    boolean leftOk, rightOk, ok;
-
-                    leftOk = left.getX() < 0 || left.getX() >= height || left.getY() < 0 || left.getY() >= width || isEmpty(left);
-                    rightOk = right.getX() < 0 || right.getX() >= height || right.getY() < 0 || right.getY() >= width || isEmpty(right);
-
-                    ok = leftOk && rightOk;
-
-                    if (ok) {
-                        for (int k = 0; k < height; k++) {
-                            if (isEmpty(down)) {
-                                positions[tmp.getX()][tmp.getY()] = false;
-                                positions[down.getX()][down.getY()] = true;
-                                tmp = new Position(down);
-                                down = Direction.DOWN.getNewPosition(down);
-
-                            }
-                        }
-                    }
-
-
-                }
+    // TODO: 15/03/2017 ResolveHoles better 
+    private void applyGravity(int r) {
+        for (int c = 0; c < width; c++) {
+            if(!positions[r+1][c])
+            {
+                positions[r][c] = false;
+                positions[r+1][c] = true;
             }
         }
+    }
 
+    public boolean onlyFalse(){
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if(positions[i][j])
+                    return false;
+            }
+        }
+        return true;
     }
 }
