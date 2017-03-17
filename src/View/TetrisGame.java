@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class TetrisGame extends Application implements GravityListener{
 
+    //TODO refactor view.
+
     public static final int TILE_SIZE = 40;
     public static final int WIDTH = 10 * TILE_SIZE;
     public static final int HEIGHT = 16 * TILE_SIZE;
@@ -117,7 +119,7 @@ public class TetrisGame extends Application implements GravityListener{
         });
     }
 
-    private Parent createContent() {
+    public Parent createContent() {
 
         Pane root = new Pane();
         root.setPrefSize((WIDTH + SCORE_WIDTH), (HEIGHT));
@@ -181,8 +183,8 @@ public class TetrisGame extends Application implements GravityListener{
         go = true;
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
-        next = new Tetromino(getRandomColor(), tetris.getNext());
-        current = new Tetromino(getRandomColor(), tetris.getCurrent());
+        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE);
+        current = new Tetromino(getRandomColor(), tetris.getCurrent(), TILE_SIZE);
         tetris.addGravityListener(this);
 
 
@@ -348,7 +350,7 @@ public class TetrisGame extends Application implements GravityListener{
     public void onChangedNext() {
         tetrominos.add(current);
         current = next;
-        next = new Tetromino(getRandomColor(), tetris.getNext());
+        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE);
         if (artificialPlayer){
             artificialIntelligence.setHasChanged(true);
         }

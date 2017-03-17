@@ -6,7 +6,7 @@ import ModelBoard.Position.Position;
 /**
  * Created by Irindul on 10/02/2017.
  */
-public class BlockFactory {
+public class TetrisPieceFactory {
 
     public static Position startingPosition = new Position(0, 4);
     

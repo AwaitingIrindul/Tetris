@@ -1,3 +1,4 @@
+import View.PuzzleGame;
 import View.TetrisGame;
 
 /**
@@ -9,6 +10,7 @@ public class Main {
 
 
         javafx.application.Application.launch(TetrisGame.class);
+        //javafx.application.Application.launch(PuzzleGame.class);
 
 
     }

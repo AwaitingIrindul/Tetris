@@ -4,8 +4,6 @@ import ModelBoard.Pieces.Piece;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import static View.TetrisGame.TILE_SIZE;
-
 /**
  * Created by Irindul on 16/02/2017.
  */
@@ -14,10 +12,12 @@ public class Tetromino{
     //TODO Refactor view library;
     Color color;
     Piece piece;
+    double tilesize;
 
-    public Tetromino(Color color, Piece block) {
+    public Tetromino(Color color, Piece block, double tilesize) {
         this.color = color;
         this.piece = block;
+        this.tilesize = tilesize;
     }
 
     public void setPosition(int x, int y){
@@ -40,13 +40,14 @@ public class Tetromino{
 
             x-=minY;
             y+=1;
-            g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
         });
 
 
 
     }
 
+    // TODO: 15/03/2017 add offset in parameter (-2 for tetris, 0 for blocks ect..)
     public void draw(Color c, Color s, GraphicsContext g){
         g.setFill(c);
         g.setStroke(s);
@@ -55,9 +56,9 @@ public class Tetromino{
             int x, y;
             x = pos.getY();
             y = pos.getX(); //TODO Refactor with normal sense;
-            y-=2;
-            g.strokeRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-            g.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            //y-=2;
+            g.strokeRect(x*tilesize, y*tilesize, tilesize, tilesize);
+            g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
         });
 
     }
@@ -75,7 +76,7 @@ public class Tetromino{
 
            y-=2;
 
-           g.clearRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE+0.5, TILE_SIZE+0.5);
+           g.clearRect(x*tilesize, y*tilesize, tilesize+0.5, tilesize+0.5);
        });
     }
 }

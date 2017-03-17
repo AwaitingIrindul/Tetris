@@ -122,8 +122,7 @@ public class Tetris {
 
         int value = pieces.get(0);
         pieces.remove(0);
-        return BlockFactory.get(TetrisBlocks.values()[value]);
-        //return BlockFactory.get(TetrisBlocks.LeftZ);
+        return TetrisPieceFactory.get(TetrisBlocks.values()[value]);
     }
 
     public void rotate(){
