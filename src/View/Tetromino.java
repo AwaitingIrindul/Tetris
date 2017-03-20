@@ -13,11 +13,13 @@ public class Tetromino{
     Color color;
     Piece piece;
     double tilesize;
+    int offset;
 
-    public Tetromino(Color color, Piece block, double tilesize) {
+    public Tetromino(Color color, Piece block, double tilesize, int offset) {
         this.color = color;
         this.piece = block;
         this.tilesize = tilesize;
+        this.offset = offset;
     }
 
     public void setPosition(int x, int y){
@@ -56,7 +58,7 @@ public class Tetromino{
             int x, y;
             x = pos.getY();
             y = pos.getX(); //TODO Refactor with normal sense;
-            //y-=2;
+            y-=offset;
             g.strokeRect(x*tilesize, y*tilesize, tilesize, tilesize);
             g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
         });
@@ -74,7 +76,7 @@ public class Tetromino{
            x = pos.getY();
            y = pos.getX();
 
-           y-=2;
+           y-=offset;
 
            g.clearRect(x*tilesize, y*tilesize, tilesize+0.5, tilesize+0.5);
        });

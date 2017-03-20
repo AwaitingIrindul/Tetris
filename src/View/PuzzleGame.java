@@ -103,7 +103,7 @@ public class PuzzleGame extends Application{
         this.gc = moving.getGraphicsContext2D();
 
         Puzzle puzzle = new Puzzle();
-        goal = new Tetromino(Color.BURLYWOOD, puzzle.getGoal(), TILE_SIZE);
+        goal = new Tetromino(Color.BURLYWOOD, puzzle.getGoal(), TILE_SIZE, 0);
 
         root.getChildren().addAll(moving);
         root.getChildren().addAll(canvas);

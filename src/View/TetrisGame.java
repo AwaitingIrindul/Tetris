@@ -183,8 +183,8 @@ public class TetrisGame extends Application implements GravityListener{
         go = true;
         tetris = new Tetris();
         tetrominos = new ArrayList<>();
-        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE);
-        current = new Tetromino(getRandomColor(), tetris.getCurrent(), TILE_SIZE);
+        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE, 2);
+        current = new Tetromino(getRandomColor(), tetris.getCurrent(), TILE_SIZE, 2);
         tetris.addGravityListener(this);
 
 
@@ -350,7 +350,7 @@ public class TetrisGame extends Application implements GravityListener{
     public void onChangedNext() {
         tetrominos.add(current);
         current = next;
-        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE);
+        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE, 2);
         if (artificialPlayer){
             artificialIntelligence.setHasChanged(true);
         }
