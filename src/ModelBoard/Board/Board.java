@@ -1,13 +1,11 @@
 package ModelBoard.Board;
-
 import ModelBoard.Direction;
 import ModelBoard.Pieces.GravityDeomon;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -17,10 +15,9 @@ public class Board {
     
     private ConcurrentMap<Position, Piece> collisions;
     private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(1);
-    private Map<Piece, ScheduledFuture<?>> futures = new HashMap<>();
     private int height;
     private int width;
-
+    private ReentrantLock lock = new ReentrantLock();
 
     public Board(int height, int width) {
         this.height = height;
@@ -57,7 +54,6 @@ public class Board {
     public synchronized boolean checkMovement(Direction direction, Piece piece){
 
         if(!collisions.containsValue(piece)) {
-
             System.out.println("Piece not in collision anymore : " + Thread.currentThread().getName());
            return false;
         }
@@ -90,14 +86,20 @@ public class Board {
     }
 
     public synchronized void movePiece(Direction direction, Piece piece){
+        lock.lock();
+        try{
             if(collisions.containsValue(piece)){
                 if(checkMovement(direction, piece)){
-                    // System.out.println("Thread : " + Thread.currentThread().getName());
                     piece.getPositions().forEach( position -> collisions.remove(position));
                     piece.move(direction);
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
             }
+        } finally {
+            lock.unlock();
+        }
+
+
 
     }
 
@@ -124,6 +126,7 @@ public class Board {
     }
 
     public int sweep(){
+        lock.lock();
         int count = 0;
         for (int i = height-1; i >= 0; i--) {
             if(isFullRow(i)){
@@ -135,16 +138,26 @@ public class Board {
                 }
             }
         }
-        
-        return count;
+       if(count > 0){
+           collisions.values().stream()
+                   .filter(Piece::hasBeenChanged)
+                   .forEach(this::resolveHoles);
+       }
+
+       lock.unlock();
+       return count;
     }
 
     public void resolveHoles(Piece p){
-        synchronized (collisions){
+        lock.lock();
+        try{
             p.getPositions().forEach(pos -> collisions.remove(pos));
-           // p.resolveHoles();
+            p.resolveHoles();
             p.getPositions().forEach(pos -> collisions.put(pos, p));
+        } finally {
+                lock.unlock();
         }
+
 
     }
 
@@ -176,7 +189,6 @@ public class Board {
 
     public void onQuit(){
         executor.shutdown();
-        //// TODO: 13/03/2017 Find a way to clean executor
     }
 
     public int rowsToSweep() {
