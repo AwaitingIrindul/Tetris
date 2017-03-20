@@ -16,6 +16,7 @@ public class Piece{
     private Position position;
     private int height, width;
     private boolean positions[][];
+    private boolean hasBeenChanged = false;
 
 
     public Piece(int height, int width) {
@@ -60,6 +61,8 @@ public class Piece{
 
     public void removePosition(Position pos){
         positions[pos.getX() - position.getX()][pos.getY() - position.getY()] = false;
+        if(!onlyFalse())
+            setHasChanged(true);
     }
 
 
@@ -167,18 +170,26 @@ public class Piece{
 
     
     public void resolveHoles() {
-        for (int i = 1; i < height; i++) {
-            if(isEmptyRow(i)){
-                applyGravity(i-1);
-            }
-          
+        setHasChanged(false);
+        for (int i = 0; i < height; i++) {
+            applyGravity();
         }
     }
 
-    // TODO: 15/03/2017 ResolveHoles better 
+    private void applyGravity(){
+        for (int r = height-2; r >= 0; r--) {
+            for (int c = 0; c < width; c++) {
+                if(positions[r][c] && !positions[r+1][c]){
+                    positions[r][c] = false;
+                    positions[r+1][c] = true;
+                }
+            }
+        }
+    }
+
     private void applyGravity(int r) {
         for (int c = 0; c < width; c++) {
-            if(!positions[r+1][c])
+            if(positions[r][c] && !positions[r+1][c])
             {
                 positions[r][c] = false;
                 positions[r+1][c] = true;
@@ -194,5 +205,13 @@ public class Piece{
             }
         }
         return true;
+    }
+
+    public boolean hasBeenChanged(){
+        return hasBeenChanged;
+    }
+
+    private void setHasChanged(boolean changed){
+        hasBeenChanged = changed;
     }
 }
