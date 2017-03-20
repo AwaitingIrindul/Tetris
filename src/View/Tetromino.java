@@ -13,11 +13,11 @@ public class Tetromino{
 
     //TODO Refactor view library;
     Color color;
-    Piece block;
+    Piece piece;
 
     public Tetromino(Color color, Piece block) {
         this.color = color;
-        this.block  = block;
+        this.piece = block;
     }
 
     public void setPosition(int x, int y){
@@ -31,9 +31,9 @@ public class Tetromino{
     public void drawNext(GraphicsContext g){
         g.setFill(color);
 
-        int minY = block.getMinimumY();
+        int minY = piece.getMinimumY();
 
-        block.getPositions().forEach(pos -> {
+        piece.getPositions().forEach(pos -> {
             int x, y;
             x = pos.getY();
             y = pos.getX();
@@ -51,7 +51,7 @@ public class Tetromino{
         g.setFill(c);
         g.setStroke(s);
 
-        block.getPositions().forEach(pos -> {
+        piece.getPositions().forEach(pos -> {
             int x, y;
             x = pos.getY();
             y = pos.getX(); //TODO Refactor with normal sense;
@@ -62,9 +62,13 @@ public class Tetromino{
 
     }
 
+    public Piece getPiece() {
+        return piece;
+    }
+
     public void undraw(GraphicsContext g) {
 
-       block.getPositions().forEach(pos -> {
+       piece.getPositions().forEach(pos -> {
            int x, y;
            x = pos.getY();
            y = pos.getX();
