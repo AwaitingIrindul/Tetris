@@ -71,7 +71,6 @@ public class Tetris {
         }
 
         movementListeners.forEach(GravityListener::moving);
-        board.resolveHoles(current);
         movementListeners.forEach(GravityListener::onMovement);
 
 
@@ -124,7 +123,7 @@ public class Tetris {
         int value = pieces.get(0);
         pieces.remove(0);
         return BlockFactory.get(TetrisBlocks.values()[value]);
-        //return BlockFactory.get(TetrisBlocks.LeftL);
+        //return BlockFactory.get(TetrisBlocks.LeftZ);
     }
 
     public void rotate(){
