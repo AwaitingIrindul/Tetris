@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Irindul on 21/02/2017.
  */
-public class GeneticAlgorithm {
+public class GeneticAlgorithm implements Runnable{
 
 
     private List<ArtificialIntelligence> specimens;
@@ -24,7 +24,7 @@ public class GeneticAlgorithm {
         }
     }
 
-    public Evaluator train(int success){
+    public Evaluator run(int success){
 
         List<ArtificialIntelligence> offsprings;
         int nbGen = 0;
@@ -123,5 +123,10 @@ public class GeneticAlgorithm {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void run() {
+        this.run(500).display();
     }
 }
