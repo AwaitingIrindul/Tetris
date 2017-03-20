@@ -24,6 +24,6 @@ public class GravityDeomon implements Runnable {
         if(piece.onlyFalse())
             return;
         board.movePiece(Direction.DOWN, piece);
-        board.resolveHoles(piece);
+        //board.resolveHoles(piece);
     }
 }
