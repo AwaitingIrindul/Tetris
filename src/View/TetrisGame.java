@@ -22,6 +22,10 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Irindul on 16/02/2017.
@@ -51,6 +55,7 @@ public class TetrisGame extends Application implements GravityListener{
     private Label score;
     private  boolean artificialPlayer;
     private ArtificialIntelligence artificialIntelligence;
+    private ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();
 
     private Tetromino current;
 
@@ -71,7 +76,11 @@ public class TetrisGame extends Application implements GravityListener{
         primaryStage.show();
         this.primaryStage = primaryStage;
 
+        es.scheduleAtFixedRate((Runnable) () -> tetrominos.stream()
+                .filter(tetromino -> tetromino.getPiece().onlyFalse())
+                .forEach(tetromino -> tetromino.undraw(g))
 
+                , 1000, 30, TimeUnit.MILLISECONDS);
     }
 
     private void createHandlers(Scene scene){
@@ -228,7 +237,7 @@ public class TetrisGame extends Application implements GravityListener{
                     new Evaluator(-0.510066, 0.760666, -0.35663, -0.184483
                     ));
             timer.start();
-            timerSpeed = 0.25;
+            timerSpeed = 0.04;
 
         });
 
@@ -351,6 +360,7 @@ public class TetrisGame extends Application implements GravityListener{
         for(Tetromino t: tetrominos){
             t.draw(g);
         }
+       //render();
     }
 
     @Override
