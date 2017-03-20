@@ -7,9 +7,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        javafx.application.Application.launch(TetrisGame.class);
 
-//        BlockAggregate b = BlockFactory.get(TetrisBlocks.Straight);
+        javafx.application.Application.launch(TetrisGame.class);
 
 
     }
