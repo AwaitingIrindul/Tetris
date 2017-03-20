@@ -17,6 +17,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
     private int score;
     private static int count = 0;
     private boolean hasChanged;
+    private boolean go = true;
 
     public ArtificialIntelligence(Tetris tetris, Evaluator evaluator) {
         this.tetris = tetris;
@@ -57,13 +58,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     public void setHasChanged(boolean hasChanged) {
         this.hasChanged = hasChanged;
-    }
-
-    private void directionToGrid(int numberOfRight){
-
-        for (int i = 0; i < numberOfRight; i++) {
-            directions.add(Direction.RIGHT);
-        }
     }
 
 
@@ -133,10 +127,12 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     @Override
     public void run() {
-        while(!tetris.isFinished() && tetris.getScore() < 2001 && !Thread.currentThread().isInterrupted()){
+
+        while(go && tetris.getScore() < 2001 && !Thread.currentThread().isInterrupted()){
             
             executeNextMove();
             tetris.applyGravity();
+
         }
         score = tetris.getScore();
     }
@@ -148,10 +144,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     public Evaluator getEvaluator() {
         return evaluator;
-    }
-
-    public void setEvaluator(Evaluator evaluator) {
-        this.evaluator = evaluator;
     }
 
     @Override
@@ -181,6 +173,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     @Override
     public void onQuit() {
-
+        go = false;
     }
 }
