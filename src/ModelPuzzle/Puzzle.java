@@ -8,8 +8,8 @@ import ModelBoard.Pieces.Piece;
  */
 public class Puzzle {
 
-    Board board;
-    Piece goal;
+    private Board board;
+    private Piece goal;
     public static int height = 6;
     public static int width = 6;
 
