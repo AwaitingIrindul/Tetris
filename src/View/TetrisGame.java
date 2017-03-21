@@ -5,12 +5,15 @@ import ModelBoard.Observers.GravityListener;
 import ModelTetris.Player.ArtificialIntelligence;
 import ModelTetris.Player.Evaluator;
 import ModelTetris.Tetris;
+import View.ViewBoard.BoardView;
+import View.ViewBoard.PieceView;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,7 +25,6 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,40 +35,35 @@ import java.util.concurrent.TimeUnit;
 public class TetrisGame extends Application implements GravityListener{
 
     //TODO refactor view.
+    // TODO: 21/03/2017 Faire Thread ailleurs
 
     public static final int TILE_SIZE = 40;
     public static final int WIDTH = 10 * TILE_SIZE;
     public static final int HEIGHT = 16 * TILE_SIZE;
-    public static final int SCORE_HEIGHT = 16 * TILE_SIZE;
     public static final int SCORE_WIDTH = 10 * TILE_SIZE;
     public static final int NEXT_WIDTH = 4 * TILE_SIZE;
     public static final int NEXT_HEIGHT = 4 * TILE_SIZE;
     public boolean go;
 
-    
+    public int t = 0;
     private Tetris tetris;
 
 
-    private ArrayList<Tetromino> tetrominos;
-    private Tetromino next;
-    private GraphicsContext g;
-    private  GraphicsContext gcNextPiece;
+    private Group nextGroup;
+    private BoardView boardView;
     private Stage primaryStage;
     private double time;
     private  AnimationTimer timer;
     private Label score;
     private  boolean artificialPlayer;
     private ArtificialIntelligence artificialIntelligence;
-    private ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();
-
-    private Tetromino current;
 
     private static double timerSpeed = 0.017;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Scene scene = new Scene(createContent());
-
+        scene.getStylesheets().add("style/tetris.css");
         createHandlers(scene);
         primaryStage.setOnCloseRequest(t -> {
             Platform.exit();
@@ -74,15 +71,11 @@ public class TetrisGame extends Application implements GravityListener{
         });
 
         primaryStage.setTitle("Blocks puzzle game");
+        //primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
         this.primaryStage = primaryStage;
 
-        es.scheduleAtFixedRate((Runnable) () -> tetrominos.stream()
-                .filter(tetromino -> tetromino.getPiece().onlyFalse())
-                .forEach(tetromino -> tetromino.undraw(g))
-
-                , 1000, 30, TimeUnit.MILLISECONDS);
     }
 
     private void createHandlers(Scene scene){
@@ -114,79 +107,63 @@ public class TetrisGame extends Application implements GravityListener{
                 tetris.resolve();
             }
 
-            render();
+           // render();
 
         });
     }
 
     public Parent createContent() {
 
+
+        //Creating the different panes
         Pane root = new Pane();
         root.setPrefSize((WIDTH + SCORE_WIDTH), (HEIGHT));
 
-        Canvas backgroundGame = new Canvas(WIDTH, HEIGHT);
-        GraphicsContext gcBackgroundGame = backgroundGame.getGraphicsContext2D();
-        border(gcBackgroundGame);
+        Pane  game = new Pane();
+        game.setPrefSize(WIDTH, HEIGHT);
+        game.getStyleClass().add("gamePane");
 
-        Canvas movingGame = new Canvas(WIDTH, HEIGHT);
-        g = movingGame.getGraphicsContext2D();
-
-        Canvas scoreBackground = new Canvas(SCORE_WIDTH, SCORE_HEIGHT);
-        scoreBackground.setTranslateX(WIDTH);
-
-        GraphicsContext g1 = scoreBackground.getGraphicsContext2D();
-        border(g1);
-
-        Canvas nextPieceBg = new Canvas(NEXT_WIDTH, NEXT_HEIGHT);
-        nextPieceBg.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
-        nextPieceBg.setTranslateY(50);
-
-        GraphicsContext gcNextPieceBg = nextPieceBg.getGraphicsContext2D();
-        border(gcNextPieceBg);
-
-        Canvas nextPiece = new Canvas(NEXT_WIDTH, NEXT_HEIGHT);
-        nextPiece.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
-        nextPiece.setTranslateY(50);
-        gcNextPiece = nextPiece.getGraphicsContext2D();
+        Pane border = new Pane();
+        game.setPrefSize(WIDTH, HEIGHT);
+        game.getStyleClass().add("gamePane");
 
 
+        Pane menu = new Pane();
+        menu.setPrefSize(SCORE_WIDTH, HEIGHT);
+        menu.relocate(WIDTH, 0);
+
+        Pane nextPiece = new Pane();
+        nextPiece.setPrefSize(NEXT_WIDTH, NEXT_HEIGHT);
+        nextPiece.relocate((SCORE_WIDTH - NEXT_WIDTH)/2, 50);
+        nextPiece.getStyleClass().add("nextPiecePane");
+
+
+
+        //Creating buttons
         Button reset = new Button("Reset");
-
         reset.setMinHeight(100);
         reset.setMinWidth(NEXT_WIDTH);
-        reset.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        reset.setTranslateX((SCORE_WIDTH - NEXT_WIDTH) / 2);
         reset.setTranslateY(300);
 
 
         Button startAI = new Button("Start AI");
-
         startAI.setMinHeight(100);
         startAI.setMinWidth(NEXT_WIDTH);
-        startAI.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
+        startAI.setTranslateX((SCORE_WIDTH - NEXT_WIDTH) / 2);
         startAI.setTranslateY(400);
 
+        boardView = new BoardView();
+        Group board = boardView.getGroup();
+      //  board.getStyleClass().add("gamePane");
+        //board.maxHeight(HEIGHT-15);
 
-        score = new Label();
-        score.setTranslateX(WIDTH + (SCORE_WIDTH - NEXT_WIDTH) / 2);
-        score.setTranslateY(600);
-
-        root.getChildren().addAll(movingGame);
-        root.getChildren().addAll(backgroundGame);
-        root.getChildren().addAll(nextPiece);
-        root.getChildren().addAll(nextPieceBg);
-        root.getChildren().addAll(scoreBackground);
-        root.getChildren().add(reset);
-        root.getChildren().add(startAI);
-        root.getChildren().add(score);
-
-
-        go = true;
-        tetris = new Tetris();
-        tetrominos = new ArrayList<>();
-        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE, 2);
-        current = new Tetromino(getRandomColor(), tetris.getCurrent(), TILE_SIZE, 2);
-        tetris.addGravityListener(this);
-
+        //Adding every node to its root
+        game.getChildren().addAll(board, border);
+        menu.getChildren().addAll(reset, startAI);
+        menu.getChildren().add(nextPiece);
+        root.getChildren().add(game);
+        root.getChildren().add(menu);
 
         /*tetrominos.addAll(
                 tetris.getBlocks().stream() //List to stream
@@ -194,10 +171,17 @@ public class TetrisGame extends Application implements GravityListener{
                         .map(blockAggregate -> new Tetromino(getRandomColor(), blockAggregate))
                         //Returning a list
                         .collect(Collectors.toList())
-        );*/
+        ); */
+
+        go = true;
+        tetris = new Tetris();
+
+        boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
+       // current = new PieceView(getRandomColor(), tetris.getCurrent(), TILE_SIZE, 2);
+        tetris.addGravityListener(this);
 
 
-        render();
+        //render();
 
 
         timer = new AnimationTimer() {
@@ -208,10 +192,9 @@ public class TetrisGame extends Application implements GravityListener{
                 if(time >= 0.5 && go){
                     if(artificialPlayer){
                         artificialIntelligence.executeNextMove();
-                        render();
+                        //render();
                     }
                     update();
-                    render();
                     time = 0;
                 }
             }
@@ -222,7 +205,7 @@ public class TetrisGame extends Application implements GravityListener{
 
         startAI.setOnAction(event -> {
             resetGame();
-
+            // TODO: 21/03/2017 Refactor in function
             primaryStage.getScene().setOnKeyPressed(e -> {
                 if(e.getCode() == KeyCode.ESCAPE){
                     primaryStage.fireEvent(
@@ -239,7 +222,7 @@ public class TetrisGame extends Application implements GravityListener{
                     new Evaluator(-0.510066, 0.760666, -0.35663, -0.184483
                     ));
             timer.start();
-            timerSpeed = 0.04;
+            timerSpeed = 0.35;
 
         });
 
@@ -252,6 +235,7 @@ public class TetrisGame extends Application implements GravityListener{
     private void resetGame(){
         tetris.quit();
         timer.stop();
+        boardView.clear();
         primaryStage.setScene(new Scene(createContent()));
         createHandlers(primaryStage.getScene());
         timerSpeed = 0.017;
@@ -266,7 +250,7 @@ public class TetrisGame extends Application implements GravityListener{
     }
     private void render() {
 
-        g.clearRect( 0 , 0, WIDTH, HEIGHT);
+      /*  g.clearRect( 0 , 0, WIDTH, HEIGHT);
 
 
         tetrominos.forEach(p -> p.draw(g));
@@ -277,7 +261,7 @@ public class TetrisGame extends Application implements GravityListener{
 
         next.drawNext(gcNextPiece);
 
-        score.setText(Integer.toString(tetris.getScore()));
+        score.setText(Integer.toString(tetris.getScore()));*/
     }
 
     private void update() {
@@ -338,19 +322,13 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onMovement() {
-        current.draw(g);
+        boardView.updatePiece(tetris.getCurrent());
     }
 
-    @Override
-    public void moving() {
-        current.undraw(g);
-    }
 
     @Override
     public void onChangedNext() {
-        tetrominos.add(current);
-        current = next;
-        next = new Tetromino(getRandomColor(), tetris.getNext(), TILE_SIZE, 2);
+        boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
         if (artificialPlayer){
             artificialIntelligence.setHasChanged(true);
         }
@@ -358,23 +336,12 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public synchronized void onSweep() {
-        current.draw(g);
-        for(Tetromino t: tetrominos){
-            t.draw(g);
-        }
-       //render();
-    }
-
-    @Override
-    public synchronized void sweeping() {
-        current.undraw(g);
-        for(Tetromino t: tetrominos){
-            t.undraw(g);
-        }
+        Platform.runLater(() -> boardView.updateAll());
     }
 
     @Override
     public void onQuit() {
         stopGame();
+        //// TODO: 21/03/2017 Game over
     }
 }
