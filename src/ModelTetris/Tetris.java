@@ -23,6 +23,7 @@ public class Tetris {
     private boolean finished;
     private int score;
     private List<Integer> pieces;
+    private static Position position = new Position(0, 4);
 
     private List<GravityListener> movementListeners;
 
@@ -31,6 +32,7 @@ public class Tetris {
         pieces = new ArrayList<>(7);
         movementListeners = new ArrayList<>();
         current = randomBlock();
+        current.setPosition(position);
         board.addPiece(current);
 
         next = randomBlock();
@@ -58,7 +60,6 @@ public class Tetris {
 
 
     public void move(Direction d){
-        movementListeners.forEach(GravityListener::moving);
         board.movePiece(d, current);
         movementListeners.forEach(GravityListener::onMovement);
     }
@@ -70,11 +71,9 @@ public class Tetris {
             return;
         }
 
-        movementListeners.forEach(GravityListener::moving);
         movementListeners.forEach(GravityListener::onMovement);
 
 
-        movementListeners.forEach(GravityListener::sweeping);
         score(board.sweep());
         movementListeners.forEach(GravityListener::onSweep);
 
@@ -126,7 +125,6 @@ public class Tetris {
     }
 
     public void rotate(){
-        movementListeners.forEach(GravityListener::moving);
         board.rotateClockWise(current);
         movementListeners.forEach(GravityListener::onMovement);
     }
@@ -214,8 +212,9 @@ public class Tetris {
 
 
     public void swapCurrent(){
-        board.addDaeomon(current);
+        board.addDaeomon(current, movementListeners.get(0));
         current = next;
+        current.setPosition(position);
         next = randomBlock();
         addToBoard();
         randomRotate(current);
