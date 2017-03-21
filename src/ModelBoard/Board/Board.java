@@ -1,5 +1,6 @@
 package ModelBoard.Board;
 import ModelBoard.Direction;
+import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.GravityDeomon;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class Board {
     
     private ConcurrentMap<Position, Piece> collisions;
-    private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(8);
     private int height;
     private int width;
     private ReentrantLock lock = new ReentrantLock();
@@ -42,9 +43,9 @@ public class Board {
         );
     }
 
-    public void addDaeomon(Piece piece){
+    public void addDaeomon(Piece piece, GravityListener listener){
 
-        Thread t = new Thread(new GravityDeomon(this, piece));
+        Thread t = new Thread(new GravityDeomon(this, piece, listener));
         t.setDaemon(true);
 
         executor.scheduleAtFixedRate(t, 0, 3, TimeUnit.MILLISECONDS);
