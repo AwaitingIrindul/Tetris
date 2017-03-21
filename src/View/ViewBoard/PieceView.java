@@ -1,34 +1,60 @@
-package View;
+package View.ViewBoard;
 
 import ModelBoard.Pieces.Piece;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Irindul on 16/02/2017.
  */
-public class Tetromino{
+public class PieceView {
 
-    //TODO Refactor view library;
-    Color color;
-    Piece piece;
-    double tilesize;
-    int offset;
+    private Color color;
+    private Piece piece;
+    private double tilesize;
+    private int offset;
 
-    public Tetromino(Color color, Piece block, double tilesize, int offset) {
+    private List<Rectangle> square;
+
+    public PieceView(Color color, Piece block, double tilesize, int offset) {
         this.color = color;
         this.piece = block;
         this.tilesize = tilesize;
         this.offset = offset;
+        square = new ArrayList<>();
+
+        piece.getPositions().stream()
+                .map(position -> {
+                    Rectangle rect = new Rectangle(tilesize, tilesize, color);
+                    rect.relocate(position.getY()*tilesize, position.getX()*tilesize);
+                    return rect;
+                })
+                .forEach(rectangle -> square.add(rectangle));
+
     }
 
-    public void setPosition(int x, int y){
-        setPosition(x, y);
+
+
+    public synchronized void update(){
+
+        //square.forEach(rectangle -> square.remove(rectangle));
+        square.clear();
+        square = new ArrayList<>();
+
+        piece.getPositions().stream()
+                .map(position -> {
+                    Rectangle rect = new Rectangle(tilesize, tilesize, color);
+                    rect.relocate(position.getY()*tilesize, (position.getX()-offset)*tilesize);
+                    rect.setStroke(Color.BLACK);
+                    return rect;
+                })
+                .forEach(rectangle -> square.add(rectangle));
     }
 
-    public void draw(GraphicsContext g){
-        draw(color, Color.BLACK, g);
-    }
 
     public void drawNext(GraphicsContext g){
         g.setFill(color);
@@ -45,8 +71,10 @@ public class Tetromino{
             g.fillRect(x*tilesize, y*tilesize, tilesize, tilesize);
         });
 
+    }
 
-
+    public List<Rectangle> getSquare() {
+        return square;
     }
 
     // TODO: 15/03/2017 add offset in parameter (-2 for tetris, 0 for blocks ect..)
