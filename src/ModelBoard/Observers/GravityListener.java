@@ -5,10 +5,9 @@ package ModelBoard.Observers;
  */
 public interface GravityListener {
 
+    //// TODO: 21/03/2017 Create inheritance
     void onMovement();
-    void moving();
     void onChangedNext();
     void onSweep();
-    void sweeping();
     void onQuit();
 }
