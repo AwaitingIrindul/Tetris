@@ -1,7 +1,7 @@
 package View;
 
-import ModelBoard.Direction;
 import ModelPuzzle.Puzzle;
+import View.ViewBoard.PieceView;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,7 +25,7 @@ public class PuzzleGame extends Application{
     public static double HEIGHT = 7.5 * TILE_SIZE;
 
     private double time = 0;
-    private Tetromino goal;
+    private PieceView goal;
     private GraphicsContext gc;
     private Stage primaryStage;
 
@@ -103,7 +103,7 @@ public class PuzzleGame extends Application{
         this.gc = moving.getGraphicsContext2D();
 
         Puzzle puzzle = new Puzzle();
-        goal = new Tetromino(Color.BURLYWOOD, puzzle.getGoal(), TILE_SIZE, 0);
+        goal = new PieceView(Color.BURLYWOOD, puzzle.getGoal(), TILE_SIZE, 0);
 
         root.getChildren().addAll(moving);
         root.getChildren().addAll(canvas);
@@ -128,7 +128,7 @@ public class PuzzleGame extends Application{
 
     private void render() {
         //gc.clearRect( 0 , 0, WIDTH, HEIGHT);
-        goal.draw(gc);
+        //goal.draw(gc);
     }
 
 
