@@ -151,10 +151,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     }
 
-    @Override
-    public void moving() {
-
-    }
 
     @Override
     public void onChangedNext() {
@@ -166,10 +162,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     }
 
-    @Override
-    public void sweeping() {
-
-    }
 
     @Override
     public void onQuit() {
