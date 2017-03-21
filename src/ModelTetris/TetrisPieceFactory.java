@@ -8,7 +8,7 @@ import ModelBoard.Position.Position;
  */
 public class TetrisPieceFactory {
 
-    public static Position startingPosition = new Position(0, 4);
+    public static Position startingPosition = new Position(0, 0);
     
     public static Piece get(TetrisBlocks t){
         switch (t){
