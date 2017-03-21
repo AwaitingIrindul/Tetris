@@ -207,6 +207,10 @@ public class Piece{
         return true;
     }
 
+    public void setPosition(Position position){
+        this.position = position;
+    }
+
     public boolean hasBeenChanged(){
         return hasBeenChanged;
     }
