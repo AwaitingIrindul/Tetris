@@ -1,0 +1,9 @@
+.gamePane {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
+
+.nextPiecePane {
+    -fx-border-color: black;
+    -fx-border-width: 4px;
+}
