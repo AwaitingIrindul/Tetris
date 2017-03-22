@@ -1,6 +1,7 @@
 package ModelPuzzle;
 
 import ModelBoard.Board.Board;
+import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.Piece;
 
 /**
@@ -12,6 +13,7 @@ public class Puzzle {
     private Piece goal;
     public static int height = 6;
     public static int width = 6;
+    private GravityListener listener;
 
 
     public Puzzle() {
