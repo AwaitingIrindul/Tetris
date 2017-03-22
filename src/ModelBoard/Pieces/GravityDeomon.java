@@ -9,19 +9,23 @@ import ModelBoard.Observers.GravityListener;
  */
 public class GravityDeomon implements Runnable {
 
-    private Board board;
-    private Piece piece;
-    private GravityListener listener;
+    Board board;
+    Piece piece;
+    GravityListener listener;
+    int i;
 
     public GravityDeomon(Board board, Piece piece, GravityListener listener) {
         this.board = board;
         this.piece = piece;
         this.listener = listener;
+        i = 0;
     }
 
     @Override
     public void run() {
-        if(piece.onlyFalse()) {
+        if(piece.onlyFalse())
+        {
+            System.out.println("Shouldn't had been called");
             return;
         }
 
