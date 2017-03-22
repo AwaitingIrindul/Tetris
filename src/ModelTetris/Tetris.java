@@ -208,6 +208,7 @@ public class Tetris {
 
     public void addGravityListener(GravityListener listener){
         movementListeners.add(listener);
+        board.addListener(listener);
     }
 
 
