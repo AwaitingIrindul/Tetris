@@ -4,7 +4,10 @@ import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.GravityDeomon;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -16,14 +19,20 @@ public class Board {
     
     private ConcurrentMap<Position, Piece> collisions;
     private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(8);
+    private Map<Piece, ScheduledFuture<?>> futures = new HashMap<>();
     private int height;
     private int width;
     private ReentrantLock lock = new ReentrantLock();
+    private GravityListener listener;
 
     public Board(int height, int width) {
         this.height = height;
         this.width = width;
         collisions = new ConcurrentHashMap<>();
+    }
+
+    public void addListener(GravityListener listener){
+        this.listener = listener;
     }
 
     public  Board(Board board) {
@@ -48,7 +57,7 @@ public class Board {
         Thread t = new Thread(new GravityDeomon(this, piece, listener));
         t.setDaemon(true);
 
-        executor.scheduleAtFixedRate(t, 0, 3, TimeUnit.MILLISECONDS);
+        futures.put(piece, executor.scheduleAtFixedRate(t, 0, 30, TimeUnit.MILLISECONDS));
     }
 
 
@@ -95,6 +104,16 @@ public class Board {
                     piece.move(direction);
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
+            } else {
+                System.out.println("Why am i fucking called");
+                piece.getPositions().forEach(pos -> System.out.println("Pos : " + pos.getX() + " "  + pos.getY()));
+
+                try{
+                    Thread.sleep(1000);
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                
             }
         } finally {
             lock.unlock();
@@ -102,6 +121,10 @@ public class Board {
 
 
 
+    }
+
+    public boolean contains(Piece p){
+        return collisions.containsValue(p);
     }
 
 
@@ -139,14 +162,28 @@ public class Board {
                 }
             }
         }
-       if(count > 0){
-           collisions.values().stream()
+        if(count > 0){
+            collisions.values().stream()
                    .filter(Piece::hasBeenChanged)
                    .forEach(this::resolveHoles);
-       }
+        }
 
-       lock.unlock();
-       return count;
+        futures.entrySet().stream()
+               .map(Map.Entry::getKey)
+               .filter(Piece::onlyFalse)
+               .forEach(piece -> {
+                   futures.get(piece).cancel(true);
+                   collisions.entrySet().removeIf(entry -> entry.getValue().equals(piece));
+                   listener.onCleanUp(piece);
+               });
+
+        futures.entrySet()
+              .removeIf(entry -> entry.getKey().onlyFalse());
+
+
+
+        lock.unlock();
+        return count;
     }
 
     public void resolveHoles(Piece p){
