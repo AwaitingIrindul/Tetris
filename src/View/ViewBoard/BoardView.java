@@ -38,7 +38,7 @@ public class BoardView {
     public void updatePiece(Piece piece) {
 
         pieces.get(piece).getSquare().forEach(
-                rectangle -> group.getChildren().remove(rectangle));
+        rectangle -> group.getChildren().remove(rectangle));
         pieces.get(piece).update();
         group.getChildren().addAll(pieces.get(piece).getSquare());
     }
