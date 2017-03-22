@@ -2,6 +2,7 @@ package View;
 
 import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
+import ModelBoard.Pieces.Piece;
 import ModelTetris.Player.ArtificialIntelligence;
 import ModelTetris.Player.Evaluator;
 import ModelTetris.Tetris;
@@ -343,5 +344,15 @@ public class TetrisGame extends Application implements GravityListener{
     public void onQuit() {
         stopGame();
         //// TODO: 21/03/2017 Game over
+    }
+
+    @Override
+    public void onMovement(Piece p) {
+        boardView.updatePiece(p);
+    }
+
+    @Override
+    public void onCleanUp(Piece p) {
+        boardView.clean(p);
     }
 }
