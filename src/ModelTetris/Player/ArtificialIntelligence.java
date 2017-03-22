@@ -167,4 +167,14 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
     public void onQuit() {
         go = false;
     }
+
+    @Override
+    public void onMovement(Piece p) {
+
+    }
+
+    @Override
+    public void onCleanUp(Piece p) {
+
+    }
 }
