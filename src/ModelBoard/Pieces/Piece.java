@@ -18,7 +18,6 @@ public class Piece{
     private boolean positions[][];
     private boolean hasBeenChanged = false;
 
-
     public Piece(int height, int width) {
         position = new Position(0, 0);
         this.height = height;
@@ -218,4 +217,6 @@ public class Piece{
     private void setHasChanged(boolean changed){
         hasBeenChanged = changed;
     }
+
+
 }
