@@ -57,4 +57,8 @@ public class BoardView {
         return group;
     }
 
+    public void clean(Piece p) {
+        pieces.get(p).getSquare().forEach(
+                rectangle -> group.getChildren().remove(rectangle));
+    }
 }
