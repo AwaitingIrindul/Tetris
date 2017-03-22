@@ -175,7 +175,6 @@ public class Board {
 
 
         if(count > 0 ) {
-            System.out.println("Recursive");
             lock.unlock();
             return count +sweep();
         }
