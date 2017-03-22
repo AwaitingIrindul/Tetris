@@ -42,8 +42,8 @@ public class TetrisGame extends Application implements GravityListener{
     public static final int WIDTH = 10 * TILE_SIZE;
     public static final int HEIGHT = 16 * TILE_SIZE;
     public static final int SCORE_WIDTH = 10 * TILE_SIZE;
-    public static final int NEXT_WIDTH = 4 * TILE_SIZE;
-    public static final int NEXT_HEIGHT = 4 * TILE_SIZE;
+    public static final int NEXT_WIDTH = 5 * TILE_SIZE;
+    public static final int NEXT_HEIGHT = 5 * TILE_SIZE;
     public boolean go;
 
     public int t = 0;
@@ -52,6 +52,7 @@ public class TetrisGame extends Application implements GravityListener{
 
     private Group nextGroup;
     private BoardView boardView;
+    private PieceView next;
     private Stage primaryStage;
     private double time;
     private  AnimationTimer timer;
@@ -138,6 +139,8 @@ public class TetrisGame extends Application implements GravityListener{
         nextPiece.relocate((SCORE_WIDTH - NEXT_WIDTH)/2, 50);
         nextPiece.getStyleClass().add("nextPiecePane");
 
+        nextGroup = new Group();
+
 
 
         //Creating buttons
@@ -160,6 +163,7 @@ public class TetrisGame extends Application implements GravityListener{
         //board.maxHeight(HEIGHT-15);
 
         //Adding every node to its root
+        nextPiece.getChildren().add(nextGroup);
         game.getChildren().addAll(board, border);
         menu.getChildren().addAll(reset, startAI);
         menu.getChildren().add(nextPiece);
@@ -176,11 +180,10 @@ public class TetrisGame extends Application implements GravityListener{
 
         go = true;
         tetris = new Tetris();
-
         boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
-       // current = new PieceView(getRandomColor(), tetris.getCurrent(), TILE_SIZE, 2);
         tetris.addGravityListener(this);
-
+        next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
+        drawNext();
 
         //render();
 
@@ -329,10 +332,33 @@ public class TetrisGame extends Application implements GravityListener{
 
     @Override
     public void onChangedNext() {
-        boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
+        boardView.addPiece(tetris.getCurrent(), next.getColor(), TILE_SIZE, 2);
+        next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
+        drawNext();
         if (artificialPlayer){
             artificialIntelligence.setHasChanged(true);
         }
+    }
+
+    private void drawNext() {
+        nextGroup.getChildren().clear();
+        int maxPieceY = next.getPiece().getPositions().stream().
+        max((o1, o2) -> Integer.compare(o1.getY(), o2.getY())).get().getY();
+
+        int maxPieceX = next.getPiece().getPositions().stream().
+                max((o1, o2) -> Integer.compare(o1.getX(), o2.getX())).get().getX();
+
+        int offsetY = (5 - maxPieceY)/2;
+        int offsetX = (5 - maxPieceX)/2;
+
+        next.getSquare().forEach(rectangle -> {
+            rectangle.relocate(rectangle.getLayoutX() + TILE_SIZE*offsetY, rectangle.getLayoutY() + TILE_SIZE*offsetX);
+        });
+
+        next.getSquare().forEach(rectangle -> {
+            rectangle.setStroke(Color.BLACK);
+        });
+        nextGroup.getChildren().addAll(next.getSquare());
     }
 
     @Override
