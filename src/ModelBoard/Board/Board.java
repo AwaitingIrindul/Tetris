@@ -104,16 +104,6 @@ public class Board {
                     piece.move(direction);
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
-            } else {
-                System.out.println("Why am i fucking called");
-                piece.getPositions().forEach(pos -> System.out.println("Pos : " + pos.getX() + " "  + pos.getY()));
-
-                try{
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-                
             }
         } finally {
             lock.unlock();
@@ -149,8 +139,11 @@ public class Board {
         return true;
     }
 
-    public int sweep(){
+    public synchronized int sweep(){
+        
         lock.lock();
+
+        
         int count = 0;
         for (int i = height-1; i >= 0; i--) {
             if(isFullRow(i)){
@@ -181,6 +174,11 @@ public class Board {
               .removeIf(entry -> entry.getKey().onlyFalse());
 
 
+        if(count > 0 ) {
+            System.out.println("Recursive");
+            lock.unlock();
+            return count +sweep();
+        }
 
         lock.unlock();
         return count;
