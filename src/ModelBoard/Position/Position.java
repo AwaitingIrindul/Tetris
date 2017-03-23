@@ -40,7 +40,9 @@ public class Position {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(x) + Objects.hashCode(y);
+        int result = x;
+        result = 31 * result + y;
+        return result;
     }
 
     @Override
