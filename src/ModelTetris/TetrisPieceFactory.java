@@ -1,5 +1,6 @@
 package ModelTetris;
 
+import ModelBoard.Orientation;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
@@ -9,7 +10,7 @@ import ModelBoard.Position.Position;
 public class TetrisPieceFactory {
 
     public static Position startingPosition = new Position(0, 0);
-    
+    public static Orientation orientation = Orientation.HORIZONTAL;
     public static Piece get(TetrisBlocks t){
         switch (t){
 
@@ -50,7 +51,7 @@ public class TetrisPieceFactory {
                 {"1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -66,7 +67,7 @@ public class TetrisPieceFactory {
                 {"1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -81,7 +82,7 @@ public class TetrisPieceFactory {
                 {"1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -95,7 +96,7 @@ public class TetrisPieceFactory {
                 {"1", "1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -110,7 +111,7 @@ public class TetrisPieceFactory {
                 {"0", "1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -125,7 +126,7 @@ public class TetrisPieceFactory {
                 {"1", "0"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
@@ -139,7 +140,7 @@ public class TetrisPieceFactory {
                 {"1", "1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition);
+        Piece piece = new Piece(scheme, startingPosition, orientation);
 
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
