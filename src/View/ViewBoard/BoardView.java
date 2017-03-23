@@ -33,7 +33,13 @@ public class BoardView {
         if (style != null) {
             view.getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
         }
+        group.getChildren().add(view);
         pieces.put(piece, view);
+    }
+
+    public void addPiece(Piece piece, PieceView pieceView){
+        group.getChildren().add(pieceView);
+        pieces.put(piece, pieceView);
     }
 
     public void clear(){
@@ -47,15 +53,18 @@ public class BoardView {
 
     public void updatePiece(Piece piece) {
 
-        pieces.get(piece).getSquare().forEach(
+        pieces.get(piece).getChildren().clear();
+        pieces.get(piece).update();
+
+        /*pieces.get(piece).getSquare().forEach(
         rectangle -> group.getChildren().remove(rectangle));
         pieces.get(piece).update();
         pieces.get(piece).getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
-        group.getChildren().addAll(pieces.get(piece).getSquare());
+        group.getChildren().addAll(pieces.get(piece).getSquare());*/
     }
 
     public void updateAll(){
-        group.getChildren().clear();
+        //group.getChildren().clear();
         pieces.entrySet().stream()
                 .map(Map.Entry::getKey)
                 .forEach(this::updatePiece);

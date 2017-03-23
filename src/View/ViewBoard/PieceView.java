@@ -1,7 +1,20 @@
 package View.ViewBoard;
 
 import ModelBoard.Pieces.Piece;
+import com.sun.javafx.geom.BaseBounds;
+import com.sun.javafx.geom.transform.BaseTransform;
+import com.sun.javafx.jmx.MXNodeAlgorithm;
+import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+import com.sun.javafx.sg.prism.NGNode;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -11,7 +24,7 @@ import java.util.List;
 /**
  * Created by Irindul on 16/02/2017.
  */
-public class PieceView {
+public class PieceView extends Parent{
 
     private Color color;
     private Color stroke;
@@ -19,7 +32,9 @@ public class PieceView {
     private double tilesize;
     private int offset;
 
-    private List<Rectangle> square;
+    private ObjectProperty<EventHandler<MouseEvent>> propertyOnAction = new SimpleObjectProperty<>();
+
+    // private List<Rectangle> square;
 
     public PieceView(Color color, Piece piece, double tilesize, int offset) {
         this(color, piece, tilesize, offset, Color.BLACK);
@@ -27,11 +42,12 @@ public class PieceView {
     }
 
     public PieceView(Color color, Piece piece, double tilesize, int offset, Color stroke){
+        super();
         this.color = color;
         this.piece = piece;
         this.tilesize = tilesize;
         this.offset = offset;
-        square = new ArrayList<>();
+        //square = new ArrayList<>();
 
         piece.getPositions().stream()
                 .map(position -> {
@@ -39,16 +55,15 @@ public class PieceView {
                     rect.relocate(position.getY()*this.tilesize, position.getX()*this.tilesize);
                     return rect;
                 })
-                .forEach(rectangle -> square.add(rectangle));
+                .forEach(rectangle -> this.getChildren().add(rectangle));
         this.stroke = stroke;
+
+        //onMouseClickedProperty().set(event -> System.out.println("Hello"));
     }
-
-
 
     public synchronized void update(){
 
-        square.clear();
-        square = new ArrayList<>();
+        this.getChildren().clear();
 
         piece.getPositions().stream()
                 .map(position -> {
@@ -57,10 +72,12 @@ public class PieceView {
                     rect.setStroke(stroke);
                     return rect;
                 })
-                .forEach(rectangle -> square.add(rectangle));
+                .forEach(rectangle -> this.getChildren().add(rectangle));
     }
 
     public List<Rectangle> getSquare() {
+        List<Rectangle> square = new ArrayList<>();
+        this.getChildren().forEach(rectangle -> square.add((Rectangle) rectangle));
         return square;
     }
 
@@ -71,5 +88,11 @@ public class PieceView {
     public Color getColor(){
         return color;
     }
+
+    @Override
+    public ObservableList<Node> getChildren() {
+        return super.getChildren();
+    }
+
 
 }
