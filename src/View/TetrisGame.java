@@ -74,7 +74,7 @@ public class TetrisGame extends Application implements GravityListener{
         });
 
         primaryStage.setTitle("Blocks puzzle game");
-        //primaryStage.setResizable(false);
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
         this.primaryStage = primaryStage;
