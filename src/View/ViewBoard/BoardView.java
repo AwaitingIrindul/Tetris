@@ -16,14 +16,24 @@ public class BoardView {
     //List<PieceView> pieces = new ArrayList<>();
     HashMap<Piece, PieceView> pieces;
 
-
+    String style;
     public BoardView() {
         group = new Group();
         pieces = new HashMap<>();
+        style = null;
+    }
+
+    public BoardView(String style){
+        this();
+        this.style = style;
     }
 
     public void addPiece(Piece piece, Color color, double tilesize, int offset){
-        pieces.put(piece, new PieceView(color, piece, tilesize, offset));
+        PieceView view = new PieceView(color, piece, tilesize, offset);
+        if (style != null) {
+            view.getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
+        }
+        pieces.put(piece, view);
     }
 
     public void clear(){
@@ -40,17 +50,15 @@ public class BoardView {
         pieces.get(piece).getSquare().forEach(
         rectangle -> group.getChildren().remove(rectangle));
         pieces.get(piece).update();
+        pieces.get(piece).getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
         group.getChildren().addAll(pieces.get(piece).getSquare());
     }
 
     public void updateAll(){
         group.getChildren().clear();
         pieces.entrySet().stream()
-                .map(Map.Entry::getValue)
-                .forEach(pieceView -> {
-                    pieceView.update();
-                    group.getChildren().addAll(pieceView.getSquare());
-                });
+                .map(Map.Entry::getKey)
+                .forEach(this::updatePiece);
     }
 
     public Group getGroup(){
