@@ -1,7 +1,9 @@
-package ModelBoard.Board;
+package ModelBoard;
 
 /**
  * Created by Irindul on 23/03/2017.
  */
-public class Orientation {
+public enum  Orientation {
+    HORIZONTAL,
+    VERTICAL;
 }
