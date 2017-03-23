@@ -1,8 +1,12 @@
 package ModelPuzzle;
 
 import ModelBoard.Board.Board;
+import ModelBoard.Direction;
 import ModelBoard.Observers.GravityListener;
 import ModelBoard.Pieces.Piece;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Irindul on 15/03/2017.
@@ -13,15 +17,39 @@ public class Puzzle {
     private Piece goal;
     public static int height = 6;
     public static int width = 6;
+    private List<Piece> pieces;
+    private Piece selected;
 
 
     public Puzzle() {
         this.board = new Board(height, width);
-        goal = PuzzlePieceFactory.get(PuzzlePieces.Two);
-        goal.rotateClockWise();
+        goal = PuzzlePieceFactory.get(PuzzlePieces.TwoH);
         board.addPiece(goal);
+        pieces = new ArrayList<>();
     }
 
+    public void addPiece(Piece piece){
+        pieces.add(piece);
+        board.addPiece(piece);
+    }
+
+    public void setSelected(Piece piece){
+        selected = piece;
+    }
+
+    public void moveSelected(Direction direction){
+        if (selected != null) {
+            board.movePiece(direction, selected);
+        }
+    }
+
+    public boolean checkSelected(Direction direction){
+        if (selected != null) {
+            return board.checkMovement(direction, selected);
+        }
+
+        return false;
+    }
 
     public Piece getGoal(){
         return goal;
