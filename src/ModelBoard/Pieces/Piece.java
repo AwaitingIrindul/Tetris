@@ -1,6 +1,7 @@
 package ModelBoard.Pieces;
 
 import ModelBoard.Direction;
+import ModelBoard.Orientation;
 import ModelBoard.Position.Position;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Piece{
     private int height, width;
     private boolean positions[][];
     private boolean hasBeenChanged = false;
+    private Orientation orientation;
 
     public Piece(int height, int width) {
         position = new Position(0, 0);
@@ -28,7 +30,7 @@ public class Piece{
         }
     }
 
-    public Piece(String[][] scheme, Position startingPosition){
+    public Piece(String[][] scheme, Position startingPosition, Orientation orientation){
         this(scheme.length, scheme[0].length);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -39,6 +41,7 @@ public class Piece{
                 }
             }
         }
+        this.orientation = orientation;
         position = startingPosition;
 
     }
@@ -153,5 +156,44 @@ public class Piece{
         hasBeenChanged = changed;
     }
 
+    public Orientation getOrientation(){
+        return orientation;
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("{");
+        sb.append("\"");
+        sb.append("position\":");
+        sb.append(position.toString());
+        sb.append(", ");
+        sb.append("\"height\": \"");
+        sb.append(height);
+        sb.append("\", ");
+        sb.append("\"width\": \"");
+        sb.append(width);
+        sb.append("\", ");
+        sb.append("\"positions\": {");
+        for (int i = 0; i < height; i++) {
+            sb.append("\"");
+            sb.append(i);
+            sb.append("\": {\"");
+            for (int j = 0; j < width; j++) {
+                sb.append(positions[i][j]);
+                sb.append("\"");
+                if(j + 1 < width)
+                    sb.append(",");
+            }
+            sb.append("}");
+            if(i + 1 < height)
+                sb.append(", ");
+        }
+        sb.append(",\"orientation\": \"");
+        sb.append(orientation);
+        sb.append("\"");
+        sb.append("}");
+        return sb.toString().replaceAll("\\s+", "");
+    }
 }
