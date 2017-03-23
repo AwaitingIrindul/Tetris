@@ -1,10 +1,13 @@
 package View;
 
+import ModelBoard.Board.Board;
 import ModelPuzzle.Puzzle;
+import View.ViewBoard.BoardView;
 import View.ViewBoard.PieceView;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -26,7 +29,8 @@ public class PuzzleGame extends Application{
 
     private double time = 0;
     private PieceView goal;
-    private GraphicsContext gc;
+    private BoardView bv;
+    private Puzzle game;
     private Stage primaryStage;
 
     @Override
@@ -56,79 +60,25 @@ public class PuzzleGame extends Application{
                         )
                 );
             }
-            
-            
-            render();
+
         });
-
-        scene.setOnDragOver(event -> {
-            event.acceptTransferModes(TransferMode.ANY);
-            System.out.println("over");
-            
-        });
-        scene.setOnDragDetected(e -> {
-            System.out.println("Selected at");
-
-            //Getting board coordinates for x and y. (to swap or not if I fixed everything)
-            System.out.println((int) (e.getX() - (WIDTH - 5*TILE_SIZE)/2) /TILE_SIZE);
-            System.out.println((int) (e.getY() - (HEIGHT - 5*TILE_SIZE)/2) / TILE_SIZE);
-            
-        });
-
-        scene.setOnDragDone(event -> {
-            System.out.println("done");
-        });
-
-        scene.setOnDragEntered(event -> {
-            System.out.println("entered");
-        });
-
-
 
     }
 
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH, HEIGHT);
+        bv = new BoardView();
+        game = new Puzzle();
 
-        Canvas canvas = new Canvas(5*TILE_SIZE, 5*TILE_SIZE);
-        canvas.setTranslateX((WIDTH - 5*TILE_SIZE)/2);
-        canvas.setTranslateY((HEIGHT - 5*TILE_SIZE)/2);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        border(gc);
+        goal = new PieceView(Color.RED, game.getGoal(), TILE_SIZE, 0);
 
-        Canvas moving = new Canvas(5*TILE_SIZE, 5*TILE_SIZE);
-        moving.setTranslateX((WIDTH - 5*TILE_SIZE)/2);
-        moving.setTranslateY((HEIGHT - 5*TILE_SIZE)/2);
-        this.gc = moving.getGraphicsContext2D();
-
-        Puzzle puzzle = new Puzzle();
-        goal = new PieceView(Color.BURLYWOOD, puzzle.getGoal(), TILE_SIZE, 0);
-
-        root.getChildren().addAll(moving);
-        root.getChildren().addAll(canvas);
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                time += 0.017;
-                
-                if(time >= 0.5){
-                    render();
-                    time = 0;
-                }
-            }
+        bv.getGroup().getChildren().addAll(goal.getSquare());
 
 
-        };
-        timer.start();
+        root.getChildren().add(bv.getGroup());
 
         return root;
-    }
-
-    private void render() {
-        //gc.clearRect( 0 , 0, WIDTH, HEIGHT);
-        //goal.draw(gc);
     }
 
 

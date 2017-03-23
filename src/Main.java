@@ -10,7 +10,7 @@ public class Main {
 
 
         javafx.application.Application.launch(TetrisGame.class);
-        //javafx.application.Application.launch(PuzzleGame.class);
+       // javafx.application.Application.launch(PuzzleGame.class);
 
 
     }
