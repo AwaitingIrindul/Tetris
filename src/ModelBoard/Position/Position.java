@@ -1,11 +1,12 @@
 package ModelBoard.Position;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by Irindul on 09/02/2017.
  */
-public class Position {
+public class Position implements Serializable{
 
     private int x;
     private int y;
@@ -53,6 +54,12 @@ public class Position {
             return true;
         return obj instanceof Position && this.equals((Position) obj);
 
+    }
+
+    @Override
+    public String toString() {
+        String position = "{ \"x\": \"" + x +"\", \"y\": \"" + y +"\"}";
+        return position;
     }
 
     private boolean equals(Position pos) {
