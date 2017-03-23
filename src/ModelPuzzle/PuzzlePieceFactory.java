@@ -1,5 +1,6 @@
 package ModelPuzzle;
 
+import ModelBoard.Orientation;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
@@ -10,34 +11,55 @@ public class PuzzlePieceFactory {
 
 
 
+
     public static Piece get(PuzzlePieces p){
         switch (p){
 
-            case Two:
-                return getTwo();
-            case Three:
-                return getThree();
+            case TwoH:
+                return getTwoHorizontal();
+            case ThreeH:
+                return getThreeHorizontal();
+            case TwoV:
+                return getTwoVertical();
+            case ThreeV:
+                return getThreeVertical();
             default:
-                return getTwo();
+                return getTwoHorizontal();
         }
     }
 
-    private static Piece getTwo() {
+    private static Piece getTwoHorizontal() {
         String[][] scheme = {
-                {"1"},
-                {"1"}
+                {"1", "1"}
         };
 
-        return new Piece(scheme, new Position(0, 0));
+        return new Piece(scheme, new Position(0, 0), Orientation.HORIZONTAL);
     }
 
-    private static Piece getThree() {
+    private static Piece getTwoVertical() {
+        String[][] scheme = {
+                {"1"},
+                {"1"}
+        };
+
+        return new Piece(scheme, new Position(0, 0), Orientation.VERTICAL);
+    }
+
+    private static Piece getThreeVertical() {
         String[][] scheme = {
                 {"1"},
                 {"1"},
                 {"1"}
         };
 
-        return new Piece(scheme, new Position(0, 0));
+        return new Piece(scheme, new Position(0, 0), Orientation.VERTICAL);
+    }
+
+    public static Piece getThreeHorizontal() {
+        String[][] scheme = {
+                {"1", "1", "1"},
+        };
+
+        return new Piece(scheme, new Position(0, 0), Orientation.HORIZONTAL);
     }
 }
