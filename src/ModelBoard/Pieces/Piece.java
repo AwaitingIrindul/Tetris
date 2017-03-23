@@ -1,7 +1,5 @@
 package ModelBoard.Pieces;
 
-import ModelBoard.Board.Board;
-import ModelBoard.Board.Grid;
 import ModelBoard.Direction;
 import ModelBoard.Position.Position;
 
@@ -65,25 +63,6 @@ public class Piece{
     }
 
 
-    public List<Position> getLowers(){
-        List<Position> positions = new ArrayList<>();
-        int maxHeight = 0;
-        boolean oneLineNotEmpty = false;
-        for (int i = height-1; i >= 0; i--) {
-            for (int j = 0; j < width; j++) {
-                if(this.positions[i][j]){
-                    oneLineNotEmpty = true;
-                    positions.add(new Position(position.getX() + i, position.getY() + j));
-                }
-            }
-            if(oneLineNotEmpty)
-                break;
-        }
-
-        return positions;
-
-    }
-
     private boolean[][] rotate(){
         int M = positions.length;
         int N = positions[0].length;
@@ -101,14 +80,6 @@ public class Piece{
         positions = rotate();
         height = positions.length;
         width = positions[0].length;
-    }
-
-    public boolean isInBlock(Position absolutePos) {
-
-        int i = absolutePos.getX() - position.getX();
-        int j = absolutePos.getY() - position.getY();
-
-        return i >= 0 && i < height && j >= 0 && j < width && positions[i][j];
     }
 
     public void move(Direction d){
@@ -141,33 +112,7 @@ public class Piece{
         return rotationList;
     }
 
-    public int getMinimumY(){
 
-        List<Position> positions = getPositions();
-        return positions.stream().min((o1, o2) -> Integer.compare(o1.getY(), o2.getY())).get().getY();
-
-    }
-
-
-    public Position getPosition(){
-        return position;
-    }
-
-    private boolean isEmpty(Position pos){
-        int i = pos.getX();
-        int j = pos.getY();
-        return i >= 0 && i < height && j >= 0 && j < width && !positions[i][j];
-    }
-    
-    private boolean isEmptyRow(int r){
-        for (int c = 0; c < width; c++) {
-            if(positions[r][c])
-                return false;
-        }
-        return true;
-    }
-
-    
     public void resolveHoles() {
         setHasChanged(false);
         for (int i = 0; i < height; i++) {
@@ -182,16 +127,6 @@ public class Piece{
                     positions[r][c] = false;
                     positions[r+1][c] = true;
                 }
-            }
-        }
-    }
-
-    private void applyGravity(int r) {
-        for (int c = 0; c < width; c++) {
-            if(positions[r][c] && !positions[r+1][c])
-            {
-                positions[r][c] = false;
-                positions[r+1][c] = true;
             }
         }
     }
