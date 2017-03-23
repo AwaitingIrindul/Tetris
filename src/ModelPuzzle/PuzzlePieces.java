@@ -5,6 +5,8 @@ package ModelPuzzle;
  */
 public enum PuzzlePieces {
 
-    Two,
-    Three,
+    TwoH,
+    ThreeH,
+    TwoV,
+    ThreeV,
 }
