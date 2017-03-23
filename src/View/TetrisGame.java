@@ -43,7 +43,7 @@ public class TetrisGame extends Application implements GravityListener{
     public static final int HEIGHT = 16 * TILE_SIZE;
     public static final int SCORE_WIDTH = 10 * TILE_SIZE;
     public static final int NEXT_WIDTH = 5 * TILE_SIZE;
-    public static final int NEXT_HEIGHT = 5 * TILE_SIZE;
+    public static final int NEXT_HEIGHT = 6 * TILE_SIZE;
     public boolean go;
 
     public int t = 0;
@@ -58,6 +58,7 @@ public class TetrisGame extends Application implements GravityListener{
     private  AnimationTimer timer;
     private Label score;
     private  boolean artificialPlayer;
+    private boolean pause;
     private ArtificialIntelligence artificialIntelligence;
 
     private static double timerSpeed = 0.017;
@@ -91,6 +92,10 @@ public class TetrisGame extends Application implements GravityListener{
                 );
             }
 
+            if(e.getCode() == KeyCode.ENTER){
+               // e.consume();
+                pause();
+            }
             if(e.getCode() == KeyCode.LEFT){
                 tetris.move(Direction.LEFT);
             }
@@ -114,6 +119,18 @@ public class TetrisGame extends Application implements GravityListener{
         });
     }
 
+    private void pause() {
+        if(pause){
+            timer.start();
+            pause = false;
+        } else {
+            timer.stop();
+            pause = true;
+        }
+
+
+    }
+
     public Parent createContent() {
 
 
@@ -123,16 +140,18 @@ public class TetrisGame extends Application implements GravityListener{
 
         Pane  game = new Pane();
         game.setPrefSize(WIDTH, HEIGHT);
-        game.getStyleClass().add("gamePane");
+       // game.getStyleClass().add("gamePane");
+        game.getStyleClass().add("dark");
 
         Pane border = new Pane();
-        game.setPrefSize(WIDTH, HEIGHT);
-        game.getStyleClass().add("gamePane");
+        border.setPrefSize(WIDTH, HEIGHT);
+        border.getStyleClass().add("gamePane");
 
 
         Pane menu = new Pane();
         menu.setPrefSize(SCORE_WIDTH, HEIGHT);
         menu.relocate(WIDTH, 0);
+        menu.getStyleClass().add("dark");
 
         Pane nextPiece = new Pane();
         nextPiece.setPrefSize(NEXT_WIDTH, NEXT_HEIGHT);
@@ -157,7 +176,7 @@ public class TetrisGame extends Application implements GravityListener{
         startAI.setTranslateX((SCORE_WIDTH - NEXT_WIDTH) / 2);
         startAI.setTranslateY(400);
 
-        boardView = new BoardView();
+        boardView = new BoardView("block");
         Group board = boardView.getGroup();
       //  board.getStyleClass().add("gamePane");
         //board.maxHeight(HEIGHT-15);
@@ -183,9 +202,11 @@ public class TetrisGame extends Application implements GravityListener{
         boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
         tetris.addGravityListener(this);
         next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
-        drawNext();
+        next.getSquare().forEach(rectangle -> {
+            rectangle.getStyleClass().add("block");
 
-        //render();
+        });
+        drawNext();
 
 
         timer = new AnimationTimer() {
@@ -196,7 +217,6 @@ public class TetrisGame extends Application implements GravityListener{
                 if(time >= 0.5 && go){
                     if(artificialPlayer){
                         artificialIntelligence.executeNextMove();
-                        //render();
                     }
                     update();
                     time = 0;
@@ -218,7 +238,12 @@ public class TetrisGame extends Application implements GravityListener{
                                     WindowEvent.WINDOW_CLOSE_REQUEST
                             )
                     );
-                }});
+                }
+                if(e.getCode() == KeyCode.ENTER){
+                    pause();
+                }
+            });
+
             artificialPlayer = true;
             artificialIntelligence = new ArtificialIntelligence(tetris,
                     //Evaluator.getRandomEvaluator());
@@ -231,7 +256,7 @@ public class TetrisGame extends Application implements GravityListener{
         });
 
 
-
+        pause = false;
         timer.start();
         return root;
     }
@@ -241,6 +266,7 @@ public class TetrisGame extends Application implements GravityListener{
         timer.stop();
         boardView.clear();
         primaryStage.setScene(new Scene(createContent()));
+        primaryStage.getScene().getStylesheets().add("style/tetris.css");
         createHandlers(primaryStage.getScene());
         timerSpeed = 0.017;
         time = 0;
@@ -299,28 +325,29 @@ public class TetrisGame extends Application implements GravityListener{
 
         color = rd.nextInt(7);
 
-        /*switch (color){
+        switch (color){
             case 0:
-                return Color.AQUA;
+                return  Color.rgb(144, 198, 149);
             case 1:
-                return Color.BLUE;
+                return  Color.rgb(104, 195, 163);
             case 2:
-                return Color.ORANGE;
+                return  Color.rgb(3, 201, 169);
             case 3:
-                return Color.YELLOW;
+                return Color.rgb(248, 148, 6);
             case 4:
-                return Color.DARKGREEN;
+                return Color.rgb(219, 10, 91);
             case 5:
-                return Color.PURPLE;
+                return Color.rgb(102, 51, 153);
             case 6:
-                return Color.RED;
+                return Color.rgb(65, 131, 215);
             default:
                 return Color.BLACK;
-        }*/
-        int r = rd.nextInt(255);
-        int g = rd.nextInt(255);
-        int b = rd.nextInt(255);
-        return  Color.rgb(r, g, b);
+        }
+
+        //
+        //
+
+
     }
 
 
@@ -334,6 +361,7 @@ public class TetrisGame extends Application implements GravityListener{
     public void onChangedNext() {
         boardView.addPiece(tetris.getCurrent(), next.getColor(), TILE_SIZE, 2);
         next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
+        next.getSquare().forEach(rectangle -> rectangle.getStyleClass().add("block"));
         drawNext();
         if (artificialPlayer){
             artificialIntelligence.setHasChanged(true);

@@ -5,5 +5,36 @@
 
 .nextPiecePane {
     -fx-border-color: black;
-    -fx-border-width: 4px;
+    -fx-border-width: 2px;
+}
+
+.dark {
+    -fx-background-color: rgba(0, 1, 28, 0.55);
+}
+
+.button {
+    /*Step 2: Basic Button Styles*/
+    -fx-display: block;
+    -fx-height: 100px;
+    -fx-width: 300px;
+    /*-fx-background: #34696f;*/
+    /*-fx-border: 2px solid rgba(33, 68, 72, 0.59);*/
+
+    /*Step 3: Text Styles*/
+    -fx-color: #34495e;
+    -fx-text-align: center;
+    -fx-text-fill: #68c3a3;
+    -fx-font: bold 3.2em/50px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5em;
+    -fx-min-width: 150px;
+    -fx-min-height: 50px;
+    -fx-max-width: 300px;
+    -fx-max-height: 700px;
+
+}
+
+.block {
+
+    -fx-opacity: 0.7;
 }
