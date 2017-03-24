@@ -5,6 +5,15 @@ import ModelBoard.Pieces.GravityDeomon;
 import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.text.CharacterIterator;
+import java.text.ParseException;
+import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +252,153 @@ public class Board {
 
     public boolean isEmpty(Position pos) {
         return pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width && !collisions.containsKey(pos);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"height\": \"");
+        sb.append(height);
+        sb.append("\", \"width\": \"");
+        sb.append(width);
+        sb.append("\", \"collisions\":[");
+        collisions.entrySet().forEach(entry -> {
+            sb.append("{");
+            sb.append("\"key\":");
+            sb.append(entry.getKey().toString());
+            sb.append(", \"piece\":");
+            sb.append(entry.getValue().toString());
+            sb.append("}");
+            if(collisions.entrySet().iterator().hasNext()){
+                sb.append(",");
+            }
+        });
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        sb.append("]");
+        sb.append("}");
+
+        return sb.toString().replaceAll("\\s+", "");
+    }
+
+    public static Board fromJson(String json) {
+        CharacterIterator iterator = new StringCharacterIterator(json);
+        System.out.println(json);
+        
+        //String = height":....
+        char c;
+
+        //We remove {"height":
+        while(iterator.next() != ':');
+        iterator.next();
+
+        StringBuilder sb = new StringBuilder();
+
+
+        while((c = iterator.next()) != '\"')
+            sb.append(c);
+
+        //sb = height value
+        int height = Integer.parseInt(sb.toString());
+
+        //Remvoe ,"width":
+        while(iterator.next() != ':');
+        iterator.next();
+
+
+        sb = new StringBuilder();
+        while((c = iterator.next()) != '\"')
+            sb.append(c);
+
+        //sb = width value
+        int width = Integer.parseInt(sb.toString());
+
+        //We remove ","collisions":
+        while (iterator.next() != '[');
+        // iterator.next();
+
+        c = iterator.current();
+
+        int countSquare = 0;
+
+        HashMap<Position, Piece> hash = new HashMap<>();
+        while( (countSquare != 0 || c != ']') ){
+
+            if(c == '[')
+                countSquare++;
+
+            if(c == ']')
+                countSquare--;
+
+            if(c == ']' && countSquare == 0)
+                break;
+
+
+            //Removing {"key":
+            while(iterator.next() != ':'){
+                //break;
+            }
+            // iterator.next();
+
+
+            StringBuilder positionJson = new StringBuilder();
+            //We extract the json position
+            while(( c =iterator.next()) != '}'){
+                positionJson.append(c);
+            }
+            positionJson.append(c);
+
+            Position position = Position.fromJson(positionJson.toString());
+
+            //Removing ,"piece":
+            while(iterator.next() != ':');
+            iterator.next();
+
+
+
+            //Extracting the json piece
+            int countBrackets = 0;
+            sb = new StringBuilder();
+            c= iterator.current();
+            while(countBrackets != 0 || c != '}'){
+                if(c == '{')
+                    countBrackets++;
+
+                if(c == '}')
+                    countBrackets--;
+
+                if(c == '}' &&  countBrackets == 0)
+                    break;
+
+                sb.append(c);
+                c = iterator.next();
+            }
+            sb.append(c);
+            Piece piece = Piece.fromJson(sb.toString());
+
+            hash.put(position, piece);
+            iterator.next();
+            c = iterator.next();
+        }
+
+        Board board = new Board(height, width);
+        board.collisions.putAll(hash);
+
+
+        return board;
+    }
+
+    public static Board fromFile(String filename) throws IOException, Exception {
+
+        BufferedReader br = Files.newBufferedReader(Paths.get(filename));
+        String jsonBoard = br.readLine();
+        br.close();
+
+        return fromJson(jsonBoard);
+
+        
+
     }
 }
 

@@ -4,6 +4,8 @@ import ModelBoard.Direction;
 import ModelBoard.Orientation;
 import ModelBoard.Position.Position;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,25 +177,137 @@ public class Piece{
         sb.append("\"width\": \"");
         sb.append(width);
         sb.append("\", ");
-        sb.append("\"positions\": {");
+        sb.append("\"positions\": [");
         for (int i = 0; i < height; i++) {
-            sb.append("\"");
-            sb.append(i);
-            sb.append("\": {\"");
+            sb.append("[");
             for (int j = 0; j < width; j++) {
+                sb.append("{");
+                sb.append("\"position\":\"");
                 sb.append(positions[i][j]);
-                sb.append("\"");
+                sb.append("\"}");
                 if(j + 1 < width)
                     sb.append(",");
             }
-            sb.append("}");
+            sb.append("]");
             if(i + 1 < height)
                 sb.append(", ");
         }
+        sb.append("]");
         sb.append(",\"orientation\": \"");
         sb.append(orientation);
         sb.append("\"");
         sb.append("}");
         return sb.toString().replaceAll("\\s+", "");
     }
+
+    public static Piece fromJson(String json){
+        CharacterIterator iterator = new StringCharacterIterator(json);
+        char c;
+        //Removing {"position"
+        while(iterator.next() != ':');
+
+        StringBuilder positionJson = new StringBuilder();
+        //We extract the json position
+        while(( c =iterator.next()) != '}'){
+            positionJson.append(c);
+        }
+        positionJson.append(c);
+        Position position = Position.fromJson(positionJson.toString());
+
+        //Removing ,"height"
+        while(iterator.next() != ':');
+
+
+        StringBuilder sb = new StringBuilder();
+        
+        //Removing :
+        iterator.next();
+                
+        while ( (c = iterator.next()) != '\"'){
+            sb.append(c);
+        }
+
+        int height = Integer.parseInt(sb.toString());
+        
+
+        //Removing ","width"
+        while(iterator.next() != ':');
+        iterator.next();
+        sb = new StringBuilder();
+        while ( (c = iterator.next()) != '\"'){
+            sb.append(c);
+        }
+
+        int width = Integer.parseInt(sb.toString());
+        
+        //Removing ","position":
+        while(iterator.next() != '[');
+
+        //Removing [
+        iterator.next();
+
+        c = iterator.current();
+        
+
+        boolean[][] positions = new boolean[height][width];
+
+       //TO REPEAT
+        for (int i = 0; i < height; i++) {
+            
+            //Removing [
+            //iterator.next();
+            for (int j = 0; j < width; j++) {
+                
+                while(iterator.next() != ':');
+                iterator.next();
+                sb = new StringBuilder();
+                while((c = iterator.next() )!= '\"'){
+                    sb.append(c);
+                }
+                switch (sb.toString()){
+                    case "true":
+                        positions[i][j] = true;
+                        break;
+                    case "false":
+                        positions[i][j] = false;
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+        }
+
+
+        while(iterator.next() != ':');
+        iterator.next();
+        sb = new StringBuilder();
+        while((c = iterator.next()) != '\"'){
+            sb.append(c);
+        }
+        Orientation orientation;
+        switch (sb.toString()){
+            case "HORIZONTAL":
+                orientation= Orientation.HORIZONTAL;
+                break;
+            case "VERTICAL":
+                orientation = Orientation.VERTICAL;
+                break;
+            default:
+                orientation = Orientation.HORIZONTAL;
+                break;
+        }
+            
+        Piece piece = new Piece(height, width);
+        piece.positions = positions;
+        piece.position = position;
+        piece.orientation = orientation;
+
+
+        
+
+        return piece;
+    }
+
+    // TODO: 24/03/2017 Simplify Json read and write 
 }

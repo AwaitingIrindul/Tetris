@@ -1,6 +1,8 @@
 package ModelBoard.Position;
 
 import java.io.Serializable;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.Objects;
 
 /**
@@ -59,7 +61,51 @@ public class Position implements Serializable{
     @Override
     public String toString() {
         String position = "{ \"x\": \"" + x +"\", \"y\": \"" + y +"\"}";
-        return position;
+        return position.replaceAll("\\s+", "");
+    }
+
+
+    public static Position fromJson(String json){
+        CharacterIterator iterator = new StringCharacterIterator(json);
+        iterator.next();
+        char c;
+
+        //we remove {"x"
+        while(iterator.next() != ':');
+        
+        iterator.next();
+        c = iterator.next();
+        //c = x value
+        
+        StringBuilder sb = new StringBuilder();
+        while(c != '\"'){
+            sb.append(c);
+            c = iterator.next();
+        }
+        //sb contain integer value of x
+
+        int x = Integer.parseInt(sb.toString());
+
+        //We remove ","y"
+        while(iterator.next() != ':');
+
+        iterator.next();
+        c = iterator.next();
+        //c = y value
+
+        sb = new StringBuilder();
+        while(c != '\"'){
+            sb.append(c);
+            c = iterator.next();
+        }
+
+        int y = Integer.parseInt(sb.toString());
+
+
+        return new Position(x, y);
+
+
+
     }
 
     private boolean equals(Position pos) {
