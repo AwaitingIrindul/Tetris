@@ -25,7 +25,6 @@ public class GravityDeomon implements Runnable {
     public void run() {
         if(piece.onlyFalse())
         {
-            System.out.println("Shouldn't had been called");
             return;
         }
 
