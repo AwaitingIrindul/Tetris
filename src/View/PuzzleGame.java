@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -19,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,8 +29,8 @@ public class PuzzleGame extends Application{
     public static int WIDTH = 6 * TILE_SIZE;
     public static double HEIGHT = 6 * TILE_SIZE;
 
-    private double time = 0;
     private PieceView goal;
+    private ArrayList<PieceView> pieces;
     private BoardView bv;
     private Puzzle game;
     private Stage primaryStage;
@@ -78,24 +78,42 @@ public class PuzzleGame extends Application{
         root.setPrefSize(WIDTH, HEIGHT);
         bv = new BoardView();
         game = new Puzzle();
+        pieces = new ArrayList<>();
+        game.getPieces().forEach(piece -> {
+            bv.addPiece(piece, Color.BLUE, TILE_SIZE, 0);
+        });
 
         goal = new PieceView(Color.RED, game.getGoal(), TILE_SIZE, 0);
-        final Point2D.Double dragDelta = new Point2D.Double();
-        final Point2D.Double layout = new Point2D.Double();
+
         bv.addPiece(goal.getPiece(), goal);
+        bv.getPieceViews().forEach(view -> {
+            pieces.add(view);
+            createHandler(view);
+        });
+
 
         goal.getSquare().forEach(rect -> {
             rect.setArcHeight(15);
             rect.setArcWidth(15);
-
         });
 
         cliked = new HashMap<>();
 
 
-        goal.setOnMousePressed(event -> {
-            
-            goal.getSquare().forEach(rectangle -> {
+
+        root.getChildren().add(bv.getGroup());
+
+        return root;
+    }
+
+
+    public void createHandler(PieceView p){
+
+        final Point2D.Double dragDelta = new Point2D.Double();
+        final Point2D.Double layout = new Point2D.Double();
+
+        p.setOnMousePressed(event -> {
+            p.getSquare().forEach(rectangle -> {
 
                 Bounds b = rectangle.localToScene(rectangle.getLayoutBounds());
                 int x = (int) b.getMinX()/TILE_SIZE;
@@ -105,29 +123,27 @@ public class PuzzleGame extends Application{
 
             });
             dragDelta.setLocation( (event.getSceneX()), (event.getSceneY()));
-            layout.setLocation(goal.getLayoutX(), goal.getLayoutY());
-            System.out.println(dragDelta.toString());
-
+            layout.setLocation(p.getLayoutX(), p.getLayoutY());
         });
 
-        goal.setOnMouseDragged(event -> {
+        p.setOnMouseDragged(event -> {
             dragging = true;
-            
-            game.setSelected(goal.getPiece());
-            switch (goal.getPiece().getOrientation()){
+
+            game.setSelected(p.getPiece());
+            switch (p.getPiece().getOrientation()){
 
 
                 case VERTICAL:
                     double y = event.getSceneY() - dragDelta.getY();
-                    goal.setLayoutY(layout.getY() + y);
+                    p.setLayoutY(layout.getY() + y);
                     break;
                 case HORIZONTAL:
-                    
+
                     double x = event.getSceneX() - dragDelta.getX();
                     boolean move = true;
-                    for(Rectangle rectangle : goal.getSquare()){
+                    for(Rectangle rectangle : p.getSquare()){
                         Bounds b = rectangle.localToScene(rectangle.getLayoutBounds());
-                        Position tmp = new Position((int) b.getMaxX(), (int )b.getMaxY());
+                        Position tmp = new Position((int) b.getMinX()/TILE_SIZE, (int )b.getMinY()/TILE_SIZE);
                         if(!tmp.equals(cliked.get(rectangle))) {
                             move = false;
                             break;
@@ -136,8 +152,9 @@ public class PuzzleGame extends Application{
 
                     Direction direction;
                     if(!move){
+                        System.out.println("e");
                         
-                        if(layout.getX() + x < goal.getLayoutX()){
+                        if(layout.getX() + x < p.getLayoutX()){
                             move = game.checkSelected(Direction.LEFT);
                             direction = Direction.LEFT;
                         } else {
@@ -146,12 +163,11 @@ public class PuzzleGame extends Application{
                         }
 
                         if(move) {
-                            System.out.println("j " + ++j);
-                            
+
                             game.moveSelected(direction);
-                            goal.getSquare().forEach(rectangle -> {
+                            p.getSquare().forEach(rectangle -> {
                                 Bounds b = rectangle.localToScene(rectangle.getLayoutBounds());
-                                Position tmp = new Position((int) b.getMaxX(), (int )b.getMaxY());
+                                Position tmp = new Position((int) b.getMinX()/TILE_SIZE, (int )b.getMinY()/TILE_SIZE);
 
                                 cliked.replace(rectangle, tmp);
                             });
@@ -159,8 +175,7 @@ public class PuzzleGame extends Application{
                     }
 
                     if(move){
-                        
-                        goal.setLayoutX(layout.getX() + x);
+                        p.setLayoutX(layout.getX() + x);
                     }
 
                     break;
@@ -168,25 +183,13 @@ public class PuzzleGame extends Application{
 
         });
 
-        goal.setOnMouseReleased(event -> {
+        p.setOnMouseReleased(event -> {
             if(dragging){
                 dragging = false;
             }
             cliked.clear();
-            //goal.update();
+            goal.update();
         });
 
-
-        root.getChildren().add(bv.getGroup());
-
-        return root;
-    }
-
-
-    private void border(GraphicsContext g){
-        g.setFill(Color.TRANSPARENT);
-        g.setStroke(Color.BLACK);
-        g.setLineWidth(5);
-        g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
     }
 }

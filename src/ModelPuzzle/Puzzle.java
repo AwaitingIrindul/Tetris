@@ -24,8 +24,15 @@ public class Puzzle {
     public Puzzle() {
         this.board = new Board(height, width);
         goal = PuzzlePieceFactory.get(PuzzlePieces.TwoH);
-        board.addPiece(goal);
+
+
         pieces = new ArrayList<>();
+        this.addPiece(PuzzlePieceFactory.get(PuzzlePieces.ThreeH));
+        board.addPiece(pieces.get(0));
+        selected = pieces.get(0);
+        moveSelected(Direction.RIGHT);
+        moveSelected(Direction.RIGHT);
+        board.addPiece(goal);
     }
 
     public void addPiece(Piece piece){
@@ -53,5 +60,9 @@ public class Puzzle {
 
     public Piece getGoal(){
         return goal;
+    }
+
+    public List<Piece> getPieces(){
+        return pieces;
     }
 }

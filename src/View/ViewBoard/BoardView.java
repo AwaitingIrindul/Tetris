@@ -5,7 +5,9 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 21/03/2017.
@@ -42,6 +44,13 @@ public class BoardView {
         pieces.put(piece, pieceView);
     }
 
+
+    public List<PieceView> getPieceViews(){
+
+        return pieces.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
     public void clear(){
         group.getChildren().clear();
         pieces.clear();
