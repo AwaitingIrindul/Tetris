@@ -6,13 +6,10 @@ import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
-import java.text.ParseException;
 import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +70,6 @@ public class Board {
     public synchronized boolean checkMovement(Direction direction, Piece piece){
 
         if(!collisions.containsValue(piece)) {
-            System.out.println("Piece not in collision anymore : " + Thread.currentThread().getName());
            return false;
         }
 
@@ -390,15 +386,10 @@ public class Board {
     }
 
     public static Board fromFile(String filename) throws IOException, Exception {
-
         BufferedReader br = Files.newBufferedReader(Paths.get(filename));
         String jsonBoard = br.readLine();
         br.close();
-
         return fromJson(jsonBoard);
-
-        
-
     }
 }
 

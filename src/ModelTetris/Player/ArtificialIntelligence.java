@@ -115,9 +115,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
             }
         }
 
-
-        //TODO add next (recursivity should work)
-
         return best;
     }
 

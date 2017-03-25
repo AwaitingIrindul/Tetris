@@ -42,6 +42,4 @@ public enum Direction {
 
     public abstract Position getNewPosition(Position pos);
 
-
-    // TODO: 06/03/2017 Refactor X and Y and check everywhere 
 }

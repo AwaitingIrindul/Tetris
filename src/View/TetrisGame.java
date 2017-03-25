@@ -11,7 +11,6 @@ import View.ViewBoard.PieceView;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,19 +23,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Irindul on 16/02/2017.
  */
 public class TetrisGame extends Application implements GravityListener{
-
-    //TODO refactor view.
-    // TODO: 21/03/2017 Faire Thread ailleurs
 
     public static final int TILE_SIZE = 40;
     public static final int WIDTH = 10 * TILE_SIZE;
