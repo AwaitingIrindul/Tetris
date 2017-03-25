@@ -10,6 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -31,8 +33,6 @@ public class PieceView extends Parent{
     private Piece piece;
     private double tilesize;
     private int offset;
-
-    private ObjectProperty<EventHandler<MouseEvent>> propertyOnAction = new SimpleObjectProperty<>();
 
     // private List<Rectangle> square;
 
@@ -57,8 +57,6 @@ public class PieceView extends Parent{
                 })
                 .forEach(rectangle -> this.getChildren().add(rectangle));
         this.stroke = stroke;
-
-        //onMouseClickedProperty().set(event -> System.out.println("Hello"));
     }
 
     public synchronized void update(){
@@ -73,7 +71,9 @@ public class PieceView extends Parent{
                     return rect;
                 })
                 .forEach(rectangle -> this.getChildren().add(rectangle));
+
     }
+
 
     public List<Rectangle> getSquare() {
         List<Rectangle> square = new ArrayList<>();
@@ -87,6 +87,10 @@ public class PieceView extends Parent{
 
     public Color getColor(){
         return color;
+    }
+
+    public void setStroke(Color stroke) {
+        this.stroke = stroke;
     }
 
     @Override

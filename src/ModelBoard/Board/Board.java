@@ -6,6 +6,8 @@ import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -280,8 +282,6 @@ public class Board {
 
     public static Board fromJson(String json) {
         CharacterIterator iterator = new StringCharacterIterator(json);
-        System.out.println(json);
-        
         //String = height":....
         char c;
 
@@ -385,11 +385,27 @@ public class Board {
         return board;
     }
 
-    public static Board fromFile(String filename) throws IOException, Exception {
-        BufferedReader br = Files.newBufferedReader(Paths.get(filename));
-        String jsonBoard = br.readLine();
-        br.close();
-        return fromJson(jsonBoard);
+    public static Board fromFile(String filename){
+        try {
+            BufferedReader br = Files.newBufferedReader(Paths.get(filename));
+            String jsonBoard = br.readLine();
+            br.close();
+            return fromJson(jsonBoard);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        throw new NullPointerException();
+    }
+
+    public void toFile(String filename){
+        try{
+            BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+            out.write(this.toString());
+            out.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 }
 
