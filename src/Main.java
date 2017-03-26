@@ -1,3 +1,4 @@
+import Model.ModelTetris.Player.GeneticAlgorithm;
 import View.Menu;
 import java.io.*;
 
@@ -10,7 +11,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         //javafx.application.Application.launch(TetrisGame.class);
-        javafx.application.Application.launch(Menu.class);
-
+        //javafx.application.Application.launch(Menu.class);
+        Thread t = new Thread(new GeneticAlgorithm());
+        t.start();
     }
 }

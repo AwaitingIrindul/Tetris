@@ -124,6 +124,6 @@ public class GeneticAlgorithm implements Runnable{
 
     @Override
     public void run() {
-        this.run(500).display();
+        this.run(2000).display();
     }
 }
