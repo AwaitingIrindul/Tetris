@@ -29,7 +29,7 @@ public class Menu extends Application implements IMenu {
             System.exit(0);
         });
 
-
+        scene.getStylesheets().add("style/menu.css");
 
 
         primaryStage.setTitle("Blocks puzzle game");
@@ -62,12 +62,16 @@ public class Menu extends Application implements IMenu {
         Pane root = new Pane();
         root.setPrefSize(WIDTH, HEIGHT);
 
-        Button button = new Button("Tetris");
+        root.getStyleClass().add("menu");
 
+        Button button = new Button("Tetris");
+        button.relocate(75, 10);
+
+        
         button.setOnAction(event -> launchTetris());
 
         Button buttonPuzzle = new Button("Puzzle");
-        buttonPuzzle.relocate(0, 50);
+        buttonPuzzle.relocate(75, 130);
         buttonPuzzle.setOnAction(event -> launchPuzzle());
 
 
@@ -113,5 +117,6 @@ public class Menu extends Application implements IMenu {
     public void goBackToMenu() {
         this.stage.setScene(new Scene(createContent()));
         createHandlers();
+        stage.getScene().getStylesheets().add("style/menu.css");
     }
 }
