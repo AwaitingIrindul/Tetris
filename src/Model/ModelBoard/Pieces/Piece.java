@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Created by Irindul on 09/02/2017.
+ * Class piece contains piece definition.
+ * This class handle self-movement
  */
 public class Piece{
 
@@ -36,11 +38,7 @@ public class Piece{
         this(scheme.length, scheme[0].length);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if(scheme[i][j].equals("1")){
-                    positions[i][j] = true;
-                } else {
-                    positions[i][j] = false;
-                }
+                positions[i][j] = scheme[i][j].equals("1");
             }
         }
         this.orientation = orientation;
@@ -54,9 +52,7 @@ public class Piece{
         width = b.width;
         positions = new boolean[height][width];
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                positions[i][j] = b.positions[i][j];
-            }
+            System.arraycopy(b.positions[i], 0, positions[i], 0, width);
         }
     }
 
@@ -246,8 +242,6 @@ public class Piece{
         //Removing [
         iterator.next();
 
-        c = iterator.current();
-        
 
         boolean[][] positions = new boolean[height][width];
 

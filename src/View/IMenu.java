@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 
 /**
  * Created by Irindul on 26/03/2017.
+ * Interface to implement Observer/Observable
  */
 public interface IMenu {
 

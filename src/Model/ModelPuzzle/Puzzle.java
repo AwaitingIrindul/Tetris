@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by Irindul on 15/03/2017.
+ * Puzzle game contains rule for this game
  */
 public class Puzzle {
 
@@ -105,14 +106,6 @@ public class Puzzle {
            // TODO: 25/03/2017 Notify view
 
        }
-    }
-
-    public boolean checkSelected(Direction direction){
-        if (selected != null) {
-            return board.checkMovement(direction, selected);
-        }
-
-        return false;
     }
 
     public Piece getGoal(){

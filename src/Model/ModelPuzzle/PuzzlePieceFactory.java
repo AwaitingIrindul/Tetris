@@ -6,13 +6,14 @@ import Model.ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 15/03/2017.
+ * Contains Piece definition for the puzzle game
  */
-public class PuzzlePieceFactory {
+class PuzzlePieceFactory {
 
 
 
 
-    public static Piece get(PuzzlePieces p){
+    static Piece get(PuzzlePieces p){
         switch (p){
 
             case TwoH:
@@ -55,7 +56,7 @@ public class PuzzlePieceFactory {
         return new Piece(scheme, new Position(0, 0), Orientation.VERTICAL);
     }
 
-    public static Piece getThreeHorizontal() {
+    private static Piece getThreeHorizontal() {
         String[][] scheme = {
                 {"1", "1", "1"},
         };

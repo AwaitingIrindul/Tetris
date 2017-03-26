@@ -2,26 +2,27 @@ package Model.ModelTetris.Player;
 
 /**
  * Created by Irindul on 22/02/2017.
+ * Custom pair class with generics
  */
-public class Pair<T, K> {
+class Pair<T, K> {
     private T first;
 
     private K second;
 
 
-    public void setFirst(T first){
+    void setFirst(T first){
         this.first = first;
     }
 
-    public void setSecond(K second) {
+    void setSecond(K second) {
         this.second = second;
     }
 
-    public T getFirst() {
+    T getFirst() {
         return first;
     }
 
-    public K getSecond() {
+    K getSecond() {
         return second;
     }
 }

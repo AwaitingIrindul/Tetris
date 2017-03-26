@@ -6,6 +6,7 @@ import java.text.StringCharacterIterator;
 
 /**
  * Created by Irindul on 09/02/2017.
+ * Class position with 2 coordinates
  */
 public class Position implements Serializable{
 
@@ -17,14 +18,11 @@ public class Position implements Serializable{
         setY(y);
     }
 
-    public Position(Position pos){
-        this(pos.getX(), pos.getY());
-    }
     public int getX() {
         return x;
     }
 
-    public void setX(int x) {
+    private void setX(int x) {
         this.x = x;
     }
 
@@ -32,12 +30,8 @@ public class Position implements Serializable{
         return y;
     }
 
-    public void setY(int y) {
+    private void setY(int y) {
         this.y = y;
-    }
-    public void setXY(int x, int y){
-        setX(x);
-        setY(y);
     }
 
     @Override
@@ -49,11 +43,7 @@ public class Position implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-        if (obj == this)
-            return true;
-        return obj instanceof Position && this.equals((Position) obj);
+        return obj != null && (obj == this || obj instanceof Position && this.equals((Position) obj));
 
     }
 

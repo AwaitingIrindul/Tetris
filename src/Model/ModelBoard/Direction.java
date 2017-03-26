@@ -4,6 +4,9 @@ import Model.ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 09/02/2017.
+ * Direction will help indicate a futur position
+ * They each refer to a certain position on an orthonormal grid.
+ * We will set the origin (0, 0) on the top left corner.
  */
 public enum Direction {
     /**

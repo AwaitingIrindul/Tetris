@@ -6,12 +6,14 @@ import Model.ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 10/02/2017.
+ * Tetris piece factory
  */
-public class TetrisPieceFactory {
+class TetrisPieceFactory {
 
-    public static Position startingPosition = new Position(0, 0);
-    public static Orientation orientation = Orientation.HORIZONTAL;
-    public static Piece get(TetrisBlocks t){
+    private static Position startingPosition = new Position(0, 0);
+    private static Orientation orientation = Orientation.HORIZONTAL;
+
+    static Piece get(TetrisBlocks t){
         switch (t){
 
             case Straight:
@@ -51,12 +53,10 @@ public class TetrisPieceFactory {
                 {"1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
 
     }
 
@@ -67,12 +67,10 @@ public class TetrisPieceFactory {
                 {"1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
     }
 
     private static Piece getRightL(){
@@ -82,12 +80,10 @@ public class TetrisPieceFactory {
                 {"1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
     }
 
     private static Piece getTwoByTwo(){
@@ -96,12 +92,10 @@ public class TetrisPieceFactory {
                 {"1", "1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
     }
 
     private static Piece getRightZ(){
@@ -111,12 +105,10 @@ public class TetrisPieceFactory {
                 {"0", "1"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
     }
 
     private static Piece getLeftZ(){
@@ -126,12 +118,10 @@ public class TetrisPieceFactory {
                 {"1", "0"}
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
     }
 
     private static Piece getThreeOne(){
@@ -140,12 +130,10 @@ public class TetrisPieceFactory {
                 {"1", "1", "1"},
         };
 
-        Piece piece = new Piece(scheme, startingPosition, orientation);
-
 
         //blockAggregate.setOrigin(new Origin(block2, new Position(0, 0)));
 
-        return piece;
+        return new Piece(scheme, startingPosition, orientation);
 
     }
 

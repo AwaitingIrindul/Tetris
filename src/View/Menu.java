@@ -14,10 +14,11 @@ import javafx.stage.WindowEvent;
 
 /**
  * Created by Irindul on 26/03/2017.
+ * The view for the menu
  */
 public class Menu extends Application implements IMenu {
-    public final static int WIDTH = 300;
-    public final static int HEIGHT = 300;
+    private final static int WIDTH = 300;
+    private final static int HEIGHT = 300;
 
     private Stage stage;
     @Override

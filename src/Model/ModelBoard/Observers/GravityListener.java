@@ -4,6 +4,7 @@ import Model.ModelBoard.Pieces.Piece;
 
 /**
  * Created by Irindul on 22/02/2017.
+ * Interface to implement Observer design pattern
  */
 public interface GravityListener {
 
@@ -11,7 +12,5 @@ public interface GravityListener {
     void onChangedNext();
     void onSweep();
     void onQuit();
-
-    void onMovement(Piece p);
     void onCleanUp(Piece p);
 }

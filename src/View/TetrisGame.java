@@ -3,6 +3,7 @@ package View;
 import Model.ModelBoard.Direction;
 import Model.ModelBoard.Observers.GravityListener;
 import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 import Model.ModelTetris.Player.ArtificialIntelligence;
 import Model.ModelTetris.Player.Evaluator;
 import Model.ModelTetris.Tetris;
@@ -20,24 +21,25 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import java.util.Comparator;
 import java.util.Random;
 
 /**
  * Created by Irindul on 16/02/2017.
+ * The view for the Tetris game
  */
 public class TetrisGame implements GravityListener{
 
 
 
-    public static final int TILE_SIZE = 40;
-    public static final int WIDTH = 10 * TILE_SIZE;
-    public static final int HEIGHT = 16 * TILE_SIZE;
-    public static final int SCORE_WIDTH = 10 * TILE_SIZE;
-    public static final int NEXT_WIDTH = 5 * TILE_SIZE;
-    public static final int NEXT_HEIGHT = 6 * TILE_SIZE;
-    public boolean go;
+    private static final int TILE_SIZE = 40;
+    private static final int WIDTH = 10 * TILE_SIZE;
+    private static final int HEIGHT = 16 * TILE_SIZE;
+    private static final int SCORE_WIDTH = 10 * TILE_SIZE;
+    private static final int NEXT_WIDTH = 5 * TILE_SIZE;
+    private static final int NEXT_HEIGHT = 6 * TILE_SIZE;
+    private boolean go;
 
-    public int t = 0;
     private Tetris tetris;
 
 
@@ -56,12 +58,12 @@ public class TetrisGame implements GravityListener{
     private IMenu menu;
 
 
-    public TetrisGame(IMenu menu) {
+    TetrisGame(IMenu menu) {
         this.menu = menu;
     }
 
     //  @Override
-    public Scene start() {
+    Scene start() {
         Scene scene = new Scene(createContent());
         scene.getStylesheets().add("style/tetris.css");
         createHandlers(scene);
@@ -115,7 +117,7 @@ public class TetrisGame implements GravityListener{
 
     }
 
-    public Parent createContent() {
+    private Parent createContent() {
 
 
         //Creating the different panes
@@ -186,10 +188,7 @@ public class TetrisGame implements GravityListener{
         boardView.addPiece(tetris.getCurrent(), getRandomColor(), TILE_SIZE, 2);
         tetris.addGravityListener(this);
         next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
-        next.getSquare().forEach(rectangle -> {
-            rectangle.getStyleClass().add("block");
-
-        });
+        next.getSquare().forEach(rectangle -> rectangle.getStyleClass().add("block"));
         drawNext();
 
 
@@ -255,36 +254,10 @@ public class TetrisGame implements GravityListener{
         menu.reset(scene);
     }
 
-    private void border(GraphicsContext g){
-        g.setFill(Color.TRANSPARENT);
-        g.setStroke(Color.BLACK);
-        g.setLineWidth(5);
-        g.strokeRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
-    }
-    private void render() {
-
-      /*  g.clearRect( 0 , 0, WIDTH, HEIGHT);
-
-
-        tetrominos.forEach(p -> p.draw(g));
-        current.draw(g);
-
-        gcNextPiece.clearRect(0, 0, gcNextPiece.getCanvas().getWidth(), gcNextPiece.getCanvas().getHeight());
-
-
-        next.drawNext(gcNextPiece);
-
-        score.setText(Integer.toString(tetris.getScore()));*/
-    }
 
     private void update() {
 
         tetris.applyGravity();
-
-        //go = ! tetris.isFinished();
-       // if(!go){
-         //   stopGame();
-        //}
     }
 
     private void stopGame() {
@@ -339,28 +312,24 @@ public class TetrisGame implements GravityListener{
         next.getSquare().forEach(rectangle -> rectangle.getStyleClass().add("block"));
         drawNext();
         if (artificialPlayer){
-            artificialIntelligence.setHasChanged(true);
+            artificialIntelligence.setHasChanged();
         }
     }
 
     private void drawNext() {
         nextGroup.getChildren().clear();
         int maxPieceY = next.getPiece().getPositions().stream().
-        max((o1, o2) -> Integer.compare(o1.getY(), o2.getY())).get().getY();
+        max(Comparator.comparingInt(Position::getY)).get().getY();
 
         int maxPieceX = next.getPiece().getPositions().stream().
-                max((o1, o2) -> Integer.compare(o1.getX(), o2.getX())).get().getX();
+                max(Comparator.comparingInt(Position::getX)).get().getX();
 
         int offsetY = (5 - maxPieceY)/2;
         int offsetX = (5 - maxPieceX)/2;
 
-        next.getSquare().forEach(rectangle -> {
-            rectangle.relocate(rectangle.getLayoutX() + TILE_SIZE*offsetY, rectangle.getLayoutY() + TILE_SIZE*offsetX);
-        });
+        next.getSquare().forEach(rectangle -> rectangle.relocate(rectangle.getLayoutX() + TILE_SIZE*offsetY, rectangle.getLayoutY() + TILE_SIZE*offsetX));
 
-        next.getSquare().forEach(rectangle -> {
-            rectangle.setStroke(Color.BLACK);
-        });
+        next.getSquare().forEach(rectangle -> rectangle.setStroke(Color.BLACK));
         nextGroup.getChildren().addAll(next.getSquare());
     }
 
@@ -373,11 +342,6 @@ public class TetrisGame implements GravityListener{
     public void onQuit() {
         stopGame();
         //// TODO: 21/03/2017 Game over
-    }
-
-    @Override
-    public void onMovement(Piece p) {
-        boardView.updatePiece(p);
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by Irindul on 16/02/2017.
+ * Piece library. Custom Node component to be added on a another Node
  */
 public class PieceView extends Parent{
 
@@ -21,14 +22,12 @@ public class PieceView extends Parent{
     private double tilesize;
     private int offset;
 
-    // private List<Rectangle> square;
-
     public PieceView(Color color, Piece piece, double tilesize, int offset) {
         this(color, piece, tilesize, offset, Color.BLACK);
 
     }
 
-    public PieceView(Color color, Piece piece, double tilesize, int offset, Color stroke){
+    private PieceView(Color color, Piece piece, double tilesize, int offset, Color stroke){
         super();
         this.color = color;
         this.piece = piece;

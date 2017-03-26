@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 09/02/2017.
+ *
+ * Class Board contains movement collisiosns check and multithread actions.
  */
 public class Board {
     
-    private ConcurrentMap<Position, Piece> collisions;
+    private final ConcurrentMap<Position, Piece> collisions;
     private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(8);
     private Map<Piece, ScheduledFuture<?>> futures = new HashMap<>();
     private int height;
@@ -90,15 +92,10 @@ public class Board {
     }
 
 
-    private synchronized boolean checkCollide(Position pos, Piece piece){
-        if (pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) {
-            return collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
+    private synchronized boolean checkCollide(Position pos, Piece piece) {
+        return !(pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) || collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
 
-        } else {
-            return true;
-        }
-
-       // return false;
+        // return false;
 
     }
 
@@ -107,7 +104,7 @@ public class Board {
         try{
             if(collisions.containsValue(piece)){
                 if(checkMovement(direction, piece)){
-                    piece.getPositions().forEach( position -> collisions.remove(position));
+                    piece.getPositions().forEach(collisions::remove);
                     piece.move(direction);
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
@@ -136,7 +133,7 @@ public class Board {
         return true;
     }
 
-    public boolean isFullRow(int i){
+    private boolean isFullRow(int i){
         for (int j = 0; j < width; j++) {
             Position toCheck = new Position(i, j);
             if(!collisions.containsKey(toCheck)){
@@ -193,7 +190,7 @@ public class Board {
     public void resolveHoles(Piece p){
         lock.lock();
         try{
-            p.getPositions().forEach(pos -> collisions.remove(pos));
+            p.getPositions().forEach(collisions::remove);
             p.resolveHoles();
             p.getPositions().forEach(pos -> collisions.put(pos, p));
         } finally {
@@ -204,7 +201,7 @@ public class Board {
     }
 
 
-    public boolean checkRotation(Piece piece){
+    private boolean checkRotation(Piece piece){
 
         List<Position> toCheck = piece.getRotations();
         boolean ok = true;
@@ -222,7 +219,7 @@ public class Board {
     public void rotateClockWise(Piece piece){
 
         if(checkRotation(piece)){
-            piece.getPositions().forEach( position -> collisions.remove(position));
+            piece.getPositions().forEach(collisions::remove);
             piece.rotateClockWise();
             piece.getPositions().forEach( position -> collisions.put(position, piece));
         }
@@ -262,14 +259,14 @@ public class Board {
         sb.append("\", \"width\": \"");
         sb.append(width);
         sb.append("\", \"collisions\":[");
-        collisions.entrySet().forEach(entry -> {
+        collisions.forEach((key, value) -> {
             sb.append("{");
             sb.append("\"key\":");
-            sb.append(entry.getKey().toString());
+            sb.append(key.toString());
             sb.append(", \"piece\":");
-            sb.append(entry.getValue().toString());
+            sb.append(value.toString());
             sb.append("}");
-            if(collisions.entrySet().iterator().hasNext()){
+            if (collisions.entrySet().iterator().hasNext()) {
                 sb.append(",");
             }
         });
@@ -280,7 +277,7 @@ public class Board {
         return sb.toString().replaceAll("\\s+", "");
     }
 
-    public static Board fromJson(String json) {
+    private static Board fromJson(String json) {
         CharacterIterator iterator = new StringCharacterIterator(json);
         //String = height":....
         char c;

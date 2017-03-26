@@ -13,6 +13,7 @@ import java.util.Random;
 
 /**
  * Created by Irindul on 09/02/2017.
+ * Contains Tetris rules
  */
 public class Tetris {
     private Board board;
@@ -46,9 +47,7 @@ public class Tetris {
     public Tetris(Tetris t){
         this.board = new Board(t.board);
         this.pieces = new ArrayList<>(7);
-        for (int i = 0; i < t.pieces.size(); i++) {
-            pieces.add(t.pieces.get(i));
-        }
+        pieces.addAll(t.pieces);
         this.current = new Piece(t.current);
         this.next = new Piece(t.next);
         this.finished = t.finished;
@@ -91,7 +90,7 @@ public class Tetris {
         score += i;
     }
 
-    public void addToBoard(){
+    private void addToBoard(){
         board.addPiece(current);
     }
 
@@ -107,7 +106,7 @@ public class Tetris {
         board.onQuit();
     }
 
-    public Piece randomBlock(){
+    private Piece randomBlock(){
 
         if(pieces.size() == 0){
             for (int i = 0; i < 7; i++) {
@@ -129,7 +128,7 @@ public class Tetris {
         movementListeners.forEach(GravityListener::onMovement);
     }
 
-    public void randomRotate(Piece piece){
+    private void randomRotate(Piece piece){
         Random rd = new Random();
         int numberOfRotation = rd.nextInt(4);
         for (int i = 0; i < numberOfRotation; i++) {
@@ -137,7 +136,7 @@ public class Tetris {
         }
     }
 
-    public boolean isFinished() {
+    private boolean isFinished() {
        return (!board.isEmptyRow(0) || !board.isEmptyRow(1));
     }
 
@@ -212,7 +211,7 @@ public class Tetris {
     }
 
 
-    public void swapCurrent(){
+    private void swapCurrent(){
         board.addDaeomon(current, movementListeners.get(0));
         current = next;
         current.setPosition(position);

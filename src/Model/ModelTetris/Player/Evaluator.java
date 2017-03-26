@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * Created by Irindul on 20/02/2017.
+ * Evaluates a given tetris grid
  */
 public class Evaluator {
 
@@ -24,15 +25,15 @@ public class Evaluator {
         score = 0;
     }
 
-    public Evaluator(Evaluator other){
+    private Evaluator(Evaluator other){
         this(other.a, other.b, other.c, other.d);
     }
 
-    public double evaluate(Tetris t){
+    double evaluate(Tetris t){
         return a*t.sumHeight() + b* t.rowsToSweep() + c*t.holes() + d*t.bumpiness();
     }
 
-    public static Evaluator getRandomEvaluator(){
+    static Evaluator getRandomEvaluator(){
         double min = -1;
         double max = 1;
 
@@ -48,7 +49,7 @@ public class Evaluator {
 
     }
 
-    public void operatorTime(double score){
+    private void operatorTime(double score){
 
         a *= score;
         b *= score;
@@ -56,7 +57,7 @@ public class Evaluator {
         d *= score;
     }
 
-    public void operatorAdd(Evaluator other){
+    private void operatorAdd(Evaluator other){
         this.a += other.a;
         this.b += other.b;
         this.c += other.c;
@@ -65,11 +66,7 @@ public class Evaluator {
     }
 
 
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public void normalization(){
+    void normalization(){
         double norme = norme();
 
         a /= norme;
@@ -78,11 +75,11 @@ public class Evaluator {
         d /= norme;
     }
 
-    public double norme(){
+    private double norme(){
         return Math.sqrt( a*a  + b*b + c*c + d*d );
     }
 
-    public void mutation(){
+    void mutation(){
         Random rd = new Random();
         int component = rd.nextInt(4);
 
@@ -106,13 +103,13 @@ public class Evaluator {
 
     }
 
-    public  void display(){
+    void display(){
         System.out.println(a +", " + b + ", " + c + ", " + d);
         
 
 
     }
-    public static Evaluator crossover(Evaluator p1, Evaluator p2){
+    static Evaluator crossover(Evaluator p1, Evaluator p2){
         Evaluator child = new Evaluator(p1);
         Evaluator child2 = new Evaluator(p2);
 

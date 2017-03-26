@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Irindul on 21/03/2017.
+ * Board view library. Contains a group with different pieces on it
  */
 public class BoardView {
 
-    Group group;
-    //List<PieceView> pieces = new ArrayList<>();
-    HashMap<Piece, PieceView> pieces;
+    private Group group;
+    private HashMap<Piece, PieceView> pieces;
+    private String style;
 
-    String style;
     public BoardView() {
         group = new Group();
         pieces = new HashMap<>();
@@ -56,24 +56,13 @@ public class BoardView {
         pieces.clear();
     }
 
-    public void clean(){
-
-    }
-
     public void updatePiece(Piece piece) {
 
         pieces.get(piece).getChildren().clear();
         pieces.get(piece).update();
-
-        /*pieces.get(piece).getSquare().forEach(
-        rectangle -> group.getChildren().remove(rectangle));
-        pieces.get(piece).update();
-        pieces.get(piece).getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
-        group.getChildren().addAll(pieces.get(piece).getSquare());*/
     }
 
     public void updateAll(){
-        //group.getChildren().clear();
         pieces.entrySet().stream()
                 .map(Map.Entry::getKey)
                 .forEach(this::updatePiece);

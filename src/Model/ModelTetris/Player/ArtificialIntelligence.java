@@ -5,17 +5,14 @@ import Model.ModelBoard.Observers.GravityListener;
 import Model.ModelBoard.Pieces.Piece;
 import Model.ModelTetris.Tetris;
 
-import java.util.LinkedList;
-
 /**
  * Created by Irindul on 18/02/2017.
+ * Contains the artificial intelligence for the Tetris game
  */
 public class ArtificialIntelligence implements GravityListener, Runnable{
     private Tetris tetris;
     private Evaluator evaluator;
-    private LinkedList<Direction> directions;
     private int score;
-    private static int count = 0;
     private boolean hasChanged;
     private boolean go = true;
 
@@ -23,7 +20,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
         this.tetris = tetris;
         tetris.addGravityListener(this);
         this.evaluator = evaluator;
-        directions = new LinkedList<>();
         score = 0;
         hasChanged = true;
     }
@@ -34,7 +30,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
         if(hasChanged){
             hasChanged = false;
-            Pair<Pair<Integer, Integer>, Double> moves = computeEveryMove(0);
+            Pair<Pair<Integer, Integer>, Double> moves = computeEveryMove();
 
             int rotation = moves.getFirst().getFirst();
 
@@ -56,15 +52,14 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     }
 
-    public void setHasChanged(boolean hasChanged) {
-        this.hasChanged = hasChanged;
+    public void setHasChanged() {
+        this.hasChanged = true;
     }
 
 
-    private Pair<Pair<Integer, Integer>, Double> computeEveryMove(int depth){
+    private Pair<Pair<Integer, Integer>, Double> computeEveryMove(){
         
         Tetris startingGrid = new Tetris(tetris); // We copy the grid so we don't affect it
-        Piece current = startingGrid.getCurrent();
 
         Pair<Pair<Integer, Integer>, Double> best = new Pair<>();
 
@@ -118,7 +113,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
         return best;
     }
 
-    public int getScore() {
+    int getScore() {
         return score;
     }
 
@@ -134,12 +129,12 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
         score = tetris.getScore();
     }
 
-    public void reset(){
+    void reset(){
         tetris = new Tetris();
         tetris.addGravityListener(this);
     }
 
-    public Evaluator getEvaluator() {
+    Evaluator getEvaluator() {
         return evaluator;
     }
 
@@ -163,11 +158,6 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
     @Override
     public void onQuit() {
         go = false;
-    }
-
-    @Override
-    public void onMovement(Piece p) {
-
     }
 
     @Override

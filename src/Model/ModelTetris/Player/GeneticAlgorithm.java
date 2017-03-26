@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by Irindul on 21/02/2017.
+ * Genetic algorithm to find a proper evaluator
  */
 public class GeneticAlgorithm implements Runnable{
 
@@ -24,7 +25,7 @@ public class GeneticAlgorithm implements Runnable{
         }
     }
 
-    public Evaluator run(int success){
+    private Evaluator run(int success){
 
         List<ArtificialIntelligence> offsprings;
         int nbGen = 0;
@@ -52,7 +53,7 @@ public class GeneticAlgorithm implements Runnable{
                 player.getEvaluator().normalization();
                 Random rd = new Random();
                 int mutate = rd.nextInt(100);
-                if(mutate < getPourcentageRate(player.getScore())){
+                if(mutate < getPourcentageRate()){
                     player.getEvaluator().mutation();
                 }
 
@@ -78,7 +79,7 @@ public class GeneticAlgorithm implements Runnable{
 
     }
 
-    private double  getPourcentageRate(int score){
+    private double  getPourcentageRate(){
         /*double square = score * score;
         double limit = 0.05;
         return ((1/(square + 1)) + limit) * 100;*/
@@ -118,11 +119,7 @@ public class GeneticAlgorithm implements Runnable{
                 .max((o1, o2) -> o1.getScore() > o2.getScore() ? 1 : -1)
                .get()
                .getScore();
-        if(max >= success){
-            return true;
-        } else {
-            return false;
-        }
+        return max >= success;
     }
 
     @Override
