@@ -24,7 +24,7 @@ import java.util.Random;
 /**
  * Created by Irindul on 15/03/2017.
  */
-public class PuzzleGame extends Application{
+public class PuzzleGame {
     public static int TILE_SIZE = 80;
     public static int WIDTH = 6 * TILE_SIZE;
     public static double HEIGHT = 6 * TILE_SIZE;
@@ -34,40 +34,32 @@ public class PuzzleGame extends Application{
     private ArrayList<PieceView> pieces;
     private BoardView bv;
     private Puzzle game;
-    private Stage primaryStage;
+    private Scene scene;
     private boolean dragging = false;
     private HashMap<Rectangle, Position> cliked;
 
     private int i;
     private int j;
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+    private IMenu menu;
+
+    public PuzzleGame(IMenu menu) {
+        this.menu = menu;
+    }
+
+    public Scene start() {
         Scene scene = new Scene(createContent());
         scene.getStylesheets().add("style/puzzle.css");
-        primaryStage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
-
         createHandlers(scene);
 
-        primaryStage.setTitle("Blocks puzzle game");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
-        this.primaryStage = primaryStage;
+        this.scene = scene;
+        return scene;
 
     }
 
     private void createHandlers(Scene scene){
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ESCAPE){
-                primaryStage.fireEvent(
-                        new WindowEvent(
-                                primaryStage,
-                                WindowEvent.WINDOW_CLOSE_REQUEST
-                        )
-                );
+                menu.goBackToMenu();
             }
 
             if(e.getCode() == KeyCode.DOWN){

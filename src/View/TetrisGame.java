@@ -28,7 +28,9 @@ import java.util.Random;
 /**
  * Created by Irindul on 16/02/2017.
  */
-public class TetrisGame extends Application implements GravityListener{
+public class TetrisGame implements GravityListener{
+
+
 
     public static final int TILE_SIZE = 40;
     public static final int WIDTH = 10 * TILE_SIZE;
@@ -45,7 +47,7 @@ public class TetrisGame extends Application implements GravityListener{
     private Group nextGroup;
     private BoardView boardView;
     private PieceView next;
-    private Stage primaryStage;
+    private Scene scene;
     private double time;
     private  AnimationTimer timer;
     private Label score;
@@ -54,34 +56,27 @@ public class TetrisGame extends Application implements GravityListener{
     private ArtificialIntelligence artificialIntelligence;
 
     private static double timerSpeed = 0.017;
+    private IMenu menu;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+
+    public TetrisGame(IMenu menu) {
+        this.menu = menu;
+    }
+
+    //  @Override
+    public Scene start() {
         Scene scene = new Scene(createContent());
         scene.getStylesheets().add("style/tetris.css");
         createHandlers(scene);
-        primaryStage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        primaryStage.setTitle("Blocks puzzle game");
-        primaryStage.setResizable(false);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        this.primaryStage = primaryStage;
+        this.scene = scene;
+        return scene;
 
     }
 
     private void createHandlers(Scene scene){
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ESCAPE){
-                primaryStage.fireEvent(
-                        new WindowEvent(
-                                primaryStage,
-                                WindowEvent.WINDOW_CLOSE_REQUEST
-                        )
-                );
+                menu.goBackToMenu();
             }
 
             if(e.getCode() == KeyCode.ENTER){
@@ -222,14 +217,9 @@ public class TetrisGame extends Application implements GravityListener{
         startAI.setOnAction(event -> {
             resetGame();
             // TODO: 21/03/2017 Refactor in function
-            primaryStage.getScene().setOnKeyPressed(e -> {
+            scene.setOnKeyPressed(e -> {
                 if(e.getCode() == KeyCode.ESCAPE){
-                    primaryStage.fireEvent(
-                            new WindowEvent(
-                                    primaryStage,
-                                    WindowEvent.WINDOW_CLOSE_REQUEST
-                            )
-                    );
+                    this.menu.goBackToMenu();
                 }
                 if(e.getCode() == KeyCode.ENTER){
                     pause();
@@ -245,6 +235,8 @@ public class TetrisGame extends Application implements GravityListener{
             timer.start();
             timerSpeed = 0.35;
 
+            this.menu.launchAI(scene);
+
         });
 
 
@@ -257,11 +249,13 @@ public class TetrisGame extends Application implements GravityListener{
         tetris.quit();
         timer.stop();
         boardView.clear();
-        primaryStage.setScene(new Scene(createContent()));
-        primaryStage.getScene().getStylesheets().add("style/tetris.css");
-        createHandlers(primaryStage.getScene());
+        scene = new Scene(createContent());
+        scene.getStylesheets().add("style/tetris.css");
+        createHandlers(scene);
         timerSpeed = 0.017;
         time = 0;
+
+        menu.reset(scene);
     }
 
     private void border(GraphicsContext g){
@@ -298,15 +292,7 @@ public class TetrisGame extends Application implements GravityListener{
 
     private void stopGame() {
         timer.stop();
-        primaryStage.getScene().setOnKeyPressed(e -> {
-            if(e.getCode() == KeyCode.ESCAPE){
-            primaryStage.fireEvent(
-                    new WindowEvent(
-                            primaryStage,
-                            WindowEvent.WINDOW_CLOSE_REQUEST
-                    )
-            );
-        }});
+
     }
 
 

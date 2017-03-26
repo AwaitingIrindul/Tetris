@@ -4,6 +4,7 @@ import ModelBoard.Pieces.Piece;
 import ModelBoard.Position.Position;
 import ModelTetris.TetrisBlocks;
 import ModelTetris.TetrisPieceFactory;
+import View.Menu;
 import View.PuzzleGame;
 import View.TetrisGame;
 
@@ -19,7 +20,7 @@ public class Main {
 
 
         //javafx.application.Application.launch(TetrisGame.class);
-        javafx.application.Application.launch(PuzzleGame.class);
+        javafx.application.Application.launch(Menu.class);
 
     }
 }
