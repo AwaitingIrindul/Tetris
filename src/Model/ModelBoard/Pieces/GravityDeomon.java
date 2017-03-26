@@ -1,8 +1,8 @@
-package ModelBoard.Pieces;
+package Model.ModelBoard.Pieces;
 
-import ModelBoard.Board.Board;
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
+import Model.ModelBoard.Board.Board;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Observers.GravityListener;
 
 /**
  * Created by Irindul on 13/03/2017.

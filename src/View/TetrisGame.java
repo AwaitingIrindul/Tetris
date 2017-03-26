@@ -1,15 +1,14 @@
 package View;
 
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.Piece;
-import ModelTetris.Player.ArtificialIntelligence;
-import ModelTetris.Player.Evaluator;
-import ModelTetris.Tetris;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Observers.GravityListener;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelTetris.Player.ArtificialIntelligence;
+import Model.ModelTetris.Player.Evaluator;
+import Model.ModelTetris.Tetris;
 import View.ViewBoard.BoardView;
 import View.ViewBoard.PieceView;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -20,8 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.util.Random;
 

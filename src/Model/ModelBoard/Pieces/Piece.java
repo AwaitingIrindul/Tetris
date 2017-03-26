@@ -1,8 +1,8 @@
-package ModelBoard.Pieces;
+package Model.ModelBoard.Pieces;
 
-import ModelBoard.Direction;
-import ModelBoard.Orientation;
-import ModelBoard.Position.Position;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Orientation;
+import Model.ModelBoard.Position.Position;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;

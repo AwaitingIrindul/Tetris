@@ -1,4 +1,4 @@
-package ModelTetris.Player;
+package Model.ModelTetris.Player;
 
 /**
  * Created by Irindul on 22/02/2017.

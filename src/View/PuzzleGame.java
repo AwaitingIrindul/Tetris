@@ -1,20 +1,16 @@
 package View;
 
-import ModelBoard.Direction;
-import ModelBoard.Position.Position;
-import ModelPuzzle.Puzzle;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Position.Position;
+import Model.ModelPuzzle.Puzzle;
 import View.ViewBoard.BoardView;
 import View.ViewBoard.PieceView;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

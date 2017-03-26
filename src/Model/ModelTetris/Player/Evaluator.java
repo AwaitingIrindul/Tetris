@@ -1,6 +1,6 @@
-package ModelTetris.Player;
+package Model.ModelTetris.Player;
 
-import ModelTetris.Tetris;
+import Model.ModelTetris.Tetris;
 
 import java.util.Random;
 

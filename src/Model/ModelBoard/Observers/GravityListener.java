@@ -1,6 +1,6 @@
-package ModelBoard.Observers;
+package Model.ModelBoard.Observers;
 
-import ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Pieces.Piece;
 
 /**
  * Created by Irindul on 22/02/2017.

@@ -1,6 +1,6 @@
 package View.ViewBoard;
 
-import ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Pieces.Piece;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 

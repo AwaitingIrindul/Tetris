@@ -1,4 +1,4 @@
-package ModelTetris;
+package Model.ModelTetris;
 
 /**
  * Created by Irindul on 10/02/2017.

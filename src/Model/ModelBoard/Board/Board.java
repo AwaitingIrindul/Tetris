@@ -1,9 +1,9 @@
-package ModelBoard.Board;
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.GravityDeomon;
-import ModelBoard.Pieces.Piece;
-import ModelBoard.Position.Position;
+package Model.ModelBoard.Board;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Observers.GravityListener;
+import Model.ModelBoard.Pieces.GravityDeomon;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

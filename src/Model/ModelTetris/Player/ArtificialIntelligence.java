@@ -1,9 +1,9 @@
-package ModelTetris.Player;
+package Model.ModelTetris.Player;
 
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.Piece;
-import ModelTetris.Tetris;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Observers.GravityListener;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelTetris.Tetris;
 
 import java.util.LinkedList;
 

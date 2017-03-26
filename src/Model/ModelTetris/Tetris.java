@@ -1,10 +1,10 @@
-package ModelTetris;
+package Model.ModelTetris;
 
-import ModelBoard.Board.Board;
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.Piece;
-import ModelBoard.Position.Position;
+import Model.ModelBoard.Board.Board;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Observers.GravityListener;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 
 import java.util.ArrayList;
 import java.util.Collections;

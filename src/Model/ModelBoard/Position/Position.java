@@ -1,9 +1,8 @@
-package ModelBoard.Position;
+package Model.ModelBoard.Position;
 
 import java.io.Serializable;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.Objects;
 
 /**
  * Created by Irindul on 09/02/2017.

@@ -1,8 +1,8 @@
-package ModelTetris;
+package Model.ModelTetris;
 
-import ModelBoard.Orientation;
-import ModelBoard.Pieces.Piece;
-import ModelBoard.Position.Position;
+import Model.ModelBoard.Orientation;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 10/02/2017.

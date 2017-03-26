@@ -1,12 +1,10 @@
-package ModelPuzzle;
+package Model.ModelPuzzle;
 
-import ModelBoard.Board.Board;
-import ModelBoard.Direction;
-import ModelBoard.Observers.GravityListener;
-import ModelBoard.Pieces.Piece;
-import ModelBoard.Position.Position;
+import Model.ModelBoard.Board.Board;
+import Model.ModelBoard.Direction;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

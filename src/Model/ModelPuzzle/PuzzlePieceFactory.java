@@ -1,8 +1,8 @@
-package ModelPuzzle;
+package Model.ModelPuzzle;
 
-import ModelBoard.Orientation;
-import ModelBoard.Pieces.Piece;
-import ModelBoard.Position.Position;
+import Model.ModelBoard.Orientation;
+import Model.ModelBoard.Pieces.Piece;
+import Model.ModelBoard.Position.Position;
 
 /**
  * Created by Irindul on 15/03/2017.
