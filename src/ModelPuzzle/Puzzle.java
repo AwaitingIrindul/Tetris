@@ -51,7 +51,7 @@ public class Puzzle {
         board.toFile("ressources/init/puzzle1.json");
 
 
-        // TODO: 25/03/2017 READ AND WRITE FILES 
+        // TODO: 25/03/2017 READ AND WRITE FILES
        /* File f = new File("ressources/init/test.json");
         if(f.exists() && !f.isDirectory()) {
 
