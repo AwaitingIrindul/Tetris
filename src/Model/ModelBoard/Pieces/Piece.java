@@ -8,6 +8,7 @@ import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -54,6 +55,7 @@ public class Piece{
         for (int i = 0; i < height; i++) {
             System.arraycopy(b.positions[i], 0, positions[i], 0, width);
         }
+        this.orientation = b.getOrientation();
     }
 
 
@@ -196,6 +198,46 @@ public class Piece{
         return sb.toString().replaceAll("\\s+", "");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+
+        if(obj == null)
+            return this == null;
+        if(this == null)
+            return false;
+
+        if(obj instanceof Piece){
+            Piece other = (Piece) obj;
+            if (this.height == other.height) {
+                if(this.width == other.width){
+                    boolean ok = true;
+                    for (int i = 0; i < height; i++) {
+                        for (int j = 0; j < width; j++) {
+                            if (positions[i][j] != positions[i][j])
+                                ok = false;
+                        }
+                    }
+                    return (super.equals(obj) || (ok && position.equals(other.position) && orientation.equals(other.orientation)));
+
+                }
+            }
+        }
+        return super.equals(obj);
+    }
+
+    /*@Override
+    public int hashCode() {
+        int hash = position.hashCode();
+        hash += Integer.hashCode(height);
+        hash += Integer.hashCode(width);
+        hash += orientation.hashCode();
+        return  Objects.hash();
+       // return Integer.hashCode(hash);
+    }*/
+
     public static Piece fromJson(String json){
         CharacterIterator iterator = new StringCharacterIterator(json);
         char c;
@@ -212,8 +254,7 @@ public class Piece{
 
         //Removing ,"height"
         while(iterator.next() != ':');
-
-
+        
         StringBuilder sb = new StringBuilder();
         
         //Removing :
@@ -296,12 +337,9 @@ public class Piece{
         piece.positions = positions;
         piece.position = position;
         piece.orientation = orientation;
-
-
         
-
         return piece;
     }
 
-    // TODO: 24/03/2017 Simplify Json read and write 
+
 }

@@ -56,7 +56,7 @@ public class PieceView extends Parent{
                     rect.setStroke(stroke);
                     return rect;
                 })
-                .forEach(rectangle -> this.getChildren().add(rectangle));
+                .forEach(rectangle -> getChildren().add(rectangle));
 
     }
 

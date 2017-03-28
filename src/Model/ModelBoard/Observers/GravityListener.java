@@ -13,4 +13,5 @@ public interface GravityListener {
     void onSweep();
     void onQuit();
     void onCleanUp(Piece p);
+    void update(Piece p);
 }

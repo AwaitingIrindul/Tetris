@@ -8,12 +8,12 @@ import Model.ModelBoard.Position.Position;
  * Created by Irindul on 15/03/2017.
  * Contains Piece definition for the puzzle game
  */
-class PuzzlePieceFactory {
+public class PuzzlePieceFactory {
 
 
 
 
-    static Piece get(PuzzlePieces p){
+    public static Piece get(PuzzlePieces p){
         switch (p){
 
             case TwoH:

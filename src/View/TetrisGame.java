@@ -75,6 +75,7 @@ public class TetrisGame implements GravityListener{
     private void createHandlers(Scene scene){
         scene.setOnKeyPressed(e -> {
             if(e.getCode() == KeyCode.ESCAPE){
+                stopGame();
                 menu.goBackToMenu();
             }
 
@@ -94,11 +95,6 @@ public class TetrisGame implements GravityListener{
             if(e.getCode() == KeyCode.UP){
                 tetris.rotate();
             }
-            if(e.getCode() == KeyCode.R){
-                System.out.println();
-                
-                tetris.resolve();
-            }
 
            // render();
 
@@ -106,6 +102,7 @@ public class TetrisGame implements GravityListener{
     }
 
     private void pause() {
+        
         if(pause){
             timer.start();
             pause = false;
@@ -162,6 +159,10 @@ public class TetrisGame implements GravityListener{
         startAI.setTranslateX((SCORE_WIDTH - NEXT_WIDTH) / 2);
         startAI.setTranslateY(400);
 
+        score = new Label();
+        score.relocate(100, 600);
+
+
         boardView = new BoardView("block");
         Group board = boardView.getGroup();
       //  board.getStyleClass().add("gamePane");
@@ -170,7 +171,7 @@ public class TetrisGame implements GravityListener{
         //Adding every node to its root
         nextPiece.getChildren().add(nextGroup);
         game.getChildren().addAll(board, border);
-        menu.getChildren().addAll(reset, startAI);
+        menu.getChildren().addAll(reset, startAI, score);
         menu.getChildren().add(nextPiece);
         root.getChildren().add(game);
         root.getChildren().add(menu);
@@ -212,7 +213,6 @@ public class TetrisGame implements GravityListener{
 
         startAI.setOnAction(event -> {
             resetGame();
-            // TODO: 21/03/2017 Refactor in function
             scene.setOnKeyPressed(e -> {
                 if(e.getCode() == KeyCode.ESCAPE){
                     this.menu.goBackToMenu();
@@ -262,7 +262,7 @@ public class TetrisGame implements GravityListener{
 
     private void stopGame() {
         timer.stop();
-
+        tetris.stop();
     }
 
 
@@ -311,6 +311,7 @@ public class TetrisGame implements GravityListener{
         next = new PieceView(getRandomColor(), tetris.getNext(), TILE_SIZE, 0);
         next.getSquare().forEach(rectangle -> rectangle.getStyleClass().add("block"));
         drawNext();
+
         if (artificialPlayer){
             artificialIntelligence.setHasChanged();
         }
@@ -335,17 +336,24 @@ public class TetrisGame implements GravityListener{
 
     @Override
     public synchronized void onSweep() {
+        //boardView.updateAll();
         Platform.runLater(() -> boardView.updateAll());
+        Platform.runLater(() -> score.setText(Integer.toString(tetris.getScore())));
     }
 
     @Override
     public void onQuit() {
         stopGame();
-        //// TODO: 21/03/2017 Game over
     }
 
     @Override
     public void onCleanUp(Piece p) {
         boardView.clean(p);
+    }
+
+    @Override
+    public void update(Piece p) {
+        Platform.runLater(() -> boardView.updatePiece(p));
+
     }
 }

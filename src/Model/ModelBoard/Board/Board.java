@@ -2,6 +2,7 @@ package Model.ModelBoard.Board;
 import Model.ModelBoard.Direction;
 import Model.ModelBoard.Observers.GravityListener;
 import Model.ModelBoard.Pieces.GravityDeomon;
+import Model.ModelBoard.Pieces.Identificator;
 import Model.ModelBoard.Pieces.Piece;
 import Model.ModelBoard.Position.Position;
 
@@ -13,11 +14,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -27,18 +31,23 @@ import java.util.stream.Collectors;
  */
 public class Board {
     
-    private final ConcurrentMap<Position, Piece> collisions;
-    private ScheduledExecutorService executor = (ScheduledExecutorService) Executors.newScheduledThreadPool(8);
+    private final Map<Position, Piece> collisions;
+    private ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(2);
     private Map<Piece, ScheduledFuture<?>> futures = new HashMap<>();
+    private Map<Piece, Thread> daemons = new HashMap<>();
     private int height;
     private int width;
-    private ReentrantLock lock = new ReentrantLock();
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock read =  lock.readLock();
+    private Lock write =  lock.writeLock();
     private GravityListener listener;
+    private ArrayList<Piece> debug = new ArrayList<>();
 
     public Board(int height, int width) {
         this.height = height;
         this.width = width;
         collisions = new ConcurrentHashMap<>();
+
     }
 
     public void addListener(GravityListener listener){
@@ -47,7 +56,7 @@ public class Board {
 
     public  Board(Board board) {
 
-        collisions = new ConcurrentHashMap<>();
+        collisions = new HashMap<>();
         synchronized (collisions){
             collisions.putAll(board.collisions);
         }
@@ -57,24 +66,38 @@ public class Board {
     }
 
     public void addPiece(Piece piece){
+        write.lock();
+        executor.setRemoveOnCancelPolicy(true);
         piece.getPositions().forEach(
                 position -> collisions.put(position, piece)
         );
+
+        debug.add(piece);
+
+        write.unlock();
     }
 
     public void addDaeomon(Piece piece, GravityListener listener){
 
         Thread t = new Thread(new GravityDeomon(this, piece, listener));
         t.setDaemon(true);
-
+        daemons.put(piece, t);
         futures.put(piece, executor.scheduleAtFixedRate(t, 0, 30, TimeUnit.MILLISECONDS));
     }
 
 
-    public synchronized boolean checkMovement(Direction direction, Piece piece){
+    public boolean checkMovement(Direction direction, Piece piece){
 
+        read.lock();
+        if(Thread.currentThread().isInterrupted()) {
+            read.unlock();
+            return false;
+        }
         if(!collisions.containsValue(piece)) {
-           return false;
+            System.out.println("wtf");
+            
+            return false;
+
         }
 
         List<Position> toCheck = piece.getPositions().stream()
@@ -88,33 +111,46 @@ public class Board {
             }
         }
 
+        read.unlock();
+
         return ok;
     }
 
 
-    private synchronized boolean checkCollide(Position pos, Piece piece) {
-        return !(pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width) || collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
-
-        // return false;
+    private boolean checkCollide(Position pos, Piece piece) {
+        return !(pos.getX() >= 0 && pos.getY() >= 0 && pos.getX() < height && pos.getY() < width)
+                || collisions.containsKey(pos) && !collisions.get(pos).equals(piece);
 
     }
 
-    public synchronized void movePiece(Direction direction, Piece piece){
-        lock.lock();
+    public void movePiece(Direction direction, Piece piece){
+        write.lock();
+        if(Thread.currentThread().isInterrupted()){
+            write.unlock();
+            return;
+        }
+
         try{
+
             if(collisions.containsValue(piece)){
+                
                 if(checkMovement(direction, piece)){
                     piece.getPositions().forEach(collisions::remove);
                     piece.move(direction);
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
+            } else {
+                System.out.println(Thread.currentThread().getName());
+                if (futures.get(piece) != null) {
+                    futures.get(piece).cancel(true);
+                }
             }
-        } finally {
-            lock.unlock();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-
-
+        finally {
+            write.unlock();
+        }
     }
 
     public boolean contains(Piece p){
@@ -123,13 +159,14 @@ public class Board {
 
 
     public boolean isEmptyRow(int i){
+        read.lock();
         for (int j = 0; j < width; j++) {
             Position toCheck = new Position(i, j);
             if(collisions.containsKey(toCheck)){
                 return false;
             }
         }
-
+        read.unlock();
         return true;
     }
 
@@ -143,58 +180,98 @@ public class Board {
         return true;
     }
 
-    public synchronized int sweep(){
+    public int sweep(){
         
-        lock.lock();
+        write.lock();
 
-        
-        int count = 0;
-        for (int i = height-1; i >= 0; i--) {
-            if(isFullRow(i)){
-                count++;
-                for (int j = 0; j < width; j++) {
-                    Position toRemove = new Position(i, j);
-                    collisions.get(toRemove).removePosition(toRemove);
-                    collisions.remove(toRemove);
+        try{
+            int count = 0;
+            for (int i = height-1; i >= 0; i--) {
+                if(isFullRow(i)){
+                    count++;
+                    for (int j = 0; j < width; j++) {
+                        Position toRemove = new Position(i, j);
+                        Piece p = collisions.get(toRemove);
+                        if(futures.get(p) != null) {
+                            futures.remove(p).cancel(true);
+                        }
+                        if( daemons.get(p) != null) {
+                            daemons.remove(p).interrupt();
+                        }
+
+
+                        p.removePosition(toRemove);
+                        collisions.remove(toRemove);
+
+                    }
                 }
             }
+            if(count > 0){
+                collisions.values().stream()
+                        .filter(Piece::hasBeenChanged)
+                        .forEach(piece -> {
+                            this.resolveHoles(piece);
+                                if(futures.get(piece) != null)
+                                futures.remove(piece).cancel(true);
+                                if (daemons.get(piece)!= null) {
+                                    daemons.remove(piece).interrupt();
+                                }
+
+                            listener.update(piece);
+                        });
+            }
+
+            futures.entrySet().stream()
+                    .map(Map.Entry::getKey)
+                    .filter(Piece::onlyFalse)
+                    .forEach(piece -> {
+                        futures.get(piece).cancel(true);
+                        executor.remove(daemons.get(piece));
+                        collisions.entrySet().removeIf(entry -> entry.getValue().equals(piece));
+                        listener.onCleanUp(piece);
+                    });
+
+            futures.entrySet()
+                    .removeIf(entry -> entry.getKey().onlyFalse());
+
+
+            collisions.entrySet()
+                    .stream()
+                    .map(Map.Entry::getValue)
+                    .forEach(piece -> {
+                        Thread t = new Thread(new GravityDeomon(this, piece, listener));
+                        t.setDaemon(true);
+                        //daemons.put(piece, t);
+                        if(futures.get(piece) == null){
+                            futures.put(piece, executor.scheduleAtFixedRate(t, 1000, 30, TimeUnit.MILLISECONDS));
+                            if(daemons.get(piece) == null)
+                                daemons.put(piece, t);
+                            else
+                                daemons.replace(piece, t);
+                        }
+
+                    });
+
+            write.unlock();
+            return  count;
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        if(count > 0){
-            collisions.values().stream()
-                   .filter(Piece::hasBeenChanged)
-                   .forEach(this::resolveHoles);
-        }
 
-        futures.entrySet().stream()
-               .map(Map.Entry::getKey)
-               .filter(Piece::onlyFalse)
-               .forEach(piece -> {
-                   futures.get(piece).cancel(true);
-                   collisions.entrySet().removeIf(entry -> entry.getValue().equals(piece));
-                   listener.onCleanUp(piece);
-               });
+        return 0;
 
-        futures.entrySet()
-              .removeIf(entry -> entry.getKey().onlyFalse());
-
-
-        if(count > 0 ) {
-            lock.unlock();
-            return count +sweep();
-        }
-
-        lock.unlock();
-        return count;
     }
 
     public void resolveHoles(Piece p){
-        lock.lock();
+        write.lock();
         try{
             p.getPositions().forEach(collisions::remove);
             p.resolveHoles();
             p.getPositions().forEach(pos -> collisions.put(pos, p));
+        } catch (Exception e){
+            e.printStackTrace();
         } finally {
-                lock.unlock();
+            write.unlock();
         }
 
 
@@ -202,7 +279,7 @@ public class Board {
 
 
     private boolean checkRotation(Piece piece){
-
+        read.lock();
         List<Position> toCheck = piece.getRotations();
         boolean ok = true;
 
@@ -213,17 +290,25 @@ public class Board {
 
             }
         }
+        read.unlock();
         return ok;
     }
 
     public void rotateClockWise(Piece piece){
-
-        if(checkRotation(piece)){
-            piece.getPositions().forEach(collisions::remove);
-            piece.rotateClockWise();
-            piece.getPositions().forEach( position -> collisions.put(position, piece));
+        write.lock();
+        try {
+            if(checkRotation(piece)){
+                piece.getPositions().forEach(collisions::remove);
+                piece.rotateClockWise();
+                piece.getPositions().forEach( position -> collisions.put(position, piece));
+            }
+        } catch (Exception e ){
+            e.printStackTrace();
         }
+        finally {
+            write.unlock();
 
+        }
     }
 
     public void onQuit(){
@@ -403,6 +488,28 @@ public class Board {
             e.printStackTrace();
         }
 
+    }
+
+    public Piece getPieceAt(Position pos){
+        return collisions.get(pos);
+    }
+
+    public List<Piece> getPieces(){
+        Identificator identificator = new Identificator();
+        return collisions.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(identificator::add)
+                .collect(Collectors.toList());
+    }
+
+    public void stop() {
+        futures.forEach((key, value) -> {
+            value.cancel(true);
+        });
+
+        executor.shutdown();
+       // System.out.println(futures.size());
+        
     }
 }
 

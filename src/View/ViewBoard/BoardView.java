@@ -35,8 +35,8 @@ public class BoardView {
         if (style != null) {
             view.getSquare().forEach(rectangle -> rectangle.getStyleClass().add(style));
         }
-        group.getChildren().add(view);
-        pieces.put(piece, view);
+
+        addPiece(piece, view);
     }
 
     public void addPiece(Piece piece, PieceView pieceView){
@@ -57,8 +57,7 @@ public class BoardView {
     }
 
     public void updatePiece(Piece piece) {
-
-        pieces.get(piece).getChildren().clear();
+        //pieces.get(piece).getChildren().clear();
         pieces.get(piece).update();
     }
 
@@ -73,7 +72,10 @@ public class BoardView {
     }
 
     public void clean(Piece p) {
-        pieces.get(p).getSquare().forEach(
-                rectangle -> group.getChildren().remove(rectangle));
+        //pieces.clear();
+        //pieces.get(p).getChildren().clear();
+        
+     pieces.get(p).getSquare().forEach(
+               rectangle -> group.getChildren().remove(rectangle));
     }
 }

@@ -18,19 +18,25 @@ public class GravityDeomon implements Runnable {
         this.board = board;
         this.piece = piece;
         this.listener = listener;
+
     }
 
     @Override
     public void run() {
-        if(piece.onlyFalse())
-        {
-            return;
+        try{
+            Thread.currentThread().setName(piece.toString());
+            if(piece.onlyFalse())
+            {
+                return;
+            }
+
+            board.movePiece(Direction.DOWN, piece);
+            listener.update(piece);
+            //listener.onSweep();
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
-        if(board.contains(piece)){
-            board.movePiece(Direction.DOWN, piece);
-            listener.onSweep();
-        }
 
     }
 }

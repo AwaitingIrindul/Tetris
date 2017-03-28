@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executor;
 
 /**
  * Created by Irindul on 09/02/2017.
@@ -44,6 +45,7 @@ public class Tetris {
 
     }
 
+
     public Tetris(Tetris t){
         this.board = new Board(t.board);
         this.pieces = new ArrayList<>(7);
@@ -61,6 +63,11 @@ public class Tetris {
     public void move(Direction d){
         board.movePiece(d, current);
         movementListeners.forEach(GravityListener::onMovement);
+    }
+
+    @Override
+    public String toString() {
+        return board.toString();
     }
 
     public void applyGravity(){
@@ -103,6 +110,7 @@ public class Tetris {
     }
 
     public void quit(){
+        stop();
         board.onQuit();
     }
 
@@ -213,6 +221,7 @@ public class Tetris {
 
     private void swapCurrent(){
         board.addDaeomon(current, movementListeners.get(0));
+        movementListeners.forEach(gravityListener -> gravityListener.update(getCurrent()));
         current = next;
         current.setPosition(position);
         next = randomBlock();
@@ -224,7 +233,7 @@ public class Tetris {
 
     }
 
-    public void resolve() {
-        board.resolveHoles(current);
+    public void stop() {
+        board.stop();
     }
 }

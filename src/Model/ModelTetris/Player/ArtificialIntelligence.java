@@ -126,6 +126,7 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
             tetris.applyGravity();
 
         }
+        tetris.stop();
         score = tetris.getScore();
     }
 
@@ -162,6 +163,11 @@ public class ArtificialIntelligence implements GravityListener, Runnable{
 
     @Override
     public void onCleanUp(Piece p) {
+
+    }
+
+    @Override
+    public void update(Piece p) {
 
     }
 }
