@@ -105,9 +105,6 @@ public class Evaluator {
 
     void display(){
         System.out.println(a +", " + b + ", " + c + ", " + d);
-        
-
-
     }
     static Evaluator crossover(Evaluator p1, Evaluator p2){
         Evaluator child = new Evaluator(p1);

@@ -58,7 +58,10 @@ public class BoardView {
 
     public void updatePiece(Piece piece) {
         //pieces.get(piece).getChildren().clear();
-        pieces.get(piece).update();
+        if (pieces.get(piece) != null) {
+            pieces.get(piece).update();
+        }
+
     }
 
     public void updateAll(){

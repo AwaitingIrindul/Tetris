@@ -139,7 +139,8 @@ public class Puzzle {
     public void reset() {
         File file = new File("ressources/saves/puzzle1.json");
         if(file.delete())
-            System.out.println("Successfully deleted");
+           System.out.println("Successfully deleted file");
+
             
 
         pieces =new ArrayList<>();
@@ -199,7 +200,6 @@ public class Puzzle {
                         it.next();
                     }
 
-                    System.out.println(nSb.toString());
                     return nSb;
 
                 }).mapToInt(sb -> Integer.parseInt(sb.toString().trim()))

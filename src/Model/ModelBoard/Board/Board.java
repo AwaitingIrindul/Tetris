@@ -94,8 +94,6 @@ public class Board {
             return false;
         }
         if(!collisions.containsValue(piece)) {
-            System.out.println("wtf");
-            
             return false;
 
         }
@@ -140,7 +138,6 @@ public class Board {
                     piece.getPositions().forEach(position -> collisions.put(position, piece));
                 }
             } else {
-                System.out.println(Thread.currentThread().getName());
                 if (futures.get(piece) != null) {
                     futures.get(piece).cancel(true);
                 }
@@ -508,8 +505,7 @@ public class Board {
         });
 
         executor.shutdown();
-       // System.out.println(futures.size());
-        
+
     }
 }
 

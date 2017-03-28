@@ -16,10 +16,6 @@ import java.io.PrintStream;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-
-
-        //System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("file.txt"))));
         javafx.application.Application.launch(Menu.class);
-                
     }
 }
