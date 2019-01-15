@@ -18,9 +18,3 @@ As we want to make the height, the holes and the diffrence of height small for t
 we might except a, c, and d to be negative.
 
 To find good values for a, b, c and d, different methods can be used. Personally, I used a genetic algorithm. 
-
-### Genetic Algorithm 
-
-The genetic algotrithm used is define with an operator crossover, an operator mutation and a selection.
-
-#### Crossover
